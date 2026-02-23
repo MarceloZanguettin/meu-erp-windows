@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { User, Lock, LogOut, ChevronDown } from 'lucide-react';
-import './App.css'; // Importante para puxar as regras criadas!
+import './App.css'; 
 
 const API_URL = 'http://localhost:8050';
 
-// --- COMPONENTE DE DROPDOWN (MENU EM CASCATA) ---
+// --- COMPONENTE DE DROPDOWN (MENU SUPERIOR) ---
 function Dropdown({ title, items }) {
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -17,17 +17,27 @@ function Dropdown({ title, items }) {
       {title} {items && items.length > 0 && <ChevronDown size={14} />}
       
       {isOpen && items && items.length > 0 && (
-        <div style={{ position: 'absolute', top: '100%', left: 0, backgroundColor: 'white', color: '#333', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', borderRadius: '4px', minWidth: '220px', zIndex: 10 }}>
-          {items.map((item, index) => (
-            <div 
-              key={index} 
-              style={{ padding: '12px 15px', borderBottom: index < items.length - 1 ? '1px solid #eee' : 'none', cursor: 'pointer' }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = '#f0f0f0'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-            >
-              {item}
-            </div>
-          ))}
+        <div style={{ position: 'absolute', top: '100%', left: 0, backgroundColor: 'white', color: '#333', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', borderRadius: '4px', minWidth: '220px', zIndex: 1001 }}>
+          {items.map((item, index) => {
+            const isObject = typeof item === 'object';
+            const label = isObject ? item.label : item;
+            const handleClick = () => {
+              if (isObject && item.onClick) item.onClick();
+              setIsOpen(false);
+            };
+
+            return (
+              <div 
+                key={index} 
+                onClick={handleClick}
+                style={{ padding: '12px 15px', borderBottom: index < items.length - 1 ? '1px solid #eee' : 'none', cursor: 'pointer' }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#f0f0f0'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+              >
+                {label}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -43,6 +53,7 @@ function LoginScreen({ onLoginSuccess }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      // Tenta fazer o login usando sua API
       const res = await axios.post(`${API_URL}/api/login`, { username, password });
       onLoginSuccess(res.data);
     } catch (err) {
@@ -79,45 +90,171 @@ function LoginScreen({ onLoginSuccess }) {
   );
 }
 
-// --- TELA PRINCIPAL (APP COMPLETO) ---
+// --- COMPONENTE DE JANELA DE PRODUTO ---
+function ProdutoWindow({ id, onClose, onMinimize }) {
+  const [nome, setNome] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [preco, setPreco] = useState('');
+  const [estoque, setEstoque] = useState('');
+  const [categoria, setCategoria] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Produto "${nome}" salvo com sucesso!`);
+    onClose(); // Fecha a janela atual ao salvar
+  };
+
+  return (
+    <div className="floating-window">
+      {/* Cabeçalho da Janela */}
+      <div className="window-header">
+        <span>Cadastro de Produto (ID: {id.toString().slice(-4)})</span>
+        <div className="window-controls">
+          <button className="window-btn" onClick={onMinimize} title="Minimizar">_</button>
+          <button className="window-btn" onClick={onClose} title="Fechar">X</button>
+        </div>
+      </div>
+
+      {/* Corpo da Janela / Formulário */}
+      <div className="window-body">
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Nome do Produto *</label>
+            <input type="text" value={nome} onChange={e => setNome(e.target.value)} required placeholder="Ex: Teclado Mecânico" />
+          </div>
+
+          <div className="form-group">
+            <label>Descrição</label>
+            <textarea value={descricao} onChange={e => setDescricao(e.target.value)} rows="3" placeholder="Detalhes do produto..."></textarea>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Preço (R$) *</label>
+              <input type="number" step="0.01" value={preco} onChange={e => setPreco(e.target.value)} required placeholder="0.00" />
+            </div>
+            <div className="form-group">
+              <label>Estoque Inicial *</label>
+              <input type="number" value={estoque} onChange={e => setEstoque(e.target.value)} required placeholder="0" />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Categoria</label>
+            <input type="text" value={categoria} onChange={e => setCategoria(e.target.value)} placeholder="Ex: Informática" />
+          </div>
+
+          <div className="modal-actions">
+            <button type="button" className="btn-cancel" onClick={onClose}>Cancelar</button>
+            <button type="submit" className="btn-save">Salvar Produto</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// --- TELA PRINCIPAL DO ERP ---
 function App() {
   const [usuario, setUsuario] = useState(null);
+  const [janelas, setJanelas] = useState([]); // Gerencia as múltiplas janelas abertas
 
+  // Função para instanciar uma nova janela
+  const abrirNovaJanelaProduto = () => {
+    const novaJanela = {
+      id: Date.now(), // Usamos o tempo exato para ser um ID único
+      tipo: 'produto',
+      titulo: 'Novo Produto',
+      minimizada: false
+    };
+    setJanelas([...janelas, novaJanela]);
+  };
+
+  // Funções de controle de janelas
+  const fecharJanela = (idParaFechar) => {
+    setJanelas(janelas.filter(janela => janela.id !== idParaFechar));
+  };
+
+  const alternarMinimizar = (idParaAlternar) => {
+    setJanelas(janelas.map(janela => {
+      if (janela.id === idParaAlternar) {
+        return { ...janela, minimizada: !janela.minimizada };
+      }
+      return janela;
+    }));
+  };
+
+  // Se não estiver logado, exibe a tela de login
   if (!usuario) {
     return <LoginScreen onLoginSuccess={setUsuario} />;
   }
 
+  // Se estiver logado, exibe a interface principal (ERP)
   return (
     <div className="app-wrapper">
       
-      {/* TOOLBAR SUPERIOR */}
+      {/* BARRA SUPERIOR (HEADER) */}
       <header className="app-header">
         <h2 style={{ margin: 0, fontSize: '20px' }}>Meu ERP</h2>
         
-        {/* Abas com Menu Cascata */}
         <div className="nav-menu">
-          <Dropdown title="Cadastro" items={['Cadastrar novos produtos', 'Novos clientes', 'Novos fornecedores', 'Novos transportadores', 'Nova condição de pagamento']} />
-          <Dropdown title="Estoque" items={['Entrada Produto', 'Entrada Matéria Prima', 'Saída Produto', 'Produção para estoque']} />
-          <Dropdown title="Fluxo de Trabalho" items={[]} />
+          <Dropdown title="Cadastro" items={[
+            { label: 'Cadastrar novos produtos', onClick: abrirNovaJanelaProduto },
+            { label: 'Novos clientes', onClick: () => alert("Módulo em desenvolvimento") },
+            { label: 'Novos fornecedores', onClick: () => alert("Módulo em desenvolvimento") }
+          ]} />
+          <Dropdown title="Estoque" items={['Entrada Produto', 'Saída Produto']} />
           <Dropdown title="Pedidos" items={['Novo Orçamento', 'Novo Pré-Pedido']} />
         </div>
 
-        {/* Info do Usuário e Logout */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <span style={{ fontSize: '14px', backgroundColor: 'rgba(255,255,255,0.1)', padding: '5px 10px', borderRadius: '20px' }}>
-            Olá, {usuario.username} ({usuario.permissao})
+            Olá, {usuario.username}
           </span>
           <LogOut size={20} style={{ cursor: 'pointer', color: '#ff6b6b' }} onClick={() => setUsuario(null)} title="Sair do sistema" />
         </div>
       </header>
 
-      {/* ÁREA DE TRABALHO / TELA DE FUNDO */}
+      {/* ÁREA CENTRAL DE FUNDO */}
       <main className="main-content">
         <div className="welcome-box">
             <h1 style={{ color: '#2c3e50', marginBottom: '10px' }}>Bem-vindo ao Sistema!</h1>
-            <p style={{ color: '#666' }}>Utilize a barra de ferramentas acima para navegar nas rotinas.</p>
+            <p style={{ color: '#666' }}>Utilize o menu "Cadastro" para abrir janelas de trabalho.</p>
         </div>
       </main>
+
+      {/* RENDERIZAÇÃO DAS JANELAS ABERTAS (Se não estiverem minimizadas) */}
+      {janelas.map(janela => {
+        if (janela.minimizada) return null;
+
+        if (janela.tipo === 'produto') {
+          return (
+            <ProdutoWindow 
+              key={janela.id} 
+              id={janela.id}
+              onClose={() => fecharJanela(janela.id)}
+              onMinimize={() => alternarMinimizar(janela.id)}
+            />
+          );
+        }
+        return null;
+      })}
+
+      {/* BARRA DE TAREFAS NO RODAPÉ */}
+      {janelas.length > 0 && (
+        <div className="taskbar">
+          {janelas.map(janela => (
+            <button 
+              key={janela.id}
+              className={`taskbar-item ${janela.minimizada ? 'minimized' : ''}`}
+              onClick={() => alternarMinimizar(janela.id)}
+              title={janela.minimizada ? "Restaurar janela" : "Minimizar janela"}
+            >
+              {janela.titulo} ({janela.id.toString().slice(-4)})
+            </button>
+          ))}
+        </div>
+      )}
 
     </div>
   );

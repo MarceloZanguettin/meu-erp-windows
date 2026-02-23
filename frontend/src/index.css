@@ -25,6 +25,7 @@ html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow: hidden; /* Evita rolagem na tela de fundo */
 }
 
 @media (prefers-color-scheme: light) {

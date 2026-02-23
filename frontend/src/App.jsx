@@ -93,14 +93,24 @@ function LoginScreen({ onLoginSuccess }) {
 
 // --- COMPONENTE DE JANELA DE PRODUTO ---
 function ProdutoWindow({ id, onClose, onMinimize }) {
-  // 1. Criamos a referência para resolver o erro do React 18
   const nodeRef = useRef(null); 
 
+  // Estado para controlar a aba ativa (Inicia sempre na aba 'Dados')
+  const [abaAtiva, setAbaAtiva] = useState('Dados');
+
+  // Estados do formulário
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
   const [preco, setPreco] = useState('');
   const [estoque, setEstoque] = useState('');
   const [categoria, setCategoria] = useState('');
+
+  // Lista com todas as abas solicitadas
+  const abas = [
+    'Dados', 'Tabela de preço', 'Código de barras', 'Centro de custo', 
+    'Imagem', 'Referência fornecedor', 'Composição', 'Observação', 
+    'Processos', 'Regras', 'Regras cliente', 'Código alternativo', 'Conversão fornecedor'
+  ];
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -112,56 +122,90 @@ function ProdutoWindow({ id, onClose, onMinimize }) {
 
   return (
     <Draggable 
-      nodeRef={nodeRef} // 2. Informamos a referência ao Draggable
+      nodeRef={nodeRef} 
       handle=".window-header" 
       defaultPosition={{ x: 100 + randomOffset, y: 100 + randomOffset }}
     >
-      {/* 3. Conectamos a referência na div da janela */}
-      <div ref={nodeRef} className="floating-window">
+      {/* Aumentei levemente o max-width aqui direto no style para acomodar melhor a tela cheia de abas */}
+      <div ref={nodeRef} className="floating-window" style={{ maxWidth: '950px', width: '95%' }}>
         
-        {/* Cabeçalho da Janela (Onde o usuário clica para arrastar) */}
+        {/* Cabeçalho da Janela */}
         <div className="window-header">
           <span>Cadastro de Produto (ID: {id.toString().slice(-4)})</span>
           <div className="window-controls">
-            <button className="window-btn" onMouseDown={e => e.stopPropagation()} onClick={onMinimize} title="Minimizar">_</button>
-            <button className="window-btn" onMouseDown={e => e.stopPropagation()} onClick={onClose} title="Fechar">X</button>
+            <button type="button" className="window-btn" onMouseDown={e => e.stopPropagation()} onClick={onMinimize} title="Minimizar">_</button>
+            <button type="button" className="window-btn" onMouseDown={e => e.stopPropagation()} onClick={onClose} title="Fechar">X</button>
           </div>
         </div>
 
-        {/* Corpo da Janela / Formulário */}
+        {/* Corpo da Janela com Abas */}
         <div className="window-body">
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Nome do Produto *</label>
-              <input type="text" value={nome} onChange={e => setNome(e.target.value)} required placeholder="Ex: Teclado Mecânico" />
-            </div>
+          
+          {/* Navegação das Abas */}
+          <div className="tabs-header">
+            {abas.map(aba => (
+              <button
+                key={aba}
+                type="button"
+                className={`tab-btn ${abaAtiva === aba ? 'active' : ''}`}
+                onClick={() => setAbaAtiva(aba)}
+              >
+                {aba}
+              </button>
+            ))}
+          </div>
 
-            <div className="form-group">
-              <label>Descrição</label>
-              <textarea value={descricao} onChange={e => setDescricao(e.target.value)} rows="3" placeholder="Detalhes do produto..."></textarea>
-            </div>
+          {/* Conteúdo da Aba Selecionada */}
+          <div className="tab-content">
+            <form onSubmit={handleSubmit}>
+              
+              {/* SÓ MOSTRA O FORMULÁRIO SE A ABA ATIVA FOR "Dados" */}
+              {abaAtiva === 'Dados' && (
+                <>
+                  <div className="form-group">
+                    <label>Nome do Produto *</label>
+                    <input type="text" value={nome} onChange={e => setNome(e.target.value)} required placeholder="Ex: Teclado Mecânico" />
+                  </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label>Preço (R$) *</label>
-                <input type="number" step="0.01" value={preco} onChange={e => setPreco(e.target.value)} required placeholder="0.00" />
+                  <div className="form-group">
+                    <label>Descrição</label>
+                    <textarea value={descricao} onChange={e => setDescricao(e.target.value)} rows="3" placeholder="Detalhes do produto..."></textarea>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Preço (R$) *</label>
+                      <input type="number" step="0.01" value={preco} onChange={e => setPreco(e.target.value)} required placeholder="0.00" />
+                    </div>
+                    <div className="form-group">
+                      <label>Estoque Inicial *</label>
+                      <input type="number" value={estoque} onChange={e => setEstoque(e.target.value)} required placeholder="0" />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Categoria</label>
+                    <input type="text" value={categoria} onChange={e => setCategoria(e.target.value)} placeholder="Ex: Informática" />
+                  </div>
+                </>
+              )}
+
+              {/* MENSAGEM PARA AS OUTRAS ABAS (Você pode preencher depois) */}
+              {abaAtiva !== 'Dados' && (
+                <div className="aba-placeholder">
+                  Configurações da aba <strong>{abaAtiva}</strong> em desenvolvimento...
+                </div>
+              )}
+
+              {/* Botões de Salvar/Cancelar (Ficam visíveis em qualquer aba) */}
+              <div className="modal-actions">
+                <button type="button" className="btn-cancel" onClick={onClose}>Cancelar</button>
+                <button type="submit" className="btn-save">Salvar Produto</button>
               </div>
-              <div className="form-group">
-                <label>Estoque Inicial *</label>
-                <input type="number" value={estoque} onChange={e => setEstoque(e.target.value)} required placeholder="0" />
-              </div>
-            </div>
 
-            <div className="form-group">
-              <label>Categoria</label>
-              <input type="text" value={categoria} onChange={e => setCategoria(e.target.value)} placeholder="Ex: Informática" />
-            </div>
+            </form>
+          </div>
 
-            <div className="modal-actions">
-              <button type="button" className="btn-cancel" onClick={onClose}>Cancelar</button>
-              <button type="submit" className="btn-save">Salvar Produto</button>
-            </div>
-          </form>
         </div>
       </div>
     </Draggable>

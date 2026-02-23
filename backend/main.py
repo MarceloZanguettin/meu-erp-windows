@@ -8,7 +8,7 @@ from database import engine, Base, get_db
 from models import tabelas
 from schemas import pedido
 
-#tabelas.Base.metadata.create_all(bind=engine)
+tabelas.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -78,5 +78,5 @@ if __name__ == "__main__":
     api_thread = Thread(target=lambda: uvicorn.run(app, host="0.0.0.0", port=8050))
     api_thread.daemon = True
     api_thread.start()
-    #start_eel()
+    start_eel()
     

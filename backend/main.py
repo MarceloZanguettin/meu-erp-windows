@@ -1,7 +1,8 @@
 # backend/main.py
 import eel
-from fastapi import FastAPI, Depends, HTTPException
 import uvicorn
+from pydantic import BaseModel
+from fastapi import FastAPI, Depends, HTTPException
 from threading import Thread
 from sqlalchemy.orm import Session
 from database import engine, Base, get_db
@@ -11,6 +12,29 @@ from schemas import pedido
 tabelas.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+# Schema para receber os dados de Login do Frontend
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+@app.post("/api/login")
+def login(req: LoginRequest, db: Session = Depends(get_db)):
+    # Busca no banco se o usuário existe
+    usuario = db.query(tabelas.Usuario).filter(tabelas.Usuario.username == req.username).first()
+    
+    if not usuario:
+        # Facilitador para você: Se digitar admin/admin ele deixa entrar mesmo sem ter salvo no banco
+        if req.username == "admin" and req.password == "admin":
+            return {"msg": "Bem-vindo Admin padrão!", "permissao": "admin", "username": "admin"}
+        
+        # Se não for admin, bloqueia.
+        raise HTTPException(status_code=401, detail="Usuário não existe no sistema.")
+    
+    if usuario.password != req.password:
+        raise HTTPException(status_code=401, detail="Senha incorreta.")
+    
+    return {"msg": "Login efetuado com sucesso!", "permissao": usuario.permissao, "username": usuario.username}
 
 @app.get("/api/status")
 def get_status():

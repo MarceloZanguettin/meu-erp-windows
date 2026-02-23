@@ -38,3 +38,10 @@ class ItemPedido(Base):
     preco_unitario = Column(Float)
     
     pedido = relationship("Pedido", back_populates="itens")
+class Usuario(Base):
+    __tablename__ = "usuarios"
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String(50), unique=True, index=True, nullable=False)
+    password = Column(String(100), nullable=False) # Em produção, o ideal é usar hash
+    permissao = Column(String(50), default="user") # Ex: admin, user, gerente
+    

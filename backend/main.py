@@ -35,7 +35,7 @@ app.include_router(sistema_controller.router)
 # Funções de Inicialização (Eel e DB)
 def start_eel():
     eel.init('../frontend/dist')
-    eel.start('index.html', host='localhost', port=8000, mode='chrome')
+    eel.start('index.html', host='localhost', port=8000, mode='chrome', size=(400, 550), position=(500, 200))
 
 def verificar_banco():
     try:

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import { User, Lock, LogOut, ChevronDown } from 'lucide-react';
+import Draggable from 'react-draggable';
 import './App.css'; 
 
 const API_URL = 'http://localhost:8050';
@@ -92,6 +93,9 @@ function LoginScreen({ onLoginSuccess }) {
 
 // --- COMPONENTE DE JANELA DE PRODUTO ---
 function ProdutoWindow({ id, onClose, onMinimize }) {
+  // 1. Criamos a referência para resolver o erro do React 18
+  const nodeRef = useRef(null); 
+
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
   const [preco, setPreco] = useState('');
@@ -101,56 +105,66 @@ function ProdutoWindow({ id, onClose, onMinimize }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     alert(`Produto "${nome}" salvo com sucesso!`);
-    onClose(); // Fecha a janela atual ao salvar
+    onClose(); 
   };
 
+  const randomOffset = (id % 10) * 15; 
+
   return (
-    <div className="floating-window">
-      {/* Cabeçalho da Janela */}
-      <div className="window-header">
-        <span>Cadastro de Produto (ID: {id.toString().slice(-4)})</span>
-        <div className="window-controls">
-          <button className="window-btn" onClick={onMinimize} title="Minimizar">_</button>
-          <button className="window-btn" onClick={onClose} title="Fechar">X</button>
+    <Draggable 
+      nodeRef={nodeRef} // 2. Informamos a referência ao Draggable
+      handle=".window-header" 
+      defaultPosition={{ x: 100 + randomOffset, y: 100 + randomOffset }}
+    >
+      {/* 3. Conectamos a referência na div da janela */}
+      <div ref={nodeRef} className="floating-window">
+        
+        {/* Cabeçalho da Janela (Onde o usuário clica para arrastar) */}
+        <div className="window-header">
+          <span>Cadastro de Produto (ID: {id.toString().slice(-4)})</span>
+          <div className="window-controls">
+            <button className="window-btn" onMouseDown={e => e.stopPropagation()} onClick={onMinimize} title="Minimizar">_</button>
+            <button className="window-btn" onMouseDown={e => e.stopPropagation()} onClick={onClose} title="Fechar">X</button>
+          </div>
+        </div>
+
+        {/* Corpo da Janela / Formulário */}
+        <div className="window-body">
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Nome do Produto *</label>
+              <input type="text" value={nome} onChange={e => setNome(e.target.value)} required placeholder="Ex: Teclado Mecânico" />
+            </div>
+
+            <div className="form-group">
+              <label>Descrição</label>
+              <textarea value={descricao} onChange={e => setDescricao(e.target.value)} rows="3" placeholder="Detalhes do produto..."></textarea>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Preço (R$) *</label>
+                <input type="number" step="0.01" value={preco} onChange={e => setPreco(e.target.value)} required placeholder="0.00" />
+              </div>
+              <div className="form-group">
+                <label>Estoque Inicial *</label>
+                <input type="number" value={estoque} onChange={e => setEstoque(e.target.value)} required placeholder="0" />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Categoria</label>
+              <input type="text" value={categoria} onChange={e => setCategoria(e.target.value)} placeholder="Ex: Informática" />
+            </div>
+
+            <div className="modal-actions">
+              <button type="button" className="btn-cancel" onClick={onClose}>Cancelar</button>
+              <button type="submit" className="btn-save">Salvar Produto</button>
+            </div>
+          </form>
         </div>
       </div>
-
-      {/* Corpo da Janela / Formulário */}
-      <div className="window-body">
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Nome do Produto *</label>
-            <input type="text" value={nome} onChange={e => setNome(e.target.value)} required placeholder="Ex: Teclado Mecânico" />
-          </div>
-
-          <div className="form-group">
-            <label>Descrição</label>
-            <textarea value={descricao} onChange={e => setDescricao(e.target.value)} rows="3" placeholder="Detalhes do produto..."></textarea>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>Preço (R$) *</label>
-              <input type="number" step="0.01" value={preco} onChange={e => setPreco(e.target.value)} required placeholder="0.00" />
-            </div>
-            <div className="form-group">
-              <label>Estoque Inicial *</label>
-              <input type="number" value={estoque} onChange={e => setEstoque(e.target.value)} required placeholder="0" />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label>Categoria</label>
-            <input type="text" value={categoria} onChange={e => setCategoria(e.target.value)} placeholder="Ex: Informática" />
-          </div>
-
-          <div className="modal-actions">
-            <button type="button" className="btn-cancel" onClick={onClose}>Cancelar</button>
-            <button type="submit" className="btn-save">Salvar Produto</button>
-          </div>
-        </form>
-      </div>
-    </div>
+    </Draggable>
   );
 }
 

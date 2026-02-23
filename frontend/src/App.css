@@ -70,10 +70,7 @@
 
 /* --- ESTILOS DE MÚLTIPLAS JANELAS (TIPO WINDOWS) --- */
 .floating-window {
-  position: fixed;
-  top: 100px; /* Distância do topo */
-  left: 50%; /* Centraliza horizontalmente */
-  transform: translateX(-50%);
+  position: absolute; /* Mudamos de fixed para absolute */
   background-color: white;
   padding: 0;
   border-radius: 8px;
@@ -96,6 +93,11 @@
   justify-content: space-between;
   align-items: center;
   font-weight: bold;
+  cursor: grab; /* Mostra o ícone de "mãozinha" para indicar que pode arrastar */
+}
+
+.window-header:active {
+  cursor: grabbing; /* Mãozinha fechada ao clicar e segurar */
 }
 
 .window-controls {

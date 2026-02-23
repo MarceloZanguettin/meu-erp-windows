@@ -92,20 +92,28 @@ function LoginScreen({ onLoginSuccess }) {
 }
 
 // --- COMPONENTE DE JANELA DE PRODUTO ---
+// --- COMPONENTE DE JANELA DE PRODUTO ---
 function ProdutoWindow({ id, onClose, onMinimize }) {
   const nodeRef = useRef(null); 
 
-  // Estado para controlar a aba ativa (Inicia sempre na aba 'Dados')
+  // Controle da aba ativa
   const [abaAtiva, setAbaAtiva] = useState('Dados');
 
-  // Estados do formulário
+  // --- ESTADOS DA ABA: DADOS ---
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
-  const [preco, setPreco] = useState('');
   const [estoque, setEstoque] = useState('');
   const [categoria, setCategoria] = useState('');
+  
+  // O "preco" principal (Preço de Venda) serve tanto para Dados quanto para Tabela de Preço
+  const [preco, setPreco] = useState(''); 
 
-  // Lista com todas as abas solicitadas
+  // --- ESTADOS DA ABA: TABELA DE PREÇO ---
+  const [custo, setCusto] = useState('');
+  const [margemLucro, setMargemLucro] = useState('');
+  const [precoMinimo, setPrecoMinimo] = useState('');
+  const [precoAtacado, setPrecoAtacado] = useState('');
+
   const abas = [
     'Dados', 'Tabela de preço', 'Código de barras', 'Centro de custo', 
     'Imagem', 'Referência fornecedor', 'Composição', 'Observação', 
@@ -114,7 +122,7 @@ function ProdutoWindow({ id, onClose, onMinimize }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert(`Produto "${nome}" salvo com sucesso!`);
+    alert(`Produto "${nome}" salvo com sucesso! \nPreço Venda: R$ ${preco} \nPreço Custo: R$ ${custo}`);
     onClose(); 
   };
 
@@ -126,7 +134,6 @@ function ProdutoWindow({ id, onClose, onMinimize }) {
       handle=".window-header" 
       defaultPosition={{ x: 100 + randomOffset, y: 100 + randomOffset }}
     >
-      {/* Aumentei levemente o max-width aqui direto no style para acomodar melhor a tela cheia de abas */}
       <div ref={nodeRef} className="floating-window" style={{ maxWidth: '950px', width: '95%' }}>
         
         {/* Cabeçalho da Janela */}
@@ -141,7 +148,6 @@ function ProdutoWindow({ id, onClose, onMinimize }) {
         {/* Corpo da Janela com Abas */}
         <div className="window-body">
           
-          {/* Navegação das Abas */}
           <div className="tabs-header">
             {abas.map(aba => (
               <button
@@ -155,11 +161,10 @@ function ProdutoWindow({ id, onClose, onMinimize }) {
             ))}
           </div>
 
-          {/* Conteúdo da Aba Selecionada */}
           <div className="tab-content">
             <form onSubmit={handleSubmit}>
               
-              {/* SÓ MOSTRA O FORMULÁRIO SE A ABA ATIVA FOR "Dados" */}
+              {/* --- ABA: DADOS --- */}
               {abaAtiva === 'Dados' && (
                 <>
                   <div className="form-group">
@@ -174,7 +179,7 @@ function ProdutoWindow({ id, onClose, onMinimize }) {
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label>Preço (R$) *</label>
+                      <label>Preço de Venda (R$) *</label>
                       <input type="number" step="0.01" value={preco} onChange={e => setPreco(e.target.value)} required placeholder="0.00" />
                     </div>
                     <div className="form-group">
@@ -190,14 +195,45 @@ function ProdutoWindow({ id, onClose, onMinimize }) {
                 </>
               )}
 
-              {/* MENSAGEM PARA AS OUTRAS ABAS (Você pode preencher depois) */}
-              {abaAtiva !== 'Dados' && (
+              {/* --- ABA: TABELA DE PREÇO --- */}
+              {abaAtiva === 'Tabela de preço' && (
+                <>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Preço de Custo (R$)</label>
+                      <input type="number" step="0.01" value={custo} onChange={e => setCusto(e.target.value)} placeholder="0.00" />
+                    </div>
+                    <div className="form-group">
+                      <label>Margem de Lucro (%)</label>
+                      <input type="number" step="0.01" value={margemLucro} onChange={e => setMargemLucro(e.target.value)} placeholder="0.00" />
+                    </div>
+                    <div className="form-group">
+                      <label>Preço de Venda (R$) *</label>
+                      <input type="number" step="0.01" value={preco} onChange={e => setPreco(e.target.value)} required placeholder="0.00" />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Preço Mínimo Permitido (R$)</label>
+                      <input type="number" step="0.01" value={precoMinimo} onChange={e => setPrecoMinimo(e.target.value)} placeholder="0.00" />
+                    </div>
+                    <div className="form-group">
+                      <label>Preço para Atacado (R$)</label>
+                      <input type="number" step="0.01" value={precoAtacado} onChange={e => setPrecoAtacado(e.target.value)} placeholder="0.00" />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* MENSAGEM PARA AS OUTRAS ABAS (Somente se não for 'Dados' e nem 'Tabela de preço') */}
+              {abaAtiva !== 'Dados' && abaAtiva !== 'Tabela de preço' && (
                 <div className="aba-placeholder">
                   Configurações da aba <strong>{abaAtiva}</strong> em desenvolvimento...
                 </div>
               )}
 
-              {/* Botões de Salvar/Cancelar (Ficam visíveis em qualquer aba) */}
+              {/* Botões de Salvar/Cancelar */}
               <div className="modal-actions">
                 <button type="button" className="btn-cancel" onClick={onClose}>Cancelar</button>
                 <button type="submit" className="btn-save">Salvar Produto</button>

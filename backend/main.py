@@ -6,8 +6,7 @@ from threading import Thread
 from sqlalchemy.orm import Session
 from database import engine, Base, get_db
 from models import tabelas
-# Certifique-se de que o caminho do import do schema está correto de acordo com a sua pasta
-from models import pedido_schema 
+from schemas import pedido
 
 tabelas.Base.metadata.create_all(bind=engine)
 
@@ -18,7 +17,7 @@ def get_status():
     return {"status": "Online", "msg": "Servidor do ERP respondendo via rede local"}
 
 @app.post("/pedidos/")
-def realizar_venda(pedido_in: pedido_schema.PedidoCreate, db: Session = Depends(get_db)):
+def realizar_venda(pedido_in: pedido.PedidoCreate, db: Session = Depends(get_db)):
     valor_total_pedido = 0
     itens_para_salvar = []
 
@@ -64,12 +63,6 @@ def start_eel():
     eel.init('../frontend/dist')
     eel.start('index.html', host='0.0.0.0', port=8000, mode='chrome')
 
-if __name__ == "__main__":
-    api_thread = Thread(target=lambda: uvicorn.run(app, host="0.0.0.0", port=8050))
-    api_thread.daemon = True
-    api_thread.start()
-    start_eel()
-
 def verificar_banco():
     try:
         # Este comando tenta criar as tabelas se elas não existirem
@@ -81,3 +74,9 @@ def verificar_banco():
 
 if __name__ == "__main__":
     verificar_banco()
+
+    api_thread = Thread(target=lambda: uvicorn.run(app, host="0.0.0.0", port=8050))
+    api_thread.daemon = True
+    api_thread.start()
+    start_eel()
+    

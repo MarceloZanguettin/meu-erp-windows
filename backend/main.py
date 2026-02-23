@@ -61,7 +61,7 @@ def realizar_venda(pedido_in: pedido.PedidoCreate, db: Session = Depends(get_db)
 
 def start_eel():
     eel.init('../frontend/dist')
-    eel.start('index.html', host='0.0.0.0', port=8000, mode='chrome')
+    eel.start('index.html', host='localhost', port=8000, mode='chrome')
 
 def verificar_banco():
     try:

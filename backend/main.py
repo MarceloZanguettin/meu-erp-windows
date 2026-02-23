@@ -3,6 +3,7 @@ import eel
 import uvicorn
 from pydantic import BaseModel
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from threading import Thread
 from sqlalchemy.orm import Session
 from database import engine, Base, get_db
@@ -12,6 +13,15 @@ from schemas import pedido
 tabelas.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+# Isso permite que o frontend na porta 8000 converse com o backend na porta 8050
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permite requisições de qualquer origem
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite todos os métodos (GET, POST, OPTIONS, etc)
+    allow_headers=["*"],  # Permite todos os cabeçalhos
+)
 
 # Schema para receber os dados de Login do Frontend
 class LoginRequest(BaseModel):

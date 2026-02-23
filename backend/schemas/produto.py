@@ -3,7 +3,7 @@ from typing import Optional
 
 class Produto(BaseModel):
     # Tipagem rígida: se mandar string no preco, o Python gera erro
-    id: Optional[str] = None
+    id: Optional[int] = None
     nome: str = Field(..., min_length=3, max_length=100)
     descricao: str
     preco: float = Field(..., gt=0) # Deve ser maior que zero

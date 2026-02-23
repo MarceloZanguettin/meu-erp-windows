@@ -1,15 +1,16 @@
 from pydantic import BaseModel
+from typing import Optional
 from datetime import datetime
 from .produto import Produto
 
 class ItemPedido(BaseModel):
-    produto_id: str
-    quantidade: int
+    produto_id: int
+    quantidade: int = Field(..., gt=0) # Quantidade deve ser maior que 0
     preco_unitario: float
 
 class Pedido(BaseModel):
-    id: Optional[str] = None
-    cliente_id: str
+    id: Optional[int] = None
+    cliente_id: int
     data: datetime = Field(default_factory=datetime.now)
     itens: list[ItemPedido]
     total: float

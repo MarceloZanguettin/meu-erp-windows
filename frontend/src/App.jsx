@@ -1,8 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { User, Lock, LogOut, ChevronDown } from 'lucide-react';
-import Draggable from 'react-draggable';
 import './App.css'; 
+
+// Importação do nosso componente modularizado
+import ProdutoWindow from './components/ProductWindow/ProductWindow';
 
 const API_URL = 'http://localhost:8050';
 
@@ -54,7 +56,6 @@ function LoginScreen({ onLoginSuccess }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      // Tenta fazer o login usando sua API
       const res = await axios.post(`${API_URL}/api/login`, { username, password });
       onLoginSuccess(res.data);
     } catch (err) {
@@ -88,163 +89,6 @@ function LoginScreen({ onLoginSuccess }) {
         <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '12px', color: '#888' }}>Use <strong>admin</strong> / <strong>admin</strong> para o primeiro acesso.</p>
       </div>
     </div>
-  );
-}
-
-// --- COMPONENTE DE JANELA DE PRODUTO ---
-// --- COMPONENTE DE JANELA DE PRODUTO ---
-function ProdutoWindow({ id, onClose, onMinimize }) {
-  const nodeRef = useRef(null); 
-
-  // Controle da aba ativa
-  const [abaAtiva, setAbaAtiva] = useState('Dados');
-
-  // --- ESTADOS DA ABA: DADOS ---
-  const [nome, setNome] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [estoque, setEstoque] = useState('');
-  const [categoria, setCategoria] = useState('');
-  
-  // O "preco" principal (Preço de Venda) serve tanto para Dados quanto para Tabela de Preço
-  const [preco, setPreco] = useState(''); 
-
-  // --- ESTADOS DA ABA: TABELA DE PREÇO ---
-  const [custo, setCusto] = useState('');
-  const [margemLucro, setMargemLucro] = useState('');
-  const [precoMinimo, setPrecoMinimo] = useState('');
-  const [precoAtacado, setPrecoAtacado] = useState('');
-
-  const abas = [
-    'Dados', 'Tabela de preço', 'Código de barras', 'Centro de custo', 
-    'Imagem', 'Referência fornecedor', 'Composição', 'Observação', 
-    'Processos', 'Regras', 'Regras cliente', 'Código alternativo', 'Conversão fornecedor'
-  ];
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert(`Produto "${nome}" salvo com sucesso! \nPreço Venda: R$ ${preco} \nPreço Custo: R$ ${custo}`);
-    onClose(); 
-  };
-
-  const randomOffset = (id % 10) * 15; 
-
-  return (
-    <Draggable 
-      nodeRef={nodeRef} 
-      handle=".window-header" 
-      defaultPosition={{ x: 100 + randomOffset, y: 100 + randomOffset }}
-    >
-      <div ref={nodeRef} className="floating-window" style={{ maxWidth: '950px', width: '95%' }}>
-        
-        {/* Cabeçalho da Janela */}
-        <div className="window-header">
-          <span>Cadastro de Produto (ID: {id.toString().slice(-4)})</span>
-          <div className="window-controls">
-            <button type="button" className="window-btn" onMouseDown={e => e.stopPropagation()} onClick={onMinimize} title="Minimizar">_</button>
-            <button type="button" className="window-btn" onMouseDown={e => e.stopPropagation()} onClick={onClose} title="Fechar">X</button>
-          </div>
-        </div>
-
-        {/* Corpo da Janela com Abas */}
-        <div className="window-body">
-          
-          <div className="tabs-header">
-            {abas.map(aba => (
-              <button
-                key={aba}
-                type="button"
-                className={`tab-btn ${abaAtiva === aba ? 'active' : ''}`}
-                onClick={() => setAbaAtiva(aba)}
-              >
-                {aba}
-              </button>
-            ))}
-          </div>
-
-          <div className="tab-content">
-            <form onSubmit={handleSubmit}>
-              
-              {/* --- ABA: DADOS --- */}
-              {abaAtiva === 'Dados' && (
-                <>
-                  <div className="form-group">
-                    <label>Nome do Produto *</label>
-                    <input type="text" value={nome} onChange={e => setNome(e.target.value)} required placeholder="Ex: Teclado Mecânico" />
-                  </div>
-
-                  <div className="form-group">
-                    <label>Descrição</label>
-                    <textarea value={descricao} onChange={e => setDescricao(e.target.value)} rows="3" placeholder="Detalhes do produto..."></textarea>
-                  </div>
-
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label>Preço de Venda (R$) *</label>
-                      <input type="number" step="0.01" value={preco} onChange={e => setPreco(e.target.value)} required placeholder="0.00" />
-                    </div>
-                    <div className="form-group">
-                      <label>Estoque Inicial *</label>
-                      <input type="number" value={estoque} onChange={e => setEstoque(e.target.value)} required placeholder="0" />
-                    </div>
-                  </div>
-
-                  <div className="form-group">
-                    <label>Categoria</label>
-                    <input type="text" value={categoria} onChange={e => setCategoria(e.target.value)} placeholder="Ex: Informática" />
-                  </div>
-                </>
-              )}
-
-              {/* --- ABA: TABELA DE PREÇO --- */}
-              {abaAtiva === 'Tabela de preço' && (
-                <>
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label>Preço de Custo (R$)</label>
-                      <input type="number" step="0.01" value={custo} onChange={e => setCusto(e.target.value)} placeholder="0.00" />
-                    </div>
-                    <div className="form-group">
-                      <label>Margem de Lucro (%)</label>
-                      <input type="number" step="0.01" value={margemLucro} onChange={e => setMargemLucro(e.target.value)} placeholder="0.00" />
-                    </div>
-                    <div className="form-group">
-                      <label>Preço de Venda (R$) *</label>
-                      <input type="number" step="0.01" value={preco} onChange={e => setPreco(e.target.value)} required placeholder="0.00" />
-                    </div>
-                  </div>
-
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label>Preço Mínimo Permitido (R$)</label>
-                      <input type="number" step="0.01" value={precoMinimo} onChange={e => setPrecoMinimo(e.target.value)} placeholder="0.00" />
-                    </div>
-                    <div className="form-group">
-                      <label>Preço para Atacado (R$)</label>
-                      <input type="number" step="0.01" value={precoAtacado} onChange={e => setPrecoAtacado(e.target.value)} placeholder="0.00" />
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {/* MENSAGEM PARA AS OUTRAS ABAS (Somente se não for 'Dados' e nem 'Tabela de preço') */}
-              {abaAtiva !== 'Dados' && abaAtiva !== 'Tabela de preço' && (
-                <div className="aba-placeholder">
-                  Configurações da aba <strong>{abaAtiva}</strong> em desenvolvimento...
-                </div>
-              )}
-
-              {/* Botões de Salvar/Cancelar */}
-              <div className="modal-actions">
-                <button type="button" className="btn-cancel" onClick={onClose}>Cancelar</button>
-                <button type="submit" className="btn-save">Salvar Produto</button>
-              </div>
-
-            </form>
-          </div>
-
-        </div>
-      </div>
-    </Draggable>
   );
 }
 

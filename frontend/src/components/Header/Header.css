@@ -1,0 +1,80 @@
+.app-header {
+  background-color: #2c3e50;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  min-height: 60px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  flex-wrap: wrap;
+  gap: 15px;
+  z-index: 50;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 20px;
+}
+
+.nav-menu {
+  display: flex;
+  flex: 1;
+  font-size: 15px;
+  flex-wrap: wrap;
+}
+
+.dropdown-container {
+  position: relative;
+  cursor: pointer;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  color: #333;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-radius: 4px;
+  min-width: 220px;
+  z-index: 1001;
+}
+
+.dropdown-item {
+  padding: 12px 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-badge {
+  font-size: 14px;
+  background-color: rgba(255,255,255,0.1);
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+
+.logout-icon {
+  cursor: pointer;
+  color: #ff6b6b;
+  transition: opacity 0.2s;
+}
+
+.logout-icon:hover { opacity: 0.8; }

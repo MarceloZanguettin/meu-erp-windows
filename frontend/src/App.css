@@ -1,52 +1,11 @@
-/* --- TELA DE LOGIN --- */
-.login-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  width: 100%;
-  background-color: #f0f2f5;
-  padding: 20px;
-}
-
-.login-box {
-  background: white;
-  padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  width: 100%;
-  max-width: 350px;
-}
-
 /* --- TELA PRINCIPAL DO ERP --- */
 .app-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  width: 100%;
+  width: 100vw;
   background-color: #f9f9f9;
   padding-bottom: 45px; /* Espaço para a barra de tarefas */
-}
-
-/* Header Responsivo */
-.app-header {
-  background-color: #2c3e50;
-  color: white;
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  min-height: 60px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  flex-wrap: wrap;
-  gap: 15px;
-  z-index: 50;
-}
-
-.nav-menu {
-  display: flex;
-  flex: 1;
-  font-size: 15px;
-  flex-wrap: wrap;
 }
 
 /* Centralização do conteúdo principal (Fundo) */
@@ -68,163 +27,14 @@
   max-width: 600px;
 }
 
-/* --- ESTILOS DE MÚLTIPLAS JANELAS (TIPO WINDOWS) --- */
-.floating-window {
-  position: absolute; /* Mudamos de fixed para absolute */
-  background-color: white;
-  padding: 0;
-  border-radius: 8px;
-  width: 100%;
-  max-width: 500px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  z-index: 100;
-  border: 1px solid #ccc;
-  display: flex;
-  flex-direction: column;
+.welcome-box h1 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+  margin-top: 0;
+  font-size: 28px;
 }
 
-.window-header {
-  background-color: #2c3e50;
-  color: white;
-  padding: 10px 15px;
-  border-top-left-radius: 7px;
-  border-top-right-radius: 7px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: bold;
-  cursor: grab; /* Mostra o ícone de "mãozinha" para indicar que pode arrastar */
+.welcome-box p {
+  color: #666;
+  margin: 0;
 }
-
-.window-header:active {
-  cursor: grabbing; /* Mãozinha fechada ao clicar e segurar */
-}
-
-.window-controls {
-  display: flex;
-  gap: 10px;
-}
-
-.window-btn {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
-}
-
-.window-btn:hover {
-  opacity: 0.7;
-}
-
-.window-body {
-  padding: 20px;
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-/* Estilos do Formulário dentro da Janela */
-.form-group {
-  margin-bottom: 15px;
-  text-align: left;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  color: #444;
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.form-group input, 
-.form-group textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: 14px;
-}
-
-.form-group input:focus, 
-.form-group textarea:focus {
-  outline: none;
-  border-color: #2c3e50;
-}
-
-.form-row {
-  display: flex;
-  gap: 15px;
-}
-
-.form-row .form-group {
-  flex: 1;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 25px;
-}
-
-.btn-cancel {
-  background-color: #e0e0e0;
-  color: #333;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.btn-cancel:hover { background-color: #ccc; }
-
-.btn-save {
-  background-color: #2c3e50;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.btn-save:hover { background-color: #1a252f; }
-
-/* --- BARRA DE TAREFAS NO RODAPÉ --- */
-.taskbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #1a252f;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  gap: 10px;
-  z-index: 1000;
-  overflow-x: auto;
-}
-
-.taskbar-item {
-  background-color: #34495e;
-  color: white;
-  border: 1px solid #2c3e50;
-  padding: 5px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  white-space: nowrap;
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.taskbar-item:hover { background-color: #3d566e; }
-
-.taskbar-item.minimized { opacity: 0.6; }
-

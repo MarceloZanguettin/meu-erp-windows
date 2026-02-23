@@ -1,169 +1,126 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ShoppingCart, Server, Plus, CheckCircle, AlertTriangle } from 'lucide-react';
+import { ShoppingCart, Server, Plus, CheckCircle, AlertTriangle, User, Lock, LogOut, ChevronDown } from 'lucide-react';
 
-// A API FastAPI roda na porta 8050, conforme definido no main.py
-const API_URL = 'http://localhost:8050'; 
+const API_URL = 'http://localhost:8050';
 
-function App() {
-  const [serverStatus, setServerStatus] = useState({ status: 'Verificando...', msg: '' });
-  const [clienteId, setClienteId] = useState('');
-  const [produtoId, setProdutoId] = useState('');
-  const [quantidade, setQuantidade] = useState(1);
-  const [itensPedido, setItensPedido] = useState([]);
-  const [mensagem, setMensagem] = useState(null);
+// --- COMPONENTE DE DROPDOWN (MENU EM CASCATA) ---
+function Dropdown({ title, items }) {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div 
+      onMouseEnter={() => setIsOpen(true)} 
+      onMouseLeave={() => setIsOpen(false)}
+      style={{ position: 'relative', cursor: 'pointer', padding: '15px 20px', display: 'flex', alignItems: 'center', gap: '5px' }}
+    >
+      {title} {items && items.length > 0 && <ChevronDown size={14} />}
+      
+      {isOpen && items && items.length > 0 && (
+        <div style={{ position: 'absolute', top: '100%', left: 0, backgroundColor: 'white', color: '#333', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', borderRadius: '4px', minWidth: '220px', zIndex: 10 }}>
+          {items.map((item, index) => (
+            <div 
+              key={index} 
+              style={{ padding: '12px 15px', borderBottom: index < items.length - 1 ? '1px solid #eee' : 'none', cursor: 'pointer' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#f0f0f0'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+            >
+              {item}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
-  // Verifica o status do servidor ao carregar a página
-  useEffect(() => {
-    axios.get(`${API_URL}/api/status`)
-      .then(response => {
-        setServerStatus(response.data);
-      })
-      .catch(error => {
-        setServerStatus({ status: 'Offline', msg: 'Não foi possível conectar ao servidor backend.' });
-      });
-  }, []);
+// --- TELA DE LOGIN ---
+function LoginScreen({ onLoginSuccess }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const adicionarItem = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (!produtoId || quantidade <= 0) return;
-    
-    setItensPedido([
-      ...itensPedido, 
-      { produto_id: parseInt(produtoId), quantidade: parseInt(quantidade) }
-    ]);
-    setProdutoId('');
-    setQuantidade(1);
-  };
-
-  const realizarVenda = async () => {
-    if (!clienteId || itensPedido.length === 0) {
-      setMensagem({ tipo: 'erro', texto: 'Informe o ID do cliente e adicione pelo menos um item.' });
-      return;
-    }
-
-    // Estrutura exigida pelo schema PedidoCreate do backend
-    const payload = {
-      cliente_id: parseInt(clienteId),
-      itens: itensPedido,
-      total: 0 // O backend calcula o total real, mas o schema exige esse campo
-    };
-
     try {
-      const response = await axios.post(`${API_URL}/pedidos/`, payload);
-      setMensagem({ tipo: 'sucesso', texto: `Venda ${response.data.pedido_id} realizada! Total: R$ ${response.data.total}` });
-      setItensPedido([]);
-      setClienteId('');
-    } catch (error) {
-      const erroMsg = error.response?.data?.detail || 'Erro ao realizar a venda.';
-      setMensagem({ tipo: 'erro', texto: erroMsg });
+      const res = await axios.post(`${API_URL}/api/login`, { username, password });
+      onLoginSuccess(res.data); // Passa os dados do usuário logado para o App
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Erro ao conectar ao servidor');
     }
   };
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto' }}>
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ccc', paddingBottom: '10px' }}>
-        <h1>Meu ERP - PDV</h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: serverStatus.status === 'Online' ? 'green' : 'red' }}>
-          <Server size={20} />
-          <span>{serverStatus.status}</span>
+    <div style={{ display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f0f2f5' }}>
+      <div style={{ background: 'white', padding: '40px', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', width: '350px' }}>
+        <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>Meu ERP</h2>
+        {error && <div style={{ color: '#721c24', backgroundColor: '#f8d7da', padding: '10px', borderRadius: '4px', marginBottom: '15px', textAlign: 'center', fontSize: '14px' }}>{error}</div>}
+        
+        <form onSubmit={handleLogin}>
+          <div style={{ marginBottom: '15px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', color: '#555' }}>Usuário</label>
+            <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #ccc', borderRadius: '4px', padding: '8px' }}>
+              <User size={18} style={{ margin: '0 10px', color: '#888' }} />
+              <input type="text" value={username} onChange={e => setUsername(e.target.value)} style={{ border: 'none', outline: 'none', width: '100%' }} required />
+            </div>
+          </div>
+          <div style={{ marginBottom: '25px' }}>
+            <label style={{ display: 'block', marginBottom: '5px', color: '#555' }}>Senha</label>
+            <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #ccc', borderRadius: '4px', padding: '8px' }}>
+              <Lock size={18} style={{ margin: '0 10px', color: '#888' }} />
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)} style={{ border: 'none', outline: 'none', width: '100%' }} required />
+            </div>
+          </div>
+          <button type="submit" style={{ width: '100%', padding: '12px', backgroundColor: '#2c3e50', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>Entrar</button>
+        </form>
+        <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '12px', color: '#888' }}>Use <strong>admin</strong> / <strong>admin</strong> para o primeiro acesso.</p>
+      </div>
+    </div>
+  );
+}
+
+// --- TELA PRINCIPAL (APP COMPLETO) ---
+function App() {
+  const [usuario, setUsuario] = useState(null);
+
+  // Se o usuário não estiver logado, exibe apenas a tela de Login
+  if (!usuario) {
+    return <LoginScreen onLoginSuccess={setUsuario} />;
+  }
+
+  // Se logado, renderiza o sistema completo
+  return (
+    <div style={{ fontFamily: 'sans-serif', backgroundColor: '#f9f9f9', minHeight: '100vh' }}>
+      
+      {/* TOOLBAR SUPERIOR */}
+      <header style={{ backgroundColor: '#2c3e50', color: 'white', display: 'flex', alignItems: 'center', padding: '0 20px', height: '60px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}>
+        <h2 style={{ margin: 0, marginRight: '40px', fontSize: '20px' }}>Meu ERP</h2>
+        
+        {/* Abas com Menu Cascata */}
+        <div style={{ display: 'flex', flex: 1, fontSize: '15px' }}>
+          <Dropdown title="Cadastro" items={['Cadastrar novos produtos', 'Novos clientes', 'Novos fornecedores', 'Novos transportadores', 'Nova condição de pagamento']} />
+          <Dropdown title="Estoque" items={['Entrada Produto', 'Entrada Matéria Prima', 'Saída Produto', 'Produção para estoque']} />
+          <Dropdown title="Fluxo de Trabalho" items={[]} /> {/* Vazio pois não há cascata */}
+          <Dropdown title="Pedidos" items={['Novo Orçamento', 'Novo Pré-Pedido']} />
+        </div>
+
+        {/* Info do Usuário e Logout */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <span style={{ fontSize: '14px', backgroundColor: 'rgba(255,255,255,0.1)', padding: '5px 10px', borderRadius: '20px' }}>
+            Olá, {usuario.username} ({usuario.permissao})
+          </span>
+          <LogOut size={20} style={{ cursor: 'pointer', color: '#ff6b6b' }} onClick={() => setUsuario(null)} title="Sair do sistema" />
         </div>
       </header>
 
-      {mensagem && (
-        <div style={{ 
-          padding: '10px', 
-          marginTop: '20px', 
-          backgroundColor: mensagem.tipo === 'sucesso' ? '#d4edda' : '#f8d7da',
-          color: mensagem.tipo === 'sucesso' ? '#155724' : '#721c24',
-          borderRadius: '5px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px'
-        }}>
-          {mensagem.tipo === 'sucesso' ? <CheckCircle /> : <AlertTriangle />}
-          {mensagem.texto}
-        </div>
-      )}
-
-      <main style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
-        {/* Formulário de Adição de Itens */}
-        <div style={{ flex: 1, padding: '20px', border: '1px solid #eee', borderRadius: '8px' }}>
-          <h2>Nova Venda</h2>
-          
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{ display: 'block', marginBottom: '5px' }}>ID do Cliente:</label>
-            <input 
-              type="number" 
-              value={clienteId} 
-              onChange={e => setClienteId(e.target.value)} 
-              style={{ width: '100%', padding: '8px' }}
-              placeholder="Ex: 1"
-            />
-          </div>
-
-          <form onSubmit={adicionarItem} style={{ display: 'flex', gap: '10px', alignItems: 'flex-end', backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '5px' }}>
-            <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', marginBottom: '5px' }}>ID do Produto:</label>
-              <input 
-                type="number" 
-                value={produtoId} 
-                onChange={e => setProdutoId(e.target.value)} 
-                style={{ width: '100%', padding: '8px' }}
-                placeholder="Ex: 10"
-              />
-            </div>
-            <div style={{ width: '100px' }}>
-              <label style={{ display: 'block', marginBottom: '5px' }}>Qtd:</label>
-              <input 
-                type="number" 
-                min="1"
-                value={quantidade} 
-                onChange={e => setQuantidade(e.target.value)} 
-                style={{ width: '100%', padding: '8px' }}
-              />
-            </div>
-            <button type="submit" style={{ padding: '9px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <Plus size={16} /> Add
-            </button>
-          </form>
-        </div>
-
-        {/* Carrinho / Resumo do Pedido */}
-        <div style={{ flex: 1, padding: '20px', border: '1px solid #eee', borderRadius: '8px' }}>
-          <h2>Carrinho <ShoppingCart size={20} /></h2>
-          {itensPedido.length === 0 ? (
-            <p style={{ color: '#888' }}>Nenhum item adicionado.</p>
-          ) : (
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-              {itensPedido.map((item, index) => (
-                <li key={index} style={{ padding: '10px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between' }}>
-                  <span>Produto ID: {item.produto_id}</span>
-                  <strong>{item.quantidade}x</strong>
-                </li>
-              ))}
-            </ul>
-          )}
-
-          <button 
-            onClick={realizarVenda}
-            disabled={itensPedido.length === 0}
-            style={{ 
-              width: '100%', 
-              padding: '12px', 
-              marginTop: '20px', 
-              backgroundColor: itensPedido.length === 0 ? '#ccc' : '#007bff', 
-              color: 'white', 
-              border: 'none', 
-              borderRadius: '5px',
-              cursor: itensPedido.length === 0 ? 'not-allowed' : 'pointer',
-              fontWeight: 'bold'
-            }}
-          >
-            Finalizar Venda
-          </button>
+      {/* ÁREA DE TRABALHO / TELA DE FUNDO */}
+      <main style={{ padding: '40px', maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ backgroundColor: 'white', padding: '30px', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', textAlign: 'center' }}>
+            <h1 style={{ color: '#2c3e50' }}>Bem-vindo ao Sistema!</h1>
+            <p style={{ color: '#666' }}>Utilize a barra de ferramentas acima para navegar nas rotinas.</p>
+            {/* Aqui no futuro nós trocaremos as telas dependendo do menu clicado */}
         </div>
       </main>
+
     </div>
   );
 }

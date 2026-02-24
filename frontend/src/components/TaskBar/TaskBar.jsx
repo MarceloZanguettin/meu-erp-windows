@@ -1,5 +1,5 @@
 import React from 'react';
-import './Taskbar.css';
+import './TaskBar.css';
 
 export default function Taskbar({ janelas, alternarMinimizar }) {
   // Se não houver nenhuma janela, a barra inferior nem é exibida

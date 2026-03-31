@@ -31,7 +31,7 @@ function Dropdown({ title, items }) {
   );
 }
 
-export default function Header({ usuario, setUsuario, abrirNovaJanelaProduto }) {
+export default function Header({ usuario, setUsuario, abrirNovaJanelaProduto, abrirNovaJanelaFluxoTrabalho, abrirNovaJanelaFinanceiroAgrupado }) {
   return (
     <header className="app-header">
       <h2 className="header-title">Meu ERP</h2>
@@ -44,6 +44,10 @@ export default function Header({ usuario, setUsuario, abrirNovaJanelaProduto }) 
         ]} />
         <Dropdown title="Estoque" items={['Entrada Produto', 'Saída Produto']} />
         <Dropdown title="Pedidos" items={['Novo Orçamento', 'Novo Pré-Pedido']} />
+        <Dropdown title="Financeiro" items={[
+          { label: 'Fluxo de Trabalho', onClick: abrirNovaJanelaFluxoTrabalho },
+          { label: 'Financeiro Agrupado', onClick: abrirNovaJanelaFinanceiroAgrupado }
+        ]} />
       </div>
 
       <div className="user-info">

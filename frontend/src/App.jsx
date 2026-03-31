@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import './App.css';
 
 // Importação dos Módulos Separados (Componentes)
-import LoginScreen from './components/LoginScreen/LoginScreen.jsx';
-import Header from './components/Header/Header.jsx';
-import Taskbar from './components/Taskbar/Taskbar.jsx';
-import ProdutoWindow from './components/ProductWindow/ProductWindow.jsx';
+import LoginScreen from './Components/LoginScreen/LoginScreen.jsx';
+import Header from './Components/Header/Header.jsx';
+import Taskbar from './Components/Taskbar/Taskbar.jsx';
+import ProdutoWindow from './Components/ProductWindow/ProductWindow.jsx';
+import FluxoTrabalhoWindow from './Components/FluxoTrabalhoWindow/FluxoTrabalhoWindow.jsx';
+import FinanceiroAgrupadoWindow from './Components/FinanceiroAgrupadoWindow/FinanceiroAgrupadoWindow.jsx';
 
 // --- TELA PRINCIPAL DO ERP ---
 function App() {
@@ -18,6 +20,26 @@ function App() {
       id: Date.now(),
       tipo: 'produto',
       titulo: 'Novo Produto',
+      minimizada: false
+    };
+    setJanelas([...janelas, novaJanela]);
+  };
+
+  const abrirNovaJanelaFluxoTrabalho = () => {
+    const novaJanela = {
+      id: Date.now(),
+      tipo: 'fluxoTrabalho',
+      titulo: 'Fluxo de Trabalho',
+      minimizada: false
+    };
+    setJanelas([...janelas, novaJanela]);
+  };
+
+  const abrirNovaJanelaFinanceiroAgrupado = () => {
+    const novaJanela = {
+      id: Date.now(),
+      tipo: 'financeiroAgrupado',
+      titulo: 'Financeiro Agrupado',
       minimizada: false
     };
     setJanelas([...janelas, novaJanela]);
@@ -46,10 +68,12 @@ function App() {
     <div className="app-wrapper">
       
       {/* Cabeçalho Injetado */}
-      <Header 
-        usuario={usuario} 
-        setUsuario={setUsuario} 
-        abrirNovaJanelaProduto={abrirNovaJanelaProduto} 
+      <Header
+        usuario={usuario}
+        setUsuario={setUsuario}
+        abrirNovaJanelaProduto={abrirNovaJanelaProduto}
+        abrirNovaJanelaFluxoTrabalho={abrirNovaJanelaFluxoTrabalho}
+        abrirNovaJanelaFinanceiroAgrupado={abrirNovaJanelaFinanceiroAgrupado}
       />
 
       {/* Conteúdo Central */}
@@ -66,14 +90,37 @@ function App() {
 
         if (janela.tipo === 'produto') {
           return (
-            <ProdutoWindow 
-              key={janela.id} 
+            <ProdutoWindow
+              key={janela.id}
               id={janela.id}
               onClose={() => fecharJanela(janela.id)}
               onMinimize={() => alternarMinimizar(janela.id)}
             />
           );
         }
+
+        if (janela.tipo === 'fluxoTrabalho') {
+          return (
+            <FluxoTrabalhoWindow
+              key={janela.id}
+              id={janela.id}
+              onClose={() => fecharJanela(janela.id)}
+              onMinimize={() => alternarMinimizar(janela.id)}
+            />
+          );
+        }
+
+        if (janela.tipo === 'financeiroAgrupado') {
+          return (
+            <FinanceiroAgrupadoWindow
+              key={janela.id}
+              id={janela.id}
+              onClose={() => fecharJanela(janela.id)}
+              onMinimize={() => alternarMinimizar(janela.id)}
+            />
+          );
+        }
+
         return null;
       })}
 

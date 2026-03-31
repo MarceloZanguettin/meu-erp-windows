@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find 'D:\\\\Projetos VS Code\\\\ERP em Python\\\\meu-erp-windows' -type f -name *financial* -o -name *payment* -o -name *conta* -o -name *banco*)"
+    ]
+  }
+}

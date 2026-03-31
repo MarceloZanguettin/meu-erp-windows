@@ -1,17 +1,26 @@
 /* --- ESTILOS DE MÚLTIPLAS JANELAS (TIPO WINDOWS) --- */
 .floating-window {
-  position: absolute; 
+  position: absolute;
   background-color: white;
   padding: 0;
   border-radius: 8px;
-  width: 100%;
-  max-width: 500px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   z-index: 100;
   border: 1px solid #ccc;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
+
+/* --- HANDLES DE RESIZE (compartilhado por todas as janelas) --- */
+.win-rz {
+  position: absolute;
+  z-index: 10;
+}
+.win-rz-n { top: 0;    left: 6px;  right: 6px;  height: 5px; cursor: n-resize; }
+.win-rz-s { bottom: 0; left: 6px;  right: 6px;  height: 5px; cursor: s-resize; }
+.win-rz-e { top: 6px;  right: 0;   bottom: 6px; width:  5px; cursor: e-resize; }
+.win-rz-w { top: 6px;  left: 0;    bottom: 6px; width:  5px; cursor: w-resize; }
 
 .window-header {
   background-color: #2c3e50;
@@ -52,10 +61,49 @@
   padding: 0;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* --- NOVA SEÇÃO DE CABEÇALHO DO PRODUTO --- */
+.product-top-section {
+  display: flex;
+  gap: 15px;
+  padding: 15px 20px;
+  background-color: #f8fafc; /* Fundo levemente diferente para destacar */
+  border-bottom: 1px solid #cbd5e1;
+  align-items: flex-end; /* Alinha o botão com os inputs por baixo */
+}
+
+.search-container {
+  display: flex;
+  align-items: flex-end;
+}
+
+.btn-search {
+  height: 38px; /* Mesma altura aproximada dos inputs */
+  padding: 0 15px;
+  background-color: #e2e8f0;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
+}
+
+.btn-search:hover {
+  background-color: #cbd5e1;
 }
 
 /* Estilos do Formulário dentro da Janela */
 .form-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 15px;
   text-align: left;
 }
@@ -71,11 +119,13 @@
 .form-group input, 
 .form-group textarea {
   width: 100%;
+  color: #2c3e50;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-family: inherit;
   font-size: 14px;
+  background-color: whitesmoke;
 }
 
 .form-group input:focus, 
@@ -160,7 +210,7 @@
 .tab-content {
   padding: 20px;
   overflow-y: auto;
-  max-height: 55vh;
+  flex: 1;
 }
 
 .aba-placeholder {

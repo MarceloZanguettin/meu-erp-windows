@@ -10,7 +10,7 @@ from database import engine, Base
 from models import tabelas
 
 # Importação dos Controladores (MVC)
-from controllers import auth_controller, pedido_controller, sistema_controller
+from controllers import auth_controller, pedido_controller, sistema_controller, financeiro_controller
 
 # Cria as tabelas no banco de dados
 tabelas.Base.metadata.create_all(bind=engine)
@@ -31,6 +31,7 @@ app.add_middleware(
 app.include_router(auth_controller.router)
 app.include_router(pedido_controller.router)
 app.include_router(sistema_controller.router)
+app.include_router(financeiro_controller.router)
 
 # Funções de Inicialização (Eel e DB)
 def start_eel():

@@ -7,7 +7,7 @@ import Header from './Components/Header/Header.jsx';
 import Taskbar from './Components/Taskbar/Taskbar.jsx';
 import ProdutoWindow from './Components/ProductWindow/ProductWindow.jsx';
 import FluxoTrabalhoWindow from './Components/FluxoTrabalhoWindow/FluxoTrabalhoWindow.jsx';
-import FinanceiroAgrupadoWindow from './Components/FinanceiroAgrupadoWindow/FinanceiroAgrupadoWindow.jsx';
+import FinanceiroAgrupadoWindow from './Components/FinanceiroAgrupadoWindow/index.jsx';
 
 // --- TELA PRINCIPAL DO ERP ---
 function App() {

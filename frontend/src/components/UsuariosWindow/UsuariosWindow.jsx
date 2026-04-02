@@ -90,7 +90,7 @@ function ModalPerfil({ editandoId, form, setForm, onSalvar, onFechar }) {
   );
 }
 
-export default function UsuariosWindow({ id, onClose, onMinimize }) {
+export default function UsuariosWindow({ id, onClose, onMinimize, abrirJanela }) {
   const [abaAtiva, setAbaAtiva] = useState('Usuários');
 
   const usuarios = useCrud('/usuarios/', FORM_USER_VAZIO);
@@ -127,7 +127,7 @@ export default function UsuariosWindow({ id, onClose, onMinimize }) {
       <div className="tab-content usuario-tab-content">
         {abaAtiva === 'Usuários' && (
           <div className="usuario-section">
-            <BarraFerramentas busca={usuarios.busca} setBusca={usuarios.setBusca} onAdicionar={usuarios.abrirAdicionar} placeholder="Buscar usuário..." />
+            <BarraFerramentas busca={usuarios.busca} setBusca={usuarios.setBusca} onAdicionar={() => abrirJanela('novoUsuario', { onSalvar: usuarios.recarregar })} placeholder="Buscar usuário..." />
             {usuarios.loading ? (
               <div className="usuario-loading">Carregando...</div>
             ) : (
@@ -144,7 +144,7 @@ export default function UsuariosWindow({ id, onClose, onMinimize }) {
 
         {abaAtiva === 'Perfis de Acesso' && (
           <div className="usuario-section">
-            <BarraFerramentas busca={perfis.busca} setBusca={perfis.setBusca} onAdicionar={perfis.abrirAdicionar} placeholder="Buscar perfil..." />
+            <BarraFerramentas busca={perfis.busca} setBusca={perfis.setBusca} onAdicionar={() => abrirJanela('novoPerfilAcesso', { onSalvar: perfis.recarregar })} placeholder="Buscar perfil..." />
             {perfis.loading ? (
               <div className="usuario-loading">Carregando...</div>
             ) : (

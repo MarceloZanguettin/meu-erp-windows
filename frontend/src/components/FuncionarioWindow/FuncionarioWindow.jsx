@@ -30,11 +30,11 @@ const fmtMoeda = (v) => v !== '' && v !== null && v !== undefined
   ? Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
   : '-';
 
-export default function FuncionarioWindow({ id, onClose, onMinimize }) {
+export default function FuncionarioWindow({ id, onClose, onMinimize, abrirJanela }) {
   const {
     itens, loading, modal, editandoId, form, setForm,
     busca, setBusca,
-    abrirAdicionar, abrirEditar, salvar, excluir, fecharModal,
+    abrirAdicionar, abrirEditar, salvar, excluir, fecharModal, recarregar,
   } = useCrud('/cadastros/funcionarios', FORM_VAZIO);
 
   const itensFiltrados = itens.filter(i =>
@@ -50,7 +50,7 @@ export default function FuncionarioWindow({ id, onClose, onMinimize }) {
   return (
     <JanelaBase id={id} titulo="Funcionários" onClose={onClose} onMinimize={onMinimize} largura={1000} altura={620}>
       <div className="func-body">
-        <BarraFerramentas busca={busca} setBusca={setBusca} onAdicionar={abrirAdicionar} placeholder="Buscar por nome, CPF ou cargo..." />
+        <BarraFerramentas busca={busca} setBusca={setBusca} onAdicionar={() => abrirJanela('novoFuncionario', { onSalvar: recarregar })} placeholder="Buscar por nome, CPF ou cargo..." />
         {loading ? (
           <div className="func-loading">Carregando...</div>
         ) : (

@@ -18,7 +18,7 @@ const BADGE_STATUS = {
   cancelado:  'badge-cancelado',
 };
 
-export default function VendasWindow({ id, onClose, onMinimize }) {
+export default function VendasWindow({ id, onClose, onMinimize, abrirJanela }) {
   const [abaAtiva, setAbaAtiva] = useState('Orçamentos');
   const data = useVendasData();
 
@@ -37,7 +37,7 @@ export default function VendasWindow({ id, onClose, onMinimize }) {
           <div className="vendas-section">
             <div className="vendas-toolbar">
               <span className="vendas-count">{data.orcamentos.length} orçamento(s)</span>
-              <button className="btn-adicionar" onClick={data.abrirNovoOrc}>+ Novo Orçamento</button>
+              <button className="btn-adicionar" onClick={() => abrirJanela('novoOrcamento', { onSalvar: data.carregarOrcamentos })}>+ Novo Orçamento</button>
             </div>
             {data.loadingOrc ? (
               <div className="vendas-loading">Carregando...</div>
@@ -97,7 +97,7 @@ export default function VendasWindow({ id, onClose, onMinimize }) {
           <div className="vendas-section">
             <div className="vendas-toolbar">
               <span className="vendas-count">{data.pedidos.length} pedido(s)</span>
-              <button className="btn-adicionar" onClick={data.abrirNovoPed}>+ Novo Pedido</button>
+              <button className="btn-adicionar" onClick={() => abrirJanela('novoPedidoVenda', { onSalvar: data.carregarPedidos })}>+ Novo Pedido</button>
             </div>
             {data.loadingPed ? (
               <div className="vendas-loading">Carregando...</div>

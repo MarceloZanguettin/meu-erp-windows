@@ -29,7 +29,7 @@ import ModalLancamento     from './components/ModalLancamento';
  * useScrollInfinito recebe os setters do hook de dados por injeção,
  * evitando estado duplicado.
  */
-export default function FinanceiroAgrupadoWindow({ id, onClose, onMinimize }) {
+export default function FinanceiroAgrupadoWindow({ id, onClose, onMinimize, abrirJanela }) {
   const nodeRef      = useRef(null);
   const preMaxRef    = useRef(null);
   const randomOffset = (id % 10) * 15;
@@ -104,9 +104,9 @@ export default function FinanceiroAgrupadoWindow({ id, onClose, onMinimize }) {
         <div className="fagrup-header">
           <span>Financeiro Agrupado</span>
           <div className="fagrup-controls">
-            <button className="fagrup-btn" onMouseDown={e => e.stopPropagation()} onClick={onMinimize}      title="Minimizar">—</button>
-            <button className="fagrup-btn" onMouseDown={e => e.stopPropagation()} onClick={toggleMaximizar} title={maximizada ? 'Restaurar' : 'Maximizar'}>{maximizada ? '❐' : '□'}</button>
-            <button className="fagrup-btn" onMouseDown={e => e.stopPropagation()} onClick={onClose}         title="Fechar">✕</button>
+            <button className="fagrup-btn fagrup-btn-minimize" onMouseDown={e => e.stopPropagation()} onClick={onMinimize}      title="Minimizar">—</button>
+            <button className="fagrup-btn fagrup-btn-maximize" onMouseDown={e => e.stopPropagation()} onClick={toggleMaximizar} title={maximizada ? 'Restaurar' : 'Maximizar'}>{maximizada ? '❐' : '□'}</button>
+            <button className="fagrup-btn fagrup-btn-close"    onMouseDown={e => e.stopPropagation()} onClick={onClose}         title="Fechar">✕</button>
           </div>
         </div>
 
@@ -118,7 +118,13 @@ export default function FinanceiroAgrupadoWindow({ id, onClose, onMinimize }) {
               empresa={emp}
               contasPagar={dados.contasPagar}
               contasReceber={dados.contasReceber}
-              onAdicionar={dados.abrirAdicionar}
+              onAdicionar={(tipo, empresaId) =>
+                abrirJanela('novoLancamentoFinanceiro', {
+                  tipo,
+                  empresaIdInicial: String(empresaId),
+                  onSalvar: dados.recarregar,
+                })
+              }
             />
           ))}
         </div>

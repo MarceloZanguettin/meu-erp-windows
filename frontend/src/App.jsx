@@ -44,6 +44,8 @@ export default function App() {
             id={janela.id}
             onClose={() => fecharJanela(janela.id)}
             onMinimize={() => alternarMinimizar(janela.id)}
+            abrirJanela={abrirJanela}
+            {...(janela.extraProps || {})}
           />
         );
       })}

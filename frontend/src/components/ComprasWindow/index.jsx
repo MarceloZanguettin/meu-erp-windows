@@ -19,7 +19,7 @@ const BADGE_STATUS = {
   recebido:  'badge-recebido',
 };
 
-export default function ComprasWindow({ id, onClose, onMinimize }) {
+export default function ComprasWindow({ id, onClose, onMinimize, abrirJanela }) {
   const [abaAtiva, setAbaAtiva] = useState('Solicitações');
   const data = useComprasData();
 
@@ -38,7 +38,7 @@ export default function ComprasWindow({ id, onClose, onMinimize }) {
           <div className="compras-section">
             <div className="compras-toolbar">
               <span className="compras-count">{data.solicitacoes.length} solicitação(ões)</span>
-              <button className="btn-adicionar" onClick={data.abrirNovaSolic}>+ Nova Solicitação</button>
+              <button className="btn-adicionar" onClick={() => abrirJanela('novaSolicitacaoCompra', { onSalvar: data.carregarSolicitacoes })}>+ Nova Solicitação</button>
             </div>
             {data.loadingSolic ? (
               <div className="compras-loading">Carregando...</div>
@@ -90,7 +90,7 @@ export default function ComprasWindow({ id, onClose, onMinimize }) {
           <div className="compras-section">
             <div className="compras-toolbar">
               <span className="compras-count">{data.pedidos.length} pedido(s)</span>
-              <button className="btn-adicionar" onClick={data.abrirNovoPedido}>+ Novo Pedido</button>
+              <button className="btn-adicionar" onClick={() => abrirJanela('novoPedidoCompra', { onSalvar: data.carregarPedidos })}>+ Novo Pedido</button>
             </div>
             {data.loadingPedidos ? (
               <div className="compras-loading">Carregando...</div>

@@ -75,5 +75,6 @@ export function useEstoqueData() {
     modalMov, setModalMov,
     formMov, setFormMov,
     abrirModalMov, salvarMovimento,
+    carregarMovimentos, carregarPosicao,
   };
 }

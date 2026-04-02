@@ -105,18 +105,20 @@ const ABAS_CONFIG = [
   },
 ];
 
-function AbaAuxiliar({ config }) {
+function AbaAuxiliar({ config, abrirJanela }) {
   const { colunas, campos, campasModal, renderCelula } = config;
-  const { itens, loading, modal, editandoId, form, setForm, busca, setBusca, abrirAdicionar, abrirEditar, salvar, excluir, fecharModal } =
+  const { itens, loading, modal, editandoId, form, setForm, busca, setBusca, abrirAdicionar, abrirEditar, salvar, excluir, fecharModal, recarregar } =
     useCrud(config.endpoint, config.formVazio);
 
   const itensFiltrados = itens.filter(i =>
     !busca || Object.values(i).some(v => String(v).toLowerCase().includes(busca.toLowerCase()))
   );
 
+  const handleAdicionar = () => abrirJanela('novaEntradaAuxiliar', { config, onSalvar: recarregar });
+
   return (
     <div className="aba-auxiliar">
-      <BarraFerramentas busca={busca} setBusca={setBusca} onAdicionar={abrirAdicionar} />
+      <BarraFerramentas busca={busca} setBusca={setBusca} onAdicionar={handleAdicionar} />
       {loading ? (
         <div className="aux-loading">Carregando...</div>
       ) : (
@@ -144,7 +146,7 @@ function AbaAuxiliar({ config }) {
   );
 }
 
-export default function TabelasAuxiliaresWindow({ id, onClose, onMinimize }) {
+export default function TabelasAuxiliaresWindow({ id, onClose, onMinimize, abrirJanela }) {
   const [abaAtiva, setAbaAtiva] = useState(ABAS_CONFIG[0].key);
   const configAtiva = ABAS_CONFIG.find(a => a.key === abaAtiva);
 
@@ -163,7 +165,7 @@ export default function TabelasAuxiliaresWindow({ id, onClose, onMinimize }) {
         ))}
       </div>
       <div className="tab-content aux-tab-content">
-        <AbaAuxiliar key={abaAtiva} config={configAtiva} />
+        <AbaAuxiliar key={abaAtiva} config={configAtiva} abrirJanela={abrirJanela} />
       </div>
     </JanelaBase>
   );

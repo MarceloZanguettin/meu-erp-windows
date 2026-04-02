@@ -139,6 +139,7 @@ export function useComprasData() {
     // modal pedido
     modalPedido, setModalPedido, editandoPedidoId, formPedido, setFormPedido, itensPedido, setItensPedido,
     abrirNovoPedido, abrirEditarPedido, salvarPedidoHandler, receberPedidoHandler, excluirPedidoHandler,
+    carregarSolicitacoes, carregarPedidos,
     ITEM_VAZIO: { descricao: '', quantidade: '', unidade: '' },
     ITEM_PEDIDO_VAZIO: { descricao: '', quantidade: '', preco_unitario: '', unidade: '' },
   };

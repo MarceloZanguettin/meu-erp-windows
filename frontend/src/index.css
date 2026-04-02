@@ -1,3 +1,6 @@
+/* Tailwind CSS — apenas utilitários (preflight desabilitado no tailwind.config.js para não quebrar CSS legado) */
+@tailwind utilities;
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

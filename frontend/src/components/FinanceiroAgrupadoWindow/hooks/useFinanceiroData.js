@@ -158,5 +158,6 @@ export function useFinanceiroData() {
     marcarPago,
     marcarRecebido,
     excluir,
+    recarregar,
   };
 }

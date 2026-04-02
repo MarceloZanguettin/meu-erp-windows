@@ -21,11 +21,11 @@ const fmtMoeda = (v) => v !== '' && v !== null && v !== undefined
   ? Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
   : '-';
 
-export default function RepresentanteWindow({ id, onClose, onMinimize }) {
+export default function RepresentanteWindow({ id, onClose, onMinimize, abrirJanela }) {
   const {
     itens, loading, modal, editandoId, form, setForm,
     busca, setBusca,
-    abrirAdicionar, abrirEditar, salvar, excluir, fecharModal,
+    abrirAdicionar, abrirEditar, salvar, excluir, fecharModal, recarregar,
   } = useCrud('/cadastros/representantes', FORM_VAZIO);
 
   const itensFiltrados = itens.filter(i =>
@@ -42,7 +42,7 @@ export default function RepresentanteWindow({ id, onClose, onMinimize }) {
   return (
     <JanelaBase id={id} titulo="Representantes" onClose={onClose} onMinimize={onMinimize} largura={920} altura={580}>
       <div className="repr-body">
-        <BarraFerramentas busca={busca} setBusca={setBusca} onAdicionar={abrirAdicionar} placeholder="Buscar por nome ou CPF/CNPJ..." />
+        <BarraFerramentas busca={busca} setBusca={setBusca} onAdicionar={() => abrirJanela('novoRepresentante', { onSalvar: recarregar })} placeholder="Buscar por nome ou CPF/CNPJ..." />
         {loading ? (
           <div className="repr-loading">Carregando...</div>
         ) : (

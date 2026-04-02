@@ -1,0 +1,4 @@
+/* shared.css — os estilos compartilhados (TabelaCrud, BarraFerramentas,
+   badges, form-group, form-grid-2, btn-adicionar, campo-busca, etc.)
+   foram consolidados em styles/global.css.
+   Este arquivo pode ser removido quando todos os imports forem atualizados. */

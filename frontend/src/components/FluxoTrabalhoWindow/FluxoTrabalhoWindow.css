@@ -1,11 +1,10 @@
+/* FluxoTrabalhoWindow — estilos específicos do módulo */
+/* Estilos globais (.tabs-header, .tab-btn, .modal-overlay, .modal-content,
+   .btn-save, .btn-cancel) vêm de styles/global.css */
+
 /* Tamanho da janela Fluxo de Trabalho — controlado via JS */
 .fluxo-window {
   /* width/height vêm do style inline do componente */
-}
-
-/* Abas com 2 colunas */
-.fluxo-tabs-header {
-  grid-template-columns: repeat(2, 1fr) !important;
 }
 
 /* Área de conteúdo da aba — ocupa o espaço restante */
@@ -238,19 +237,19 @@
 
 .fluxo-modal-body input,
 .fluxo-modal-body select {
-  padding: 8px 10px;
+  padding: 7px 10px;
   border: 1px solid #cbd5e1;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 13px;
   font-family: inherit;
-  background-color: whitesmoke;
-  color: #2c3e50;
+  background: #fff;
+  color: #213547;
 }
 
 .fluxo-modal-body input:focus,
 .fluxo-modal-body select:focus {
   outline: none;
-  border-color: #2c3e50;
+  border-color: #2563eb;
 }
 
 .fluxo-modal-footer {

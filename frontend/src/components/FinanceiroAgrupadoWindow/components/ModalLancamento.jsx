@@ -1,4 +1,5 @@
 import React from 'react';
+import Portal from '../../shared/Portal.jsx';
 
 /**
  * Modal unificado para criar ou editar um lançamento a pagar ou a receber.
@@ -24,7 +25,8 @@ export default function ModalLancamento({
   const titulo = `${editandoId ? 'Editar' : 'Novo'} Lançamento a ${tipo === 'receber' ? 'Receber' : 'Pagar'}`;
 
   return (
-    <div className="fagrup-modal-overlay">
+    <Portal>
+      <div className="fagrup-modal-overlay">
       <div className="fagrup-modal">
         <h3>{titulo}</h3>
 
@@ -96,6 +98,7 @@ export default function ModalLancamento({
           </button>
         </div>
       </div>
-    </div>
+      </div>
+    </Portal>
   );
 }

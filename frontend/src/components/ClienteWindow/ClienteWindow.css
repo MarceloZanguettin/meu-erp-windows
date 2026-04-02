@@ -1,0 +1,41 @@
+/* ClienteWindow — estilos específicos */
+/* Estilos globais (.form-grid-2, .form-group, .form-group-full, .form-group-checkbox,
+   .form-titulo, .form-acoes, .btn-save, .btn-cancel) vêm de styles/global.css */
+
+.cliente-tab-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  padding: 12px 16px;
+}
+
+.cliente-lista {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.cliente-loading {
+  padding: 30px;
+  text-align: center;
+  color: #94a3b8;
+}
+
+.cliente-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.cliente-sem-selecao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  color: #94a3b8;
+  font-style: italic;
+}

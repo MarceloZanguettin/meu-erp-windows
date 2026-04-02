@@ -81,9 +81,11 @@ export default function FinanceiroAgrupadoWindow({ id, onClose, onMinimize }) {
   }, [dados.contasPagar, dados.contasReceber]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── 4. Controller de resize de colunas ───────────────────────────────────
+  // winSize.width é passado para que as colunas reescalem ao maximizar/restaurar/resize
   const { colWidths, startColResize } = useColunaResize({
     empresas:        dados.empresas,
     contasBancarias: dados.contasBancarias,
+    wrapperWidth:    winSize.width,
   });
 
   // ── View ───────────────────────────────────────────────────────────────────

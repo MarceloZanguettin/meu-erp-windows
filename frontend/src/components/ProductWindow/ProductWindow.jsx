@@ -1,14 +1,21 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import Draggable from 'react-draggable';
 import './ProductWindow.css';
 import { useWindowResize } from '../../hooks/useWindowResize.jsx';
+import { useProdutoForm }  from './hooks/useProdutoForm.js';
 
-// Importação das Abas
-import AbaDados from './abas/AbaDados';
+import AbaDados       from './abas/AbaDados';
 import AbaTabelaPreco from './abas/AbaTabelaPreco';
+import { useState } from 'react';
+
+const ABAS = [
+  'Dados', 'Tabela de preço', 'Código de barras', 'Centro de custo',
+  'Imagem', 'Referência fornecedor', 'Composição', 'Observação',
+  'Processos', 'Regras', 'Regras cliente', 'Código alternativo', 'Conversão fornecedor',
+];
 
 export default function ProdutoWindow({ id, onClose, onMinimize }) {
-  const nodeRef = useRef(null);
+  const nodeRef  = useRef(null);
   const [abaAtiva, setAbaAtiva] = useState('Dados');
 
   const randomOffset = (id % 10) * 15;
@@ -21,54 +28,12 @@ export default function ProdutoWindow({ id, onClose, onMinimize }) {
     minH:  400,
   });
 
-  // Variáveis de Estado (Concentradas aqui e passadas para as abas)
-  const [codigo, setCodigo] = useState('');
-  const [nome, setNome] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [codigoInterno, setCodigoInterno] = useState('');
-  const [codigoFornecedor, setCodigoFornecedor] = useState('');
-  const [grupo, setGrupo] = useState('');
-  const [subgrupo, setSubgrupo] = useState('');
-  const [categoria, setCategoria] = useState('');
-  const [ncm, setNcm] = useState('');
-  const [csosn, setCsosn] = useState('');
-  const [cst, setCst] = useState('');
-  const [unidadeCompra, setUnidadeCompra] = useState('');
-  const [unidadeVenda, setUnidadeVenda] = useState('');
-  const [cfopDentro, setCfopDentro] = useState('');
-  const [cfopFora, setCfopFora] = useState('');
-  const [pesoBruto, setPesoBruto] = useState('');
-  const [pesoLiquido, setPesoLiquido] = useState('');
-
-  // Variáveis da Tabela de Preço
-  const [estoque, setEstoque] = useState('');
-  const [preco, setPreco] = useState('');
-  const [custo, setCusto] = useState('');
-  const [margemLucro, setMargemLucro] = useState('');
-  const [precoMinimo, setPrecoMinimo] = useState('');
-  const [precoAtacado, setPrecoAtacado] = useState('');
-
-  const estadosFormulario = {
-    codigo, setCodigo, nome, setNome, descricao, setDescricao,
-    codigoInterno, setCodigoInterno, codigoFornecedor, setCodigoFornecedor,
-    grupo, setGrupo, subgrupo, setSubgrupo, categoria, setCategoria,
-    ncm, setNcm, csosn, setCsosn, cst, setCst,
-    unidadeCompra, setUnidadeCompra, unidadeVenda, setUnidadeVenda,
-    cfopDentro, setCfopDentro, cfopFora, setCfopFora,
-    pesoBruto, setPesoBruto, pesoLiquido, setPesoLiquido,
-    estoque, setEstoque, preco, setPreco, custo, setCusto,
-    margemLucro, setMargemLucro, precoMinimo, setPrecoMinimo, precoAtacado, setPrecoAtacado
-  };
-
-  const abas = [
-    'Dados', 'Tabela de preço', 'Código de barras', 'Centro de custo',
-    'Imagem', 'Referência fornecedor', 'Composição', 'Observação',
-    'Processos', 'Regras', 'Regras cliente', 'Código alternativo', 'Conversão fornecedor'
-  ];
+  const { form, setField, resetForm } = useProdutoForm();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert(`Produto "${nome}" salvo com sucesso!`);
+    alert(`Produto "${form.nome}" salvo com sucesso!`);
+    resetForm();
     onClose();
   };
 
@@ -77,7 +42,7 @@ export default function ProdutoWindow({ id, onClose, onMinimize }) {
       nodeRef={nodeRef}
       handle=".window-header"
       position={winPos}
-      onDrag={(e, data) => setWinPos({ x: data.x, y: data.y })}
+      onDrag={(_e, data) => setWinPos({ x: data.x, y: data.y })}
     >
       <div
         ref={nodeRef}
@@ -90,7 +55,7 @@ export default function ProdutoWindow({ id, onClose, onMinimize }) {
           <span>Cadastro de Produto (ID: {id.toString().slice(-4)})</span>
           <div className="window-controls">
             <button type="button" className="window-btn" onMouseDown={e => e.stopPropagation()} onClick={onMinimize} title="Minimizar">—</button>
-            <button type="button" className="window-btn" onMouseDown={e => e.stopPropagation()} onClick={onClose} title="Fechar">✕</button>
+            <button type="button" className="window-btn" onMouseDown={e => e.stopPropagation()} onClick={onClose}   title="Fechar">✕</button>
           </div>
         </div>
 
@@ -106,10 +71,9 @@ export default function ProdutoWindow({ id, onClose, onMinimize }) {
               <label>Código</label>
               <input
                 type="text"
-                value={codigo}
-                onChange={e => setCodigo(e.target.value)}
+                value={form.codigo}
+                onChange={e => setField('codigo', e.target.value)}
                 placeholder="Auto"
-                title="Aceita letras, números e caracteres especiais"
               />
             </div>
 
@@ -117,8 +81,8 @@ export default function ProdutoWindow({ id, onClose, onMinimize }) {
               <label>Descrição:</label>
               <input
                 type="text"
-                value={nome}
-                onChange={e => setNome(e.target.value)}
+                value={form.nome}
+                onChange={e => setField('nome', e.target.value)}
                 required
                 placeholder="Ex: Pulverizador..."
               />
@@ -126,7 +90,7 @@ export default function ProdutoWindow({ id, onClose, onMinimize }) {
           </div>
 
           <div className="tabs-header">
-            {abas.map(aba => (
+            {ABAS.map(aba => (
               <button
                 key={aba}
                 type="button"
@@ -140,8 +104,8 @@ export default function ProdutoWindow({ id, onClose, onMinimize }) {
 
           <div className="tab-content">
             <form onSubmit={handleSubmit}>
-              {abaAtiva === 'Dados' && <AbaDados estados={estadosFormulario} />}
-              {abaAtiva === 'Tabela de preço' && <AbaTabelaPreco estados={estadosFormulario} />}
+              {abaAtiva === 'Dados'           && <AbaDados       form={form} setField={setField} />}
+              {abaAtiva === 'Tabela de preço' && <AbaTabelaPreco form={form} setField={setField} />}
               {abaAtiva !== 'Dados' && abaAtiva !== 'Tabela de preço' && (
                 <div className="aba-placeholder">
                   Configurações da aba <strong>{abaAtiva}</strong> em desenvolvimento...

@@ -1,0 +1,58 @@
+/* TabelasAuxiliaresWindow — estilos específicos */
+/* Estilos globais (.form-group, .form-grid-2, .modal-overlay, .modal-content,
+   .modal-body, .modal-actions, .btn-save, .btn-cancel) vêm de styles/global.css */
+
+/* O global.css usa flex no .tabs-header, então não é necessário override de grid */
+.aux-tab-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  padding: 12px 16px;
+}
+
+.aba-auxiliar {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.aux-loading {
+  padding: 30px;
+  text-align: center;
+  color: #94a3b8;
+}
+
+/* Modal simples */
+.modal-simples {
+  width: 480px;
+  max-width: 95vw;
+}
+
+.modal-simples-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  background-color: #2c3e50;
+  color: white;
+  padding: 12px 16px;
+  font-size: 14px;
+  border-radius: 6px 6px 0 0;
+}
+
+/* Checkbox inline específico deste módulo */
+.checkbox-inline {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}

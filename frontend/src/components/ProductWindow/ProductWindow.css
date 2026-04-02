@@ -1,78 +1,17 @@
-/* --- ESTILOS DE MÚLTIPLAS JANELAS (TIPO WINDOWS) --- */
-.floating-window {
-  position: absolute;
-  background-color: white;
-  padding: 0;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  z-index: 100;
-  border: 1px solid #ccc;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+/* ProductWindow — estilos específicos do módulo */
+/* Estilos globais (.floating-window, .window-header, .window-btn, .window-controls,
+   .window-body, .tabs-header, .tab-btn, .modal-overlay, .modal-content,
+   .modal-body, .modal-actions, .btn-save, .btn-cancel, .form-group, .form-grid-2)
+   vêm de styles/global.css */
 
-/* --- HANDLES DE RESIZE (compartilhado por todas as janelas) --- */
-.win-rz {
-  position: absolute;
-  z-index: 10;
-}
-.win-rz-n { top: 0;    left: 6px;  right: 6px;  height: 5px; cursor: n-resize; }
-.win-rz-s { bottom: 0; left: 6px;  right: 6px;  height: 5px; cursor: s-resize; }
-.win-rz-e { top: 6px;  right: 0;   bottom: 6px; width:  5px; cursor: e-resize; }
-.win-rz-w { top: 6px;  left: 0;    bottom: 6px; width:  5px; cursor: w-resize; }
-
-.window-header {
-  background-color: #2c3e50;
-  color: white;
-  padding: 10px 15px;
-  border-top-left-radius: 7px;
-  border-top-right-radius: 7px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: bold;
-  cursor: grab; 
-}
-
-.window-header:active {
-  cursor: grabbing; 
-}
-
-.window-controls {
-  display: flex;
-  gap: 10px;
-}
-
-.window-btn {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
-}
-
-.window-btn:hover {
-  opacity: 0.7;
-}
-
-.window-body {
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  overflow: hidden;
-}
-
-/* --- NOVA SEÇÃO DE CABEÇALHO DO PRODUTO --- */
+/* --- SEÇÃO SUPERIOR (busca + campos identificadores) --- */
 .product-top-section {
   display: flex;
   gap: 15px;
   padding: 15px 20px;
-  background-color: #f8fafc; /* Fundo levemente diferente para destacar */
+  background-color: #f8fafc;
   border-bottom: 1px solid #cbd5e1;
-  align-items: flex-end; /* Alinha o botão com os inputs por baixo */
+  align-items: flex-end;
 }
 
 .search-container {
@@ -81,7 +20,7 @@
 }
 
 .btn-search {
-  height: 38px; /* Mesma altura aproximada dos inputs */
+  height: 38px;
   padding: 0 15px;
   background-color: #e2e8f0;
   color: #334155;
@@ -99,41 +38,22 @@
   background-color: #cbd5e1;
 }
 
-/* Estilos do Formulário dentro da Janela */
-.form-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
-  text-align: left;
+/* --- CONTEÚDO DAS ABAS --- */
+.tab-content {
+  padding: 16px;
+  overflow-y: auto;
+  flex: 1;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  color: #444;
-  font-weight: 500;
-  font-size: 14px;
+/* Placeholder de abas não implementadas */
+.aba-placeholder {
+  text-align: center;
+  padding: 40px 20px;
+  color: #94a3b8;
+  font-style: italic;
 }
 
-.form-group input, 
-.form-group textarea {
-  width: 100%;
-  color: #2c3e50;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: 14px;
-  background-color: whitesmoke;
-}
-
-.form-group input:focus, 
-.form-group textarea:focus {
-  outline: none;
-  border-color: #2c3e50;
-}
-
+/* Linha de campos em linha */
 .form-row {
   display: flex;
   gap: 15px;
@@ -141,81 +61,4 @@
 
 .form-row .form-group {
   flex: 1;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 25px;
-}
-
-.btn-cancel, .btn-save {
-  padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  border: none;
-}
-
-.btn-cancel {
-  background-color: #e0e0e0;
-  color: #333;
-}
-.btn-cancel:hover { background-color: #ccc; }
-
-.btn-save {
-  background-color: #2c3e50;
-  color: white;
-}
-.btn-save:hover { background-color: #1a252f; }
-
-/* --- ESTILOS DAS ABAS (TABS) --- */
-.tabs-header {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr); 
-  background-color: #f1f5f9;
-  border-bottom: 1px solid #cbd5e1;
-}
-
-.tab-btn {
-  background: none;
-  border: none;
-  padding: 10px 5px; 
-  cursor: pointer;
-  font-size: 12px; 
-  border-bottom: 3px solid transparent;
-  color: #64748b;
-  font-weight: 500;
-  transition: all 0.2s;
-  text-align: center;
-  line-height: 1.2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.tab-btn:hover {
-  background-color: #e2e8f0;
-  color: #334155;
-}
-
-.tab-btn.active {
-  border-bottom: 3px solid #2c3e50;
-  color: #2c3e50;
-  background-color: white;
-  font-weight: bold;
-}
-
-.tab-content {
-  padding: 20px;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.aba-placeholder {
-  text-align: center;
-  padding: 40px 20px;
-  color: #94a3b8;
-  font-style: italic;
 }

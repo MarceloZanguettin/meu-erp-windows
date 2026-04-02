@@ -1,18 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Draggable from 'react-draggable';
-import axios from 'axios';
 import './FluxoTrabalhoWindow.css';
 import { useWindowResize } from '../../hooks/useWindowResize.jsx';
 
-import AbaContasReceber from './abas/AbaContasReceber';
-import AbaContasPagar from './abas/AbaContasPagar';
+import AbaFluxo from './abas/AbaFluxo';
 
-const API = 'http://localhost:8050';
+const ABAS = ['Contas a Receber', 'Contas a Pagar'];
 
 export default function FluxoTrabalhoWindow({ id, onClose, onMinimize }) {
-  const nodeRef = useRef(null);
-  const [abaAtiva, setAbaAtiva] = useState('Contas a Receber');
-  const [empresas, setEmpresas] = useState([]);
+  const nodeRef     = useRef(null);
+  const [abaAtiva,  setAbaAtiva]  = useState('Contas a Receber');
+  const [empresas,  setEmpresas]  = useState([]);
 
   const randomOffset = (id % 10) * 15;
   const { winPos, setWinPos, winSize, ResizeHandles } = useWindowResize({
@@ -25,8 +23,9 @@ export default function FluxoTrabalhoWindow({ id, onClose, onMinimize }) {
   });
 
   useEffect(() => {
-    axios.get(`${API}/financeiro/empresas`)
-      .then(r => setEmpresas(r.data))
+    fetch('http://localhost:8050/financeiro/empresas')
+      .then(r => r.json())
+      .then(setEmpresas)
       .catch(() => {});
   }, []);
 
@@ -35,7 +34,7 @@ export default function FluxoTrabalhoWindow({ id, onClose, onMinimize }) {
       nodeRef={nodeRef}
       handle=".window-header"
       position={winPos}
-      onDrag={(e, data) => setWinPos({ x: data.x, y: data.y })}
+      onDrag={(_e, data) => setWinPos({ x: data.x, y: data.y })}
     >
       <div
         ref={nodeRef}
@@ -48,13 +47,13 @@ export default function FluxoTrabalhoWindow({ id, onClose, onMinimize }) {
           <span>Fluxo de Trabalho</span>
           <div className="window-controls">
             <button type="button" className="window-btn" onMouseDown={e => e.stopPropagation()} onClick={onMinimize} title="Minimizar">—</button>
-            <button type="button" className="window-btn" onMouseDown={e => e.stopPropagation()} onClick={onClose} title="Fechar">✕</button>
+            <button type="button" className="window-btn" onMouseDown={e => e.stopPropagation()} onClick={onClose}   title="Fechar">✕</button>
           </div>
         </div>
 
         <div className="window-body">
           <div className="tabs-header fluxo-tabs-header">
-            {['Contas a Receber', 'Contas a Pagar'].map(aba => (
+            {ABAS.map(aba => (
               <button
                 key={aba}
                 type="button"
@@ -74,8 +73,8 @@ export default function FluxoTrabalhoWindow({ id, onClose, onMinimize }) {
               </div>
             ) : (
               <>
-                {abaAtiva === 'Contas a Receber' && <AbaContasReceber empresas={empresas} />}
-                {abaAtiva === 'Contas a Pagar'   && <AbaContasPagar   empresas={empresas} />}
+                {abaAtiva === 'Contas a Receber' && <AbaFluxo tipo="receber" empresas={empresas} />}
+                {abaAtiva === 'Contas a Pagar'   && <AbaFluxo tipo="pagar"   empresas={empresas} />}
               </>
             )}
           </div>

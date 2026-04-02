@@ -79,3 +79,9 @@
 }
 
 .logout-icon:hover { opacity: 0.8; }
+
+.dropdown-separator {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 4px 0;
+}

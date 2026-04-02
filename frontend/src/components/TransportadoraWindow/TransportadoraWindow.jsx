@@ -21,11 +21,11 @@ const FORM_VAZIO = {
   ativo: true,
 };
 
-export default function TransportadoraWindow({ id, onClose, onMinimize }) {
+export default function TransportadoraWindow({ id, onClose, onMinimize, abrirJanela }) {
   const {
     itens, loading, modal, editandoId, form, setForm,
     busca, setBusca,
-    abrirAdicionar, abrirEditar, salvar, excluir, fecharModal,
+    abrirAdicionar, abrirEditar, salvar, excluir, fecharModal, recarregar,
   } = useCrud('/cadastros/transportadoras', FORM_VAZIO);
 
   const itensFiltrados = itens.filter(i =>
@@ -36,7 +36,7 @@ export default function TransportadoraWindow({ id, onClose, onMinimize }) {
   return (
     <JanelaBase id={id} titulo="Transportadoras" onClose={onClose} onMinimize={onMinimize} largura={950} altura={600}>
       <div className="transp-body">
-        <BarraFerramentas busca={busca} setBusca={setBusca} onAdicionar={abrirAdicionar} placeholder="Buscar por nome ou CNPJ..." />
+        <BarraFerramentas busca={busca} setBusca={setBusca} onAdicionar={() => abrirJanela('novaTransportadora', { onSalvar: recarregar })} placeholder="Buscar por nome ou CNPJ..." />
         {loading ? (
           <div className="transp-loading">Carregando...</div>
         ) : (

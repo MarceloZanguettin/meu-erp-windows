@@ -38,13 +38,6 @@
   background-color: #cbd5e1;
 }
 
-/* --- CONTEÚDO DAS ABAS --- */
-.tab-content {
-  padding: 16px;
-  overflow-y: auto;
-  flex: 1;
-}
-
 /* Placeholder de abas não implementadas */
 .aba-placeholder {
   text-align: center;

@@ -44,8 +44,25 @@
   cursor: pointer;
   font-size: 16px;
   line-height: 1;
+  border-radius: 4px;
+  padding: 2px 6px;
+  transition: background 0.15s, color 0.15s;
 }
-.window-btn:hover { opacity: 0.7; }
+
+.window-btn-minimize:hover,
+.window-btn-maximize:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.window-btn-close {
+  color: #fca5a5;
+}
+
+.window-btn-close:hover {
+  background: #dc2626;
+  color: #fff;
+}
 
 .window-body {
   padding: 0;

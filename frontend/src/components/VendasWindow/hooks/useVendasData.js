@@ -162,6 +162,7 @@ export function useVendasData() {
     abrirNovoOrc, abrirEditarOrc, salvarOrcHandler, aprovarOrcHandler, converterOrcHandler, excluirOrcHandler,
     modalPed, setModalPed, editandoPedId, formPed, setFormPed, itensPed, setItensPed,
     abrirNovoPed, abrirEditarPed, salvarPedHandler, faturarPedHandler, excluirPedHandler,
+    carregarOrcamentos, carregarPedidos,
     ITEM_VAZIO,
   };
 }

@@ -12,8 +12,8 @@ import { useState } from 'react';
 export function useJanelas() {
   const [janelas, setJanelas] = useState([]);
 
-  const abrirJanela = (tipo) => {
-    setJanelas(prev => [...prev, { id: Date.now(), tipo, minimizada: false }]);
+  const abrirJanela = (tipo, extraProps = {}) => {
+    setJanelas(prev => [...prev, { id: Date.now(), tipo, minimizada: false, extraProps }]);
   };
 
   const fecharJanela = (id) => {

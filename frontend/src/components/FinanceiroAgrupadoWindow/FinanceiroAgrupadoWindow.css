@@ -48,9 +48,25 @@
   cursor: pointer;
   font-size: 16px;
   line-height: 1;
-  padding: 0 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
 }
-.fagrup-btn:hover { opacity: 0.7; }
+
+.fagrup-btn-minimize:hover,
+.fagrup-btn-maximize:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.fagrup-btn-close {
+  color: #fca5a5;
+}
+
+.fagrup-btn-close:hover {
+  background: #dc2626;
+  color: #fff;
+}
 
 /* ── Filtros ──────────────────────────────────────────────────── */
 .fagrup-filtros {

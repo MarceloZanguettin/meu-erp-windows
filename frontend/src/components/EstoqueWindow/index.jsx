@@ -13,7 +13,7 @@ const fmtQtd   = (v) => v != null ? Number(v).toLocaleString('pt-BR', { maximumF
 
 const BADGE_TIPO = { entrada: 'badge-aprovado', saida: 'badge-cancelado', ajuste: 'badge-pendente' };
 
-export default function EstoqueWindow({ id, onClose, onMinimize }) {
+export default function EstoqueWindow({ id, onClose, onMinimize, abrirJanela }) {
   const [abaAtiva, setAbaAtiva] = useState('Posição de Estoque');
   const {
     posicao, movimentos, produtos, depositos,
@@ -23,6 +23,7 @@ export default function EstoqueWindow({ id, onClose, onMinimize }) {
     modalMov, setModalMov,
     formMov, setFormMov,
     abrirModalMov, salvarMovimento,
+    carregarMovimentos, carregarPosicao,
   } = useEstoqueData();
 
   const posicaoFiltrada = posicao.filter(p =>
@@ -96,7 +97,7 @@ export default function EstoqueWindow({ id, onClose, onMinimize }) {
                   <option value="ajuste">Ajuste</option>
                 </select>
               </div>
-              <button className="btn-adicionar" onClick={abrirModalMov}>+ Lançar Movimento</button>
+              <button className="btn-adicionar" onClick={() => abrirJanela('novoMovimentoEstoque', { onSalvar: () => { carregarMovimentos(); carregarPosicao(); } })}>+ Lançar Movimento</button>
             </div>
 
             {loadingMov ? (

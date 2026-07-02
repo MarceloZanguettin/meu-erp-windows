@@ -4,7 +4,7 @@ from typing import Optional
 import datetime
 
 from database import get_db
-from models.tabelas import Empresa, ContaBancaria, ContaPagar, ContaReceber
+from models.tabelas import Empresa, ContaBancaria, ContaPagar, ContaReceber, SaldoDiarioBancario
 from schemas import financeiro
 
 router = APIRouter(prefix="/financeiro", tags=["Financeiro"])
@@ -89,6 +89,16 @@ def criar_conta_pagar(conta: financeiro.ContaPagarCreate, db: Session = Depends(
 @router.put("/contas-pagar/{id}", response_model=financeiro.ContaPagarOut)
 def atualizar_conta_pagar(id: int, dados: financeiro.ContaPagarUpdate, db: Session = Depends(get_db)):
     conta = _get_ou_404(db, ContaPagar, id)
+    agora = datetime.datetime.utcnow()
+
+    if dados.data_vencimento is not None and conta.status == "pendente":
+        data_antiga = conta.data_vencimento
+        nova_data   = dados.data_vencimento
+        if data_antiga < agora and nova_data >= agora:
+            conta.postergado = True
+        elif nova_data < agora:
+            conta.postergado = False
+
     for campo, valor in dados.dict(exclude_none=True).items():
         setattr(conta, campo, valor)
     db.commit()
@@ -99,8 +109,20 @@ def atualizar_conta_pagar(id: int, dados: financeiro.ContaPagarUpdate, db: Sessi
 @router.patch("/contas-pagar/{id}/pagar", response_model=financeiro.ContaPagarOut)
 def pagar_conta(id: int, db: Session = Depends(get_db)):
     conta = _get_ou_404(db, ContaPagar, id)
-    conta.status        = "pago"
+    conta.status         = "pago"
     conta.data_pagamento = datetime.datetime.utcnow()
+    conta.postergado     = False
+    db.commit()
+    db.refresh(conta)
+    return conta
+
+
+@router.patch("/contas-pagar/{id}/estornar", response_model=financeiro.ContaPagarOut)
+def estornar_conta_pagar(id: int, db: Session = Depends(get_db)):
+    conta = _get_ou_404(db, ContaPagar, id)
+    conta.status         = "pendente"
+    conta.data_pagamento = None
+    conta.postergado     = False
     db.commit()
     db.refresh(conta)
     return conta
@@ -145,6 +167,16 @@ def criar_conta_receber(conta: financeiro.ContaReceberCreate, db: Session = Depe
 @router.put("/contas-receber/{id}", response_model=financeiro.ContaReceberOut)
 def atualizar_conta_receber(id: int, dados: financeiro.ContaReceberUpdate, db: Session = Depends(get_db)):
     conta = _get_ou_404(db, ContaReceber, id)
+    agora = datetime.datetime.utcnow()
+
+    if dados.data_vencimento is not None and conta.status == "pendente":
+        data_antiga = conta.data_vencimento
+        nova_data   = dados.data_vencimento
+        if data_antiga < agora and nova_data >= agora:
+            conta.postergado = True
+        elif nova_data < agora:
+            conta.postergado = False
+
     for campo, valor in dados.dict(exclude_none=True).items():
         setattr(conta, campo, valor)
     db.commit()
@@ -157,6 +189,18 @@ def receber_conta(id: int, db: Session = Depends(get_db)):
     conta = _get_ou_404(db, ContaReceber, id)
     conta.status           = "recebido"
     conta.data_recebimento = datetime.datetime.utcnow()
+    conta.postergado       = False
+    db.commit()
+    db.refresh(conta)
+    return conta
+
+
+@router.patch("/contas-receber/{id}/estornar", response_model=financeiro.ContaReceberOut)
+def estornar_conta_receber(id: int, db: Session = Depends(get_db)):
+    conta = _get_ou_404(db, ContaReceber, id)
+    conta.status           = "pendente"
+    conta.data_recebimento = None
+    conta.postergado       = False
     db.commit()
     db.refresh(conta)
     return conta
@@ -168,3 +212,22 @@ def deletar_conta_receber(id: int, db: Session = Depends(get_db)):
     db.delete(conta)
     db.commit()
     return {"detail": "Conta deletada com sucesso"}
+
+
+# ── Saldos Diários Bancários ──────────────────────────────────────────────────
+
+@router.get("/saldos-diarios", response_model=list[financeiro.SaldoDiarioOut])
+def listar_saldos_diarios(
+    conta_bancaria_id: Optional[int] = Query(None),
+    data_inicio:       Optional[str] = Query(None),
+    data_fim:          Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+):
+    q = db.query(SaldoDiarioBancario)
+    if conta_bancaria_id:
+        q = q.filter(SaldoDiarioBancario.conta_bancaria_id == conta_bancaria_id)
+    if data_inicio:
+        q = q.filter(SaldoDiarioBancario.data >= datetime.datetime.fromisoformat(data_inicio))
+    if data_fim:
+        q = q.filter(SaldoDiarioBancario.data <= datetime.datetime.fromisoformat(data_fim + "T23:59:59"))
+    return q.order_by(SaldoDiarioBancario.conta_bancaria_id, SaldoDiarioBancario.data).all()

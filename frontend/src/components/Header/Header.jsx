@@ -78,6 +78,8 @@ export default function Header({ usuario, setUsuario, abrirJanela }) {
 
         <Dropdown title="Configurações" items={[
           { label: 'Usuários e Perfis', onClick: () => abrirJanela('usuarios') },
+          { separator: true },
+          { label: 'Aparência do Sistema', onClick: () => abrirJanela('aparencia') },
         ]} />
       </div>
 

@@ -76,6 +76,9 @@ class ContaPagar(Base):
     data_pagamento = Column(DateTime, nullable=True)
     status = Column(String(20), default="pendente")  # pendente / pago
     observacao = Column(String(500), nullable=True)
+    postergado = Column(Boolean, default=False)
+    criado_em = Column(DateTime, default=datetime.datetime.utcnow, nullable=True)
+    importado_excel = Column(Boolean, default=False, nullable=False)
 
     empresa = relationship("Empresa", back_populates="contas_pagar")
     conta_bancaria = relationship("ContaBancaria", back_populates="contas_pagar")
@@ -91,9 +94,26 @@ class ContaReceber(Base):
     data_recebimento = Column(DateTime, nullable=True)
     status = Column(String(20), default="pendente")  # pendente / recebido
     observacao = Column(String(500), nullable=True)
+    postergado = Column(Boolean, default=False)
+    criado_em = Column(DateTime, default=datetime.datetime.utcnow, nullable=True)
+    importado_excel = Column(Boolean, default=False, nullable=False)
 
     empresa = relationship("Empresa", back_populates="contas_receber")
     conta_bancaria = relationship("ContaBancaria", back_populates="contas_receber")
+
+
+class SaldoDiarioBancario(Base):
+    """Saldo real de cada conta bancária por dia, extraído das planilhas Excel.
+    Usado como fonte de verdade para o fluxo financeiro histórico.
+    """
+    __tablename__ = "saldos_diarios_bancarios"
+    id = Column(Integer, primary_key=True, index=True)
+    conta_bancaria_id = Column(Integer, ForeignKey("contas_bancarias.id"), nullable=False)
+    data = Column(DateTime, nullable=False, index=True)
+    saldo = Column(Float, nullable=False)
+    coluna_excel = Column(String(5), nullable=True)  # F, J, N, Q
+
+    conta_bancaria = relationship("ContaBancaria")
 
 
 # ── Novos modelos — Fase 1 e Fase 2 ──────────────────────────────────────────

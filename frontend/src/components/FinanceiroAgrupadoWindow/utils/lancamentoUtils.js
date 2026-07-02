@@ -7,7 +7,12 @@ import { fmtMes, fmtDia } from './formatters';
  * @returns {boolean}
  */
 export function isAtrasado(conta) {
-  return conta.status === 'pendente' && new Date(conta.data_vencimento) < new Date();
+  if (conta.status !== 'pendente') return false;
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const venc = new Date(conta.data_vencimento);
+  venc.setHours(0, 0, 0, 0);
+  return venc < hoje;
 }
 
 /**
@@ -68,40 +73,98 @@ export function agruparPorData(pagarList, receberList) {
 }
 
 /**
- * Calcula o resumo de saldo corrido por dia a partir de um mapa de grupos.
- * Retorna um objeto keyed por "YYYY-MM-DD" com:
- *   recebido, pago, prevRec, prevPag, saldoAnterior, diferenca, saldoFinal
+ * Calcula resumo do saldo corrido por dia, separado por empresa e consolidado.
  *
- * @param {object} grupos  Resultado de agruparPorData()
+ * Entradas com importado_excel=true são exibidas na lista mas excluídas do
+ * cálculo acumulado — o saldo real dessas datas vem de saldosDiarios.
+ *
+ * Retorna objeto keyed por "YYYY-MM-DD":
+ * {
+ *   porEmpresa: { [empresaId]: { recebido, pago, prevRec, prevPag, saldoAnterior, diferenca, saldoFinal } },
+ *   porBanco:   { [contaBancariaId]: { ... } },
+ *   consolidado: { ... }
+ * }
+ *
+ * @param {object}   grupos          Resultado de agruparPorData()
+ * @param {object[]} empresas        Array { id, nome }
+ * @param {object[]} contasBancarias Array { id, empresa_id, banco }
+ * @param {object[]} saldosDiarios   Array { conta_bancaria_id, data, saldo } — saldo real do Excel
  * @returns {object}
  */
-export function calcularResumoDia(grupos) {
-  let saldoCorrido = 0;
+export function calcularResumoDia(grupos, empresas = [], contasBancarias = [], saldosDiarios = []) {
+  // Índice de saldos reais: "YYYY-MM-DD|conta_id" → saldo
+  const saldoRealIdx = {};
+  saldosDiarios.forEach(s => {
+    const dk = s.data ? s.data.slice(0, 10) : null;
+    if (dk) saldoRealIdx[`${dk}|${s.conta_bancaria_id}`] = s.saldo;
+  });
+
+  const saldoEmp   = {};
+  const saldoBanco = {};
+  empresas.forEach(e => { saldoEmp[e.id] = 0; });
+  contasBancarias.forEach(cb => { saldoBanco[cb.id] = 0; });
+  let saldoConsolidado = 0;
+
   const resumo = {};
+
+  // Filtra entradas que devem participar do cálculo de saldo acumulado
+  const paraCalculo = lista => lista.filter(c => !c.importado_excel);
+
+  const somarValores = (lista, filtro) =>
+    lista.filter(filtro).reduce((s, c) => s + c.valor, 0);
+
+  const calcBloco = (ent, saldoAnt, saldoRealOverride = null) => {
+    // Usa apenas lançamentos normais (não importados) para o cálculo
+    const calc    = paraCalculo(ent);
+    const recebido = somarValores(calc, c => c._tipo === 'R' && c.status === 'recebido');
+    const pago     = somarValores(calc, c => c._tipo === 'P' && c.status === 'pago');
+    const prevRec  = somarValores(calc, c => c._tipo === 'R' && c.status === 'pendente' && !isAtrasado(c));
+    const prevPag  = somarValores(calc, c => c._tipo === 'P' && c.status === 'pendente' && !isAtrasado(c));
+    const diferenca  = (recebido + prevRec) - (pago + prevPag);
+    // Se existe saldo real do Excel para este dia/banco, ele prevalece sobre o acumulado
+    const saldoFinal = saldoRealOverride !== null ? saldoRealOverride : saldoAnt + diferenca;
+    return { recebido, pago, prevRec, prevPag, saldoAnterior: saldoAnt, diferenca, saldoFinal };
+  };
 
   Object.values(grupos).forEach(({ dias }) => {
     Object.entries(dias).forEach(([dk, { entradas }]) => {
-      const recebido = entradas
-        .filter(c => c._tipo === 'R' && c.status === 'recebido')
-        .reduce((s, c) => s + c.valor, 0);
+      // ── Por empresa ──────────────────────────────────────────────
+      const porEmpresa = {};
+      empresas.forEach(emp => {
+        const ent = entradas.filter(c => c.empresa_id === emp.id);
+        // Saldo real consolidado da empresa = soma dos saldos reais das contas dela neste dia
+        const contasDaEmp = contasBancarias.filter(cb => cb.empresa_id === emp.id);
+        const saldoRealEmp = contasDaEmp.reduce((acc, cb) => {
+          const sr = saldoRealIdx[`${dk}|${cb.id}`];
+          return sr !== undefined ? acc + sr : acc;
+        }, null);
+        const override = saldoRealEmp !== null && contasDaEmp.some(cb => saldoRealIdx[`${dk}|${cb.id}`] !== undefined)
+          ? saldoRealEmp : null;
+        porEmpresa[emp.id] = calcBloco(ent, saldoEmp[emp.id], override);
+        saldoEmp[emp.id]   = porEmpresa[emp.id].saldoFinal;
+      });
 
-      const pago = entradas
-        .filter(c => c._tipo === 'P' && c.status === 'pago')
-        .reduce((s, c) => s + c.valor, 0);
+      // ── Por banco ─────────────────────────────────────────────────
+      const porBanco = {};
+      contasBancarias.forEach(cb => {
+        const ent = entradas.filter(c => c.conta_bancaria_id === cb.id);
+        const saldoReal = saldoRealIdx[`${dk}|${cb.id}`] ?? null;
+        porBanco[cb.id]   = calcBloco(ent, saldoBanco[cb.id], saldoReal);
+        saldoBanco[cb.id] = porBanco[cb.id].saldoFinal;
+      });
 
-      const prevRec = entradas
-        .filter(c => c._tipo === 'R' && c.status === 'pendente' && !isAtrasado(c))
-        .reduce((s, c) => s + c.valor, 0);
+      // ── Consolidado ───────────────────────────────────────────────
+      // Saldo real consolidado = soma de todos os saldos reais disponíveis neste dia
+      const saldosReaisDisponiveis = contasBancarias
+        .map(cb => saldoRealIdx[`${dk}|${cb.id}`])
+        .filter(v => v !== undefined);
+      const saldoRealCons = saldosReaisDisponiveis.length > 0
+        ? saldosReaisDisponiveis.reduce((a, b) => a + b, 0)
+        : null;
+      const consBloco = calcBloco(entradas, saldoConsolidado, saldoRealCons);
+      saldoConsolidado = consBloco.saldoFinal;
 
-      const prevPag = entradas
-        .filter(c => c._tipo === 'P' && c.status === 'pendente' && !isAtrasado(c))
-        .reduce((s, c) => s + c.valor, 0);
-
-      const saldoAnterior = saldoCorrido;
-      const diferenca     = (recebido + prevRec) - (pago + prevPag);
-      saldoCorrido       += diferenca;
-
-      resumo[dk] = { recebido, pago, prevRec, prevPag, saldoAnterior, diferenca, saldoFinal: saldoCorrido };
+      resumo[dk] = { porEmpresa, porBanco, consolidado: consBloco };
     });
   });
 

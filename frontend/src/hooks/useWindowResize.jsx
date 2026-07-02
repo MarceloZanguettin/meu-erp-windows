@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 
 /**
- * Hook que adiciona redimensionamento por bordas a uma janela flutuante.
+ * Hook que adiciona redimensionamento por bordas e cantos a uma janela flutuante.
  *
  * @param {object} opts
  * @param {number} opts.initX      - posição X inicial
@@ -38,10 +38,11 @@ export function useWindowResize({ initX, initY, initW, initH, minW = 400, minH =
 
       let w = startWidth, h = startHeight, x = startPosX, y = startPosY;
 
-      if (dir === 'e') { w = Math.max(minW, startWidth  + dx); }
-      if (dir === 'w') { w = Math.max(minW, startWidth  - dx); x = startPosX + (startWidth  - w); }
-      if (dir === 's') { h = Math.max(minH, startHeight + dy); }
-      if (dir === 'n') { h = Math.max(minH, startHeight - dy); y = startPosY + (startHeight - h); }
+      // Bordas
+      if (dir === 'e'  || dir === 'ne' || dir === 'se') { w = Math.max(minW, startWidth  + dx); }
+      if (dir === 'w'  || dir === 'nw' || dir === 'sw') { w = Math.max(minW, startWidth  - dx); x = startPosX + (startWidth  - w); }
+      if (dir === 's'  || dir === 'se' || dir === 'sw') { h = Math.max(minH, startHeight + dy); }
+      if (dir === 'n'  || dir === 'ne' || dir === 'nw') { h = Math.max(minH, startHeight - dy); y = startPosY + (startHeight - h); }
 
       setWinSize({ width: w, height: h });
       setWinPos({ x, y });
@@ -59,10 +60,16 @@ export function useWindowResize({ initX, initY, initW, initH, minW = 400, minH =
 
   const ResizeHandles = () => (
     <>
-      <div className="win-rz win-rz-n" onMouseDown={e => startResize(e, 'n')} />
-      <div className="win-rz win-rz-s" onMouseDown={e => startResize(e, 's')} />
-      <div className="win-rz win-rz-e" onMouseDown={e => startResize(e, 'e')} />
-      <div className="win-rz win-rz-w" onMouseDown={e => startResize(e, 'w')} />
+      {/* Bordas */}
+      <div className="win-rz win-rz-n"  onMouseDown={e => startResize(e, 'n')} />
+      <div className="win-rz win-rz-s"  onMouseDown={e => startResize(e, 's')} />
+      <div className="win-rz win-rz-e"  onMouseDown={e => startResize(e, 'e')} />
+      <div className="win-rz win-rz-w"  onMouseDown={e => startResize(e, 'w')} />
+      {/* Cantos */}
+      <div className="win-rz win-rz-nw" onMouseDown={e => startResize(e, 'nw')} />
+      <div className="win-rz win-rz-ne" onMouseDown={e => startResize(e, 'ne')} />
+      <div className="win-rz win-rz-sw" onMouseDown={e => startResize(e, 'sw')} />
+      <div className="win-rz win-rz-se" onMouseDown={e => startResize(e, 'se')} />
     </>
   );
 

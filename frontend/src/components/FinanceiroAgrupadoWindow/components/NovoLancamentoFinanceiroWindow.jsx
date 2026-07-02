@@ -45,7 +45,7 @@ export default function NovoLancamentoFinanceiroWindow({ id, onClose, onMinimize
         conta_bancaria_id: form.conta_bancaria_id ? Number(form.conta_bancaria_id) : null,
         descricao:         form.descricao,
         valor:             parseFloat(form.valor),
-        data_vencimento:   new Date(form.data_vencimento).toISOString(),
+        data_vencimento:   form.data_vencimento + 'T12:00:00',
         observacao:        form.observacao || null,
       };
       await salvarLancamento(tipo, body, null);

@@ -35,29 +35,17 @@ log(GREEN, "   Iniciando ERP em Python            ")
 log(GREEN, "======================================")
 
 # ── 1. npm run build ──────────────────────────────────────────────────────────
-executar("[1/6] Gerando build de produção do frontend...", "npm run build", cwd=FRONTEND_DIR)
+executar("[1/3] Gerando build de produção do frontend...", "npm run build", cwd=FRONTEND_DIR)
 log(GREEN, "Build concluído.")
 
 # ── 2. npm run dev (background) ───────────────────────────────────────────────
-log(YELLOW, "\n[2/6] Iniciando servidor de desenvolvimento (background)...")
+log(YELLOW, "\n[2/3] Iniciando servidor de desenvolvimento (background)...")
 dev_proc = subprocess.Popen("npm run dev", cwd=FRONTEND_DIR, shell=True)
 log(GREEN, f"Dev server iniciado (PID: {dev_proc.pid}) em http://localhost:5173")
 
 try:
-    # ── 3. migrate.py ────────────────────────────────────────────────────────
-    executar("[3/6] Aplicando migrations no banco de dados...",
-             f'"{PYTHON}" migrate.py', cwd=BACKEND_DIR)
-
-    # ── 4. seed_financeiro.py ─────────────────────────────────────────────────
-    executar("[4/6] Populando Contas a Receber (seed_financeiro.py)...",
-             f'"{PYTHON}" seed_financeiro.py', cwd=BACKEND_DIR)
-
-    # ── 5. seed_contas_pagar.py ───────────────────────────────────────────────
-    executar("[5/6] Populando Contas a Pagar (seed_contas_pagar.py)...",
-             f'"{PYTHON}" seed_contas_pagar.py', cwd=BACKEND_DIR)
-
-    # ── 6. python main.py ─────────────────────────────────────────────────────
-    log(YELLOW, "\n[6/6] Iniciando o backend (python main.py)...")
+    # ── 3. python main.py ─────────────────────────────────────────────────────
+    log(YELLOW, "\n[3/3] Iniciando o backend (python main.py)...")
     log(GREEN, "======================================")
     subprocess.run(f'"{PYTHON}" main.py', cwd=BACKEND_DIR, shell=True)
 

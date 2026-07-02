@@ -19,10 +19,11 @@ export function useColunaResize({ empresas, contasBancarias, wrapperWidth }) {
       contasBancarias.filter(cb => cb.empresa_id === emp.id),
     );
     const n        = allBanks.length;
-    const expected = 6 + n;
+    const expected = 4 + n; // Data, Tipo, Desc, n Bancos, Status
     if (expected <= 0 || colWidths.length === expected) return;
 
-    const base    = [110, 55, 180, ...Array(n).fill(120), 90, 110, 175];
+    // Colunas: Data, Tipo, Descrição, ...Bancos, Status
+    const base    = [110, 55, 180, ...Array(n).fill(120), 90];
     const totalBase = base.reduce((s, w) => s + w, 0);
     const avail   = wrapperWidth > 0 ? wrapperWidth : totalBase;
     const scale   = avail / totalBase;

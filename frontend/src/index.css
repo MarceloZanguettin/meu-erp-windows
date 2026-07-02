@@ -1,14 +1,54 @@
 /* Tailwind CSS — apenas utilitários (preflight desabilitado no tailwind.config.js para não quebrar CSS legado) */
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════
+   VARIÁVEIS DE TEMA — alteradas dinamicamente pelo módulo
+   de Aparência. Valores padrão = Tema "Clássico ERP".
+═══════════════════════════════════════════════════════ */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* Cores do tema */
+  --erp-primary:        #2c3e50;
+  --erp-primary-dark:   #1a252f;
+  --erp-primary-text:   #ffffff;
+  --erp-accent:         #2563eb;
+  --erp-accent-dark:    #1d4ed8;
+  --erp-bg:             #f9f9f9;
+  --erp-surface:        #ffffff;
+  --erp-border:         #cbd5e1;
+  --erp-border-light:   #e2e8f0;
+  --erp-text:           #213547;
+  --erp-text-muted:     #64748b;
+
+  /* Destaque do dia atual — controlado pelo tema */
+  --erp-hoje-bg:       #fefce8;
+  --erp-hoje-border:   #ca8a04;
+  --erp-hoje-hover:    #fef9c3;
+
+  /* Cores semânticas de status — constantes (independem do tema) */
+  --erp-success:       #16a34a;
+  --erp-success-dark:  #15803d;
+  --erp-success-bg:    #d1fae5;
+  --erp-success-text:  #065f46;
+  --erp-danger:        #dc2626;
+  --erp-danger-dark:   #b91c1c;
+  --erp-danger-bg:     #fee2e2;
+  --erp-danger-text:   #991b1b;
+  --erp-warning:       #b45309;
+  --erp-warning-dark:  #92400e;
+  --erp-warning-bg:    #fef3c7;
+  --erp-info:          #1e40af;
+  --erp-info-bg:       #dbeafe;
+
+  /* Tipografia — controlada pelo módulo de Aparência */
+  --erp-font-family: system-ui, -apple-system, sans-serif;
+  --erp-font-size:   13px;
+
+  font-family: var(--erp-font-family);
+  font-size:   var(--erp-font-size);
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--erp-text);
+  background-color: var(--erp-bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -16,24 +56,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Reset básico para garantir que ocupe 100% do espaço */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* Reset básico */
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body, #root {
   width: 100%;
   height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden; /* Evita rolagem na tela de fundo */
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
+  overflow: hidden;
 }

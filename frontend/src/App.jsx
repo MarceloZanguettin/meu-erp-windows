@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import './styles/global.css';
 
 import LoginScreen from './Components/LoginScreen/LoginScreen.jsx';
 import Header      from './Components/Header/Header.jsx';
-import Taskbar     from './Components/Taskbar/Taskbar.jsx';
+import Taskbar     from './Components/TaskBar/TaskBar.jsx';
 
-import { useJanelas }      from './hooks/useJanelas.js';
-import { JANELAS_CONFIG }  from './config/janelasConfig.js';
+import { useJanelas }           from './hooks/useJanelas.js';
+import { JANELAS_CONFIG }       from './config/janelasConfig.js';
+import { useUiStore, aplicarTema } from './store/uiStore.js';
 
 export default function App() {
   const [usuario, setUsuario] = useState(null);
+  const tema = useUiStore((s) => s.tema);
+
+  // Reaplica o tema persistido ao montar (localStorage → :root)
+  useEffect(() => { aplicarTema(tema); }, []);
   const { janelas, abrirJanela, fecharJanela, alternarMinimizar } = useJanelas();
 
   if (!usuario) {

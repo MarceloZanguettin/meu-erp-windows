@@ -28,8 +28,8 @@
 }
 
 .fluxo-btn-add {
-  background-color: #2c3e50;
-  color: white;
+  background-color: var(--erp-primary);
+  color: var(--erp-primary-text);
   border: none;
   padding: 7px 16px;
   border-radius: 4px;
@@ -39,7 +39,7 @@
 }
 
 .fluxo-btn-add:hover {
-  background-color: #1a252f;
+  background-color: var(--erp-primary-dark);
 }
 
 /* Colunas lado a lado */
@@ -57,8 +57,8 @@
 }
 
 .fluxo-empresa-titulo {
-  background-color: #2c3e50;
-  color: white;
+  background-color: var(--erp-primary);
+  color: var(--erp-primary-text);
   font-weight: bold;
   font-size: 13px;
   padding: 6px 10px;
@@ -67,7 +67,7 @@
 }
 
 .fluxo-empresa-titulo.pagar {
-  background-color: #b91c1c;
+  background-color: var(--erp-danger-dark);
 }
 
 /* Tabela */
@@ -78,26 +78,26 @@
 }
 
 .fluxo-table thead tr {
-  background-color: #f1f5f9;
+  background-color: var(--erp-bg);
 }
 
 .fluxo-table th {
   padding: 7px 8px;
   text-align: left;
   font-weight: 600;
-  color: #475569;
-  border-bottom: 2px solid #cbd5e1;
+  color: var(--erp-text-muted);
+  border-bottom: 2px solid var(--erp-border);
   white-space: nowrap;
 }
 
 .fluxo-table td {
   padding: 6px 8px;
-  border-bottom: 1px solid #e2e8f0;
-  color: #334155;
+  border-bottom: 1px solid var(--erp-border-light);
+  color: var(--erp-text);
 }
 
 .fluxo-table tbody tr:hover {
-  background-color: #f8fafc;
+  background-color: color-mix(in sRGB, var(--erp-accent) 6%, var(--erp-surface));
 }
 
 .fluxo-row-ok td {
@@ -107,16 +107,16 @@
 /* Linhas de Contas a Pagar */
 .fluxo-row-pago td {
   opacity: 0.55;
-  background-color: #fef2f2;
+  background-color: var(--erp-danger-bg);
 }
 
 .fluxo-row-pend-pagar td {
-  background-color: #fff8f8;
+  background-color: color-mix(in sRGB, var(--erp-danger-bg) 40%, var(--erp-surface));
 }
 
 .fluxo-vazio {
   text-align: center;
-  color: #94a3b8;
+  color: var(--erp-text-muted);
   font-style: italic;
   padding: 20px 0 !important;
 }
@@ -131,24 +131,24 @@
 }
 
 .badge-pend {
-  background-color: #fef3c7;
-  color: #b45309;
+  background-color: var(--erp-warning-bg);
+  color: var(--erp-warning);
 }
 
 .badge-ok {
-  background-color: #d1fae5;
-  color: #065f46;
+  background-color: var(--erp-success-bg);
+  color: var(--erp-success-text);
 }
 
 /* Badges de Contas a Pagar — tema vermelho */
 .badge-pago {
-  background-color: #fca5a5;
-  color: #7f1d1d;
+  background-color: var(--erp-danger-bg);
+  color: var(--erp-danger-text);
 }
 
 .badge-pend-pagar {
-  background-color: #fee2e2;
-  color: #b91c1c;
+  background-color: var(--erp-danger-bg);
+  color: var(--erp-danger-dark);
 }
 
 /* Botões de ação nas linhas */
@@ -173,24 +173,24 @@
 
 .fluxo-btn-acao:hover { opacity: 0.75; }
 
-.fluxo-btn-acao.ok   { background-color: #d1fae5; color: #065f46; }
+.fluxo-btn-acao.ok   { background-color: var(--erp-success-bg); color: var(--erp-success-text); }
 .fluxo-btn-acao.edit { background-color: #e0f2fe; color: #0369a1; }
-.fluxo-btn-acao.del  { background-color: #fee2e2; color: #b91c1c; }
+.fluxo-btn-acao.del  { background-color: var(--erp-danger-bg); color: var(--erp-danger-dark); }
 
 /* Total por empresa */
 .fluxo-total {
   text-align: right;
   font-size: 13px;
-  color: #475569;
+  color: var(--erp-text-muted);
   padding: 4px 4px 0;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--erp-border-light);
 }
 
 /* Mensagem sem empresas */
 .fluxo-sem-empresas {
   text-align: center;
   padding: 40px 20px;
-  color: #94a3b8;
+  color: var(--erp-text-muted);
   font-style: italic;
 }
 
@@ -206,7 +206,7 @@
 }
 
 .fluxo-modal {
-  background: white;
+  background: var(--erp-surface);
   border-radius: 8px;
   width: 400px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
@@ -214,8 +214,8 @@
 }
 
 .fluxo-modal-header {
-  background-color: #2c3e50;
-  color: white;
+  background-color: var(--erp-primary);
+  color: var(--erp-primary-text);
   padding: 12px 16px;
   font-weight: bold;
   font-size: 14px;
@@ -231,25 +231,25 @@
 .fluxo-modal-body label {
   font-size: 13px;
   font-weight: 500;
-  color: #475569;
+  color: var(--erp-text-muted);
   margin-bottom: -4px;
 }
 
 .fluxo-modal-body input,
 .fluxo-modal-body select {
   padding: 7px 10px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--erp-border);
   border-radius: 4px;
   font-size: 13px;
   font-family: inherit;
-  background: #fff;
-  color: #213547;
+  background: var(--erp-surface);
+  color: var(--erp-text);
 }
 
 .fluxo-modal-body input:focus,
 .fluxo-modal-body select:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: var(--erp-accent);
 }
 
 .fluxo-modal-footer {
@@ -257,5 +257,5 @@
   justify-content: flex-end;
   gap: 10px;
   padding: 12px 16px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--erp-border-light);
 }

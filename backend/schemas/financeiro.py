@@ -54,6 +54,9 @@ class ContaPagarOut(BaseModel):
     data_pagamento: Optional[datetime]
     status: str
     observacao: Optional[str]
+    postergado: bool = False
+    criado_em: Optional[datetime] = None
+    importado_excel: bool = False
 
     class Config:
         from_attributes = True
@@ -86,6 +89,20 @@ class ContaReceberOut(BaseModel):
     data_recebimento: Optional[datetime]
     status: str
     observacao: Optional[str]
+    postergado: bool = False
+    criado_em: Optional[datetime] = None
+    importado_excel: bool = False
+
+    class Config:
+        from_attributes = True
+
+
+class SaldoDiarioOut(BaseModel):
+    id: int
+    conta_bancaria_id: int
+    data: datetime
+    saldo: float
+    coluna_excel: Optional[str] = None
 
     class Config:
         from_attributes = True

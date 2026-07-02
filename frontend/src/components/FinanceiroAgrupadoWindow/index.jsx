@@ -12,7 +12,6 @@ import { useColunaResize }    from './hooks/useColunaResize';
 import PainelEmpresaHeader from './components/PainelEmpresaHeader';
 import TabelaUnificada     from './components/TabelaUnificada';
 import ScrollSentinel      from './components/ScrollSentinel';
-import ModalLancamento     from './components/ModalLancamento';
 
 /**
  * Janela flutuante do Financeiro Agrupado.
@@ -29,17 +28,39 @@ import ModalLancamento     from './components/ModalLancamento';
  * useScrollInfinito recebe os setters do hook de dados por injeção,
  * evitando estado duplicado.
  */
+function calcMax() {
+  const headerEl = document.querySelector('.app-header');
+  const headerH  = headerEl ? headerEl.offsetHeight : 60;
+  return {
+    pos:  { x: 0, y: headerH },
+    size: { width: window.innerWidth, height: window.innerHeight - headerH - 45 },
+  };
+}
+
 export default function FinanceiroAgrupadoWindow({ id, onClose, onMinimize, abrirJanela }) {
   const nodeRef      = useRef(null);
   const preMaxRef    = useRef(null);
   const randomOffset = (id % 10) * 15;
 
+  // Tamanho "normal" guardado para o restore
+  const normalPos  = { x: 60 + randomOffset, y: 60 + randomOffset };
+  const normalSize = { width: 1200, height: 650 };
+
+  // Inicia já maximizado — o header já está no DOM quando esta janela abre
+  const maxInit = calcMax();
+
   const { winPos, setWinPos, winSize, setWinSize, ResizeHandles } = useWindowResize({
-    initX: 60 + randomOffset, initY: 60 + randomOffset,
-    initW: 1200, initH: 650, minW: 800, minH: 450,
+    initX: maxInit.pos.x,      initY: maxInit.pos.y,
+    initW: maxInit.size.width, initH: maxInit.size.height,
+    minW: 800, minH: 450,
   });
 
-  const [maximizada, setMaximizada] = useState(false);
+  const [maximizada, setMaximizada] = useState(true);
+
+  // Garante que preMaxRef tenha o tamanho normal para o primeiro restore
+  if (!preMaxRef.current) {
+    preMaxRef.current = { pos: normalPos, size: normalSize };
+  }
 
   const toggleMaximizar = () => {
     if (maximizada) {
@@ -49,12 +70,10 @@ export default function FinanceiroAgrupadoWindow({ id, onClose, onMinimize, abri
       }
       setMaximizada(false);
     } else {
-      const headerEl = document.querySelector('.app-header');
-      const headerH  = headerEl ? headerEl.offsetHeight : 60;
-      const taskbarH = 45;
+      const max = calcMax();
       preMaxRef.current = { pos: { ...winPos }, size: { ...winSize } };
-      setWinPos({ x: 0, y: headerH });
-      setWinSize({ width: window.innerWidth, height: window.innerHeight - headerH - taskbarH });
+      setWinPos(max.pos);
+      setWinSize(max.size);
       setMaximizada(true);
     }
   };
@@ -68,6 +87,7 @@ export default function FinanceiroAgrupadoWindow({ id, onClose, onMinimize, abri
   const scroll = useScrollInfinito({
     setContasPagar:   dados.setContasPagar,
     setContasReceber: dados.setContasReceber,
+    setSaldosDiarios: dados.setSaldosDiarios,
   });
 
   // Conecta as refs de intervalo do scroll ao hook de dados,
@@ -144,13 +164,17 @@ export default function FinanceiroAgrupadoWindow({ id, onClose, onMinimize, abri
             contasReceber={dados.contasReceber}
             empresas={dados.empresas}
             contasBancarias={dados.contasBancarias}
+            saldosDiarios={dados.saldosDiarios}
             today={scroll.today}
             colWidths={colWidths}
             onStartColResize={startColResize}
-            onMarcarPago={dados.marcarPago}
-            onMarcarRecebido={dados.marcarRecebido}
-            onEditar={dados.abrirEditar}
-            onExcluir={dados.excluir}
+            onClickLancamento={(conta) =>
+              abrirJanela('lancamentoDetalhe', {
+                conta,
+                tipo: conta._tipo === 'R' ? 'receber' : 'pagar',
+                onSalvar: dados.recarregar,
+              })
+            }
           />
 
           <ScrollSentinel
@@ -162,17 +186,6 @@ export default function FinanceiroAgrupadoWindow({ id, onClose, onMinimize, abri
 
         </div>
 
-        {/* Modal de criação / edição */}
-        <ModalLancamento
-          tipo={dados.modalTipo}
-          editandoId={dados.editandoId}
-          form={dados.form}
-          setForm={dados.setForm}
-          empresas={dados.empresas}
-          bancosDoForm={dados.bancosDoForm}
-          onSalvar={dados.salvar}
-          onFechar={dados.fecharModal}
-        />
 
       </div>
     </Draggable>

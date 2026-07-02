@@ -77,6 +77,18 @@ export async function marcarContaRecebido(id) {
 }
 
 /**
+ * Estorna o status de uma conta para "pendente" (desfaz pago/recebido).
+ * @param {'P'|'R'} tipo
+ * @param {number}  id
+ * @returns {Promise<object>}
+ */
+export async function estornarLancamento(tipo, id) {
+  const endpoint = tipo === 'P' ? 'contas-pagar' : 'contas-receber';
+  const r = await fetch(`${BASE_URL}/${endpoint}/${id}/estornar`, { method: 'PATCH' });
+  return r.json();
+}
+
+/**
  * Exclui um lançamento.
  * @param {'P'|'R'} tipo
  * @param {number}  id
@@ -85,5 +97,17 @@ export async function marcarContaRecebido(id) {
 export async function excluirLancamento(tipo, id) {
   const endpoint = tipo === 'P' ? 'contas-pagar' : 'contas-receber';
   const r = await fetch(`${BASE_URL}/${endpoint}/${id}`, { method: 'DELETE' });
+  return r.json();
+}
+
+/**
+ * Busca saldos diários reais por conta bancária (importados do Excel).
+ * @param {string} inicio  "YYYY-MM-DD"
+ * @param {string} fim     "YYYY-MM-DD"
+ * @returns {Promise<object[]>}  [{conta_bancaria_id, data, saldo, coluna_excel}]
+ */
+export async function fetchSaldosDiarios(inicio, fim) {
+  const params = `data_inicio=${inicio}&data_fim=${fim}`;
+  const r = await fetch(`${BASE_URL}/saldos-diarios?${params}`);
   return r.json();
 }

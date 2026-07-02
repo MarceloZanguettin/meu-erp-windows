@@ -16,11 +16,17 @@ from controllers import (
     vendas_controller, usuarios_controller,
 )
 
+# Tratamento de erros global
+from core.error_handler import register_exception_handlers
+
 # Cria as tabelas no banco de dados
 tabelas.Base.metadata.create_all(bind=engine)
 
 # Inicializa o FastAPI
 app = FastAPI(title="Meu ERP API")
+
+# Manipuladores de exceção globais (domínio + banco + validação)
+register_exception_handlers(app)
 
 # Configuração de CORS (Para permitir a comunicação com o React)
 app.add_middleware(

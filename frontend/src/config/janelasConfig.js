@@ -22,8 +22,10 @@ import NovoRepresentanteWindow            from '../Components/RepresentanteWindo
 import NovoFuncionarioWindow              from '../Components/FuncionarioWindow/NovoFuncionarioWindow.jsx';
 import NovaEntradaAuxiliarWindow          from '../Components/TabelasAuxiliaresWindow/NovaEntradaAuxiliarWindow.jsx';
 import NovoLancamentoFinanceiroWindow     from '../Components/FinanceiroAgrupadoWindow/components/NovoLancamentoFinanceiroWindow.jsx';
+import LancamentoDetalheWindow           from '../Components/LancamentoDetalheWindow/LancamentoDetalheWindow.jsx';
 import NovoUsuarioWindow                 from '../Components/UsuariosWindow/NovoUsuarioWindow.jsx';
 import NovoPerfilAcessoWindow            from '../Components/UsuariosWindow/NovoPerfilAcessoWindow.jsx';
+import ConfiguracaoAparenciaWindow       from '../Components/ConfiguracaoAparenciaWindow/ConfiguracaoAparenciaWindow.jsx';
 
 /**
  * Registry central de janelas.
@@ -36,7 +38,7 @@ import NovoPerfilAcessoWindow            from '../Components/UsuariosWindow/Novo
  */
 export const JANELAS_CONFIG = {
   produto: {
-    titulo:    'Novo Produto',
+    titulo:    'Produtos',
     Component: ProdutoWindow,
   },
   fluxoTrabalho: {
@@ -129,6 +131,10 @@ export const JANELAS_CONFIG = {
     titulo:    'Novo Lançamento Financeiro',
     Component: NovoLancamentoFinanceiroWindow,
   },
+  lancamentoDetalhe: {
+    titulo:    'Detalhe do Lançamento',
+    Component: LancamentoDetalheWindow,
+  },
   novoUsuario: {
     titulo:    'Novo Usuário',
     Component: NovoUsuarioWindow,
@@ -136,5 +142,9 @@ export const JANELAS_CONFIG = {
   novoPerfilAcesso: {
     titulo:    'Novo Perfil de Acesso',
     Component: NovoPerfilAcessoWindow,
+  },
+  aparencia: {
+    titulo:    'Aparência do Sistema',
+    Component: ConfiguracaoAparenciaWindow,
   },
 };

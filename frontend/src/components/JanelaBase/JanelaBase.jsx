@@ -75,7 +75,7 @@ export default function JanelaBase({
       >
         <ResizeHandles />
         <div className="window-header">
-          <span>{titulo}</span>
+          <span className="window-title">{titulo}</span>
           <div className="window-controls">
             <button
               type="button"
@@ -83,9 +83,7 @@ export default function JanelaBase({
               onMouseDown={e => e.stopPropagation()}
               onClick={onMinimize}
               title="Minimizar"
-            >
-              —
-            </button>
+            />
             {maximizavel && (
               <button
                 type="button"
@@ -93,9 +91,7 @@ export default function JanelaBase({
                 onMouseDown={e => e.stopPropagation()}
                 onClick={toggleMaximizar}
                 title={maximizada ? 'Restaurar' : 'Maximizar'}
-              >
-                {maximizada ? '❐' : '□'}
-              </button>
+              />
             )}
             <button
               type="button"
@@ -103,9 +99,7 @@ export default function JanelaBase({
               onMouseDown={e => e.stopPropagation()}
               onClick={onClose}
               title="Fechar"
-            >
-              ✕
-            </button>
+            />
           </div>
         </div>
         <div className="window-body">{children}</div>

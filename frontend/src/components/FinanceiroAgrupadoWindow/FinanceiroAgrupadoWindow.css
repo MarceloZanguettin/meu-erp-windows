@@ -4,15 +4,14 @@
 
 .fagrup-window {
   position: absolute;
-  background: #fff;
+  background: var(--erp-surface);
   border-radius: 8px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  border: 1px solid #ccc;
+  border: 1px solid var(--erp-border);
   z-index: 100;
   display: flex;
   flex-direction: column;
 
-  /* Tamanho inicial */
   width: 1200px;
   height: 620px;
   min-width: 720px;
@@ -23,8 +22,8 @@
 
 /* ── Cabeçalho ────────────────────────────────────────────────── */
 .fagrup-header {
-  background-color: #2c3e50;
-  color: #fff;
+  background-color: var(--erp-primary);
+  color: var(--erp-primary-text);
   padding: 10px 15px;
   border-top-left-radius: 7px;
   border-top-right-radius: 7px;
@@ -44,7 +43,7 @@
 .fagrup-btn {
   background: none;
   border: none;
-  color: #fff;
+  color: var(--erp-primary-text);
   cursor: pointer;
   font-size: 16px;
   line-height: 1;
@@ -56,15 +55,15 @@
 .fagrup-btn-minimize:hover,
 .fagrup-btn-maximize:hover {
   background: rgba(255, 255, 255, 0.25);
-  color: #fff;
+  color: var(--erp-primary-text);
 }
 
 .fagrup-btn-close {
-  color: #fca5a5;
+  color: var(--erp-danger-bg);
 }
 
 .fagrup-btn-close:hover {
-  background: #dc2626;
+  background: var(--erp-danger);
   color: #fff;
 }
 
@@ -75,8 +74,8 @@
   gap: 12px;
   align-items: flex-end;
   padding: 10px 16px;
-  background: #f1f5f9;
-  border-bottom: 1px solid #cbd5e1;
+  background: var(--erp-bg);
+  border-bottom: 1px solid var(--erp-border);
   flex-shrink: 0;
 }
 
@@ -89,7 +88,7 @@
 .fagrup-filtro-group label {
   font-size: 11px;
   font-weight: 600;
-  color: #64748b;
+  color: var(--erp-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
@@ -97,18 +96,18 @@
 .fagrup-filtro-group select,
 .fagrup-filtro-group input[type="date"] {
   padding: 6px 10px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--erp-border);
   border-radius: 4px;
   font-size: 13px;
-  color: #334155;
-  background: #fff;
+  color: var(--erp-text);
+  background: var(--erp-surface);
   min-width: 150px;
 }
 
 .fagrup-filtro-sep {
   width: 1px;
   height: 36px;
-  background: #cbd5e1;
+  background: var(--erp-border);
   align-self: flex-end;
   margin: 0 4px;
 }
@@ -121,52 +120,52 @@
 
 .fagrup-date-wrap input[type="date"] {
   padding: 6px 10px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--erp-border);
   border-radius: 4px;
   font-size: 13px;
-  color: #334155;
-  background: #fff;
+  color: var(--erp-text);
+  background: var(--erp-surface);
   min-width: 140px;
 }
 
 .fagrup-btn-cal {
   padding: 5px 7px;
   font-size: 14px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--erp-border);
   border-radius: 4px;
-  background: #fff;
+  background: var(--erp-surface);
   cursor: pointer;
   line-height: 1;
   transition: background 0.15s;
 }
-.fagrup-btn-cal:hover { background: #e2e8f0; }
+.fagrup-btn-cal:hover { background: var(--erp-border-light); }
 
 .fagrup-btn-limpar {
   align-self: flex-end;
   padding: 6px 12px;
   font-size: 12px;
   font-weight: 600;
-  border: 1px solid #fca5a5;
+  border: 1px solid var(--erp-danger-bg);
   border-radius: 4px;
   cursor: pointer;
-  background: #fef2f2;
-  color: #dc2626;
+  background: color-mix(in sRGB, var(--erp-danger-bg) 50%, var(--erp-surface));
+  color: var(--erp-danger);
   transition: background 0.15s;
 }
-.fagrup-btn-limpar:hover { background: #fee2e2; }
+.fagrup-btn-limpar:hover { background: var(--erp-danger-bg); }
 
 /* ── Barra de cabeçalhos das empresas (fixa, não rola) ───────── */
 .fagrup-empresas-barra {
   display: flex;
   flex-shrink: 0;
-  border-bottom: 2px solid #cbd5e1;
+  border-bottom: 2px solid var(--erp-border);
 }
 
 .fagrup-empresa-bloco {
   flex: 1;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #e2e8f0;
+  border-right: 1px solid var(--erp-border-light);
 }
 .fagrup-empresa-bloco:last-child { border-right: none; }
 
@@ -176,8 +175,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 14px;
-  background: #f8fafc;
-  border-bottom: 2px solid #cbd5e1;
+  background: var(--erp-bg);
+  border-bottom: 2px solid var(--erp-border);
   flex-shrink: 0;
 }
 
@@ -191,12 +190,12 @@
 .fagrup-empresa-nome {
   font-size: 15px;
   font-weight: 800;
-  color: #1e293b;
+  color: var(--erp-text);
   letter-spacing: 0.06em;
 }
 
-.receber-titulo { color: #16a34a; }
-.pagar-titulo   { color: #dc2626; }
+.receber-titulo { color: var(--erp-success); }
+.pagar-titulo   { color: var(--erp-danger); }
 
 .fagrup-painel-btns {
   display: flex;
@@ -210,31 +209,31 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  background: #2c3e50;
-  color: #fff;
+  background: var(--erp-primary);
+  color: var(--erp-primary-text);
   transition: background 0.15s;
 }
-.fagrup-btn-add:hover { background: #1a252f; }
-.fagrup-btn-add.btn-receber { background: #16a34a; }
-.fagrup-btn-add.btn-receber:hover { background: #15803d; }
-.fagrup-btn-add.btn-pagar { background: #dc2626; }
-.fagrup-btn-add.btn-pagar:hover { background: #b91c1c; }
+.fagrup-btn-add:hover { background: var(--erp-primary-dark); }
+.fagrup-btn-add.btn-receber { background: var(--erp-success); }
+.fagrup-btn-add.btn-receber:hover { background: var(--erp-success-dark); }
+.fagrup-btn-add.btn-pagar { background: var(--erp-danger); }
+.fagrup-btn-add.btn-pagar:hover { background: var(--erp-danger-dark); }
 
 /* ── Totais ───────────────────────────────────────────────────── */
 .fagrup-totais {
   display: flex;
   gap: 20px;
   padding: 6px 14px;
-  background: #f8fafc;
-  border-bottom: 1px solid #e2e8f0;
+  background: var(--erp-bg);
+  border-bottom: 1px solid var(--erp-border-light);
   flex-shrink: 0;
   font-size: 12px;
 }
 
 .fagrup-total-item { display: flex; gap: 4px; align-items: center; }
-.fagrup-total-item.pendente { color: #b45309; }
-.fagrup-total-item.recebido { color: #15803d; }
-.fagrup-total-item.pago     { color: #1d4ed8; }
+.fagrup-total-item.pendente { color: var(--erp-warning); }
+.fagrup-total-item.recebido { color: var(--erp-success-dark); }
+.fagrup-total-item.pago     { color: var(--erp-accent-dark); }
 
 /* ── Tabela ───────────────────────────────────────────────────── */
 .fagrup-tabela-wrap {
@@ -252,13 +251,13 @@
 /* Todas as th: sticky + base visual */
 .fagrup-tabela thead th {
   position: sticky;
-  background: #f1f5f9;
-  padding: 7px 14px 7px 10px; /* padding-right extra p/ handle */
+  background: var(--erp-bg);
+  padding: 7px 14px 7px 10px;
   text-align: left;
   font-weight: 600;
-  color: #475569;
-  border-bottom: 1px solid #cbd5e1;
-  border-right: 1px solid #e2e8f0;
+  color: var(--erp-text-muted);
+  border-bottom: 1px solid var(--erp-border);
+  border-right: 1px solid var(--erp-border-light);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -284,12 +283,12 @@
   top: 0;
 }
 
-/* Linha 2 (Valor / Vencimento): fica logo abaixo da linha 1 */
+/* Linha 2 (sub-cabeçalhos): fica logo abaixo da linha 1 */
 .fagrup-tabela thead tr:nth-child(2) th {
-  top: 33px; /* altura da linha 1 */
-  background: #f8fafc;
+  top: 33px;
+  background: var(--erp-bg);
   font-size: 11px;
-  color: #64748b;
+  color: var(--erp-text-muted);
   text-align: center;
   z-index: 1;
 }
@@ -297,75 +296,65 @@
 /* Cabeçalho do grupo de banco (linha 1) */
 .th-banco-group {
   text-align: center !important;
-  background: #e8f0fe !important;
-  color: #1e40af !important;
+  background: var(--erp-info-bg) !important;
+  color: var(--erp-info) !important;
   font-size: 12px;
   letter-spacing: 0.03em;
-  border-left: 2px solid #bfdbfe !important;
+  border-left: 2px solid color-mix(in sRGB, var(--erp-info-bg) 70%, var(--erp-border)) !important;
 }
 
 .th-data    { min-width: 110px; white-space: nowrap; vertical-align: middle !important; }
 .th-tipo    { min-width: 50px; text-align: center !important; vertical-align: middle !important; }
 .th-desc    { min-width: 160px; vertical-align: middle !important; }
 .th-status  { min-width: 90px; text-align: center !important; vertical-align: middle !important; }
-.th-acoes   { min-width: 80px; text-align: center !important; vertical-align: middle !important; }
-.th-resumo  { min-width: 170px; text-align: center !important; vertical-align: middle !important; background: #f0f4ff !important; color: #3730a3 !important; border-left: 2px solid #c7d2fe !important; }
 
 /* Cabeçalho de grupo de empresa (linha 1) */
 .th-empresa-group {
   text-align: center !important;
-  background: #e8f0fe !important;
-  color: #1e40af !important;
+  background: var(--erp-info-bg) !important;
+  color: var(--erp-info) !important;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.03em;
-  border-left: 2px solid #bfdbfe !important;
+  border-left: 2px solid color-mix(in sRGB, var(--erp-info-bg) 70%, var(--erp-border)) !important;
 }
 
 /* Cabeçalho de banco (linha 2) */
 .th-banco-sub {
   text-align: center !important;
-  background: #f0f5ff !important;
-  color: #3730a3 !important;
+  background: color-mix(in sRGB, var(--erp-info-bg) 60%, var(--erp-surface)) !important;
+  color: var(--erp-info) !important;
   font-size: 11px;
   font-weight: 600;
   min-width: 110px;
-  border-left: 1px solid #c7d2fe !important;
-  top: 33px; /* sticky: fica abaixo da linha 1 */
+  border-left: 1px solid color-mix(in sRGB, var(--erp-info-bg) 70%, var(--erp-border)) !important;
+  top: 33px;
 }
 
 .fagrup-tabela tbody tr {
-  border-bottom: 1px solid #f1f5f9;
-  transition: background 0.1s;
+  border-bottom: 1px solid var(--erp-border-light);
 }
-.fagrup-tabela tbody tr:hover { background: #f8fafc; }
 
 /* ── Contorno visual por grupo de dia ────────────────────────── */
-.fagrup-tabela tbody tr.dia-base { background: #ffffff; }
-.fagrup-tabela tbody tr.dia-alt  { background: #f4f6f9; }
+.fagrup-tabela tbody tr.dia-base { background: var(--erp-surface); }
+.fagrup-tabela tbody tr.dia-alt  { background: var(--erp-bg); }
 
-.fagrup-tabela tbody tr.dia-base:hover { background: #f0f4ff; }
-.fagrup-tabela tbody tr.dia-alt:hover  { background: #e8ecf4; }
+/* Linha atrasada — borda sutil à esquerda */
+.fagrup-tabela tbody tr.row-atrasado { border-left: 3px solid var(--erp-warning-dark); }
 
-.fagrup-tabela tbody tr.row-dia-first td { border-top: 2px solid #64748b !important; }
-.fagrup-tabela tbody tr.row-dia-last  td { border-bottom: 2px solid #64748b !important; }
-
-/* Linha atrasada — apenas borda sutil à esquerda */
-.fagrup-tabela tbody tr.row-atrasado { border-left: 3px solid #f97316; }
-
-/* Cor do valor por tipo de conta — especificidade dupla para sobrepor .fagrup-tabela td */
-.col-valor.valor-receber { font-weight: 700; color: #16a34a; }
-.col-valor.valor-pagar   { font-weight: 700; color: #dc2626; }
+/* Cor do valor por tipo de conta */
+.col-valor.valor-receber { font-weight: 700; color: var(--erp-success); }
+.col-valor.valor-pagar   { font-weight: 700; color: var(--erp-danger); }
 
 .fagrup-tabela td {
   padding: 6px 10px;
-  color: #334155;
-  border-right: 1px solid #f1f5f9;
+  color: var(--erp-text);
+  border-right: 1px solid var(--erp-border-light);
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 0; /* necessário para text-overflow funcionar com table-layout:fixed */
+  max-width: 0;
 }
 
 .col-desc {
@@ -378,28 +367,28 @@
 
 .col-valor   { font-weight: 600; white-space: nowrap; text-align: right; }
 .col-data    { white-space: nowrap; }
-.col-empresa { font-size: 11px; font-weight: 600; color: #475569; white-space: nowrap; }
-.col-banco   { font-size: 11px; color: #64748b; white-space: nowrap; }
+.col-empresa { font-size: 11px; font-weight: 600; color: var(--erp-text-muted); white-space: nowrap; }
+.col-banco   { font-size: 11px; color: var(--erp-text-muted); white-space: nowrap; }
 
 /* ── Data agrupada (rowspan) ──────────────────────────────────── */
 .col-data-grupo {
-  background: #f8fafc;
+  background: var(--erp-bg);
   font-weight: 700;
   font-size: 11px;
-  color: #334155;
+  color: var(--erp-text);
   text-align: center !important;
   vertical-align: middle;
-  border-right: 2px solid #cbd5e1;
+  border-right: 2px solid var(--erp-border);
   white-space: nowrap;
 }
 
 /* ── Coluna de resumo do dia ──────────────────────────────────── */
 .col-resumo-dia {
   vertical-align: middle;
-  background: #f8f7ff;
-  border-left: 2px solid #c7d2fe;
+  background: color-mix(in sRGB, var(--erp-info-bg) 40%, var(--erp-surface));
+  border-left: 2px solid color-mix(in sRGB, var(--erp-info-bg) 70%, var(--erp-border));
   padding: 6px 10px !important;
-  overflow: visible !important;  /* não clipar o conteúdo em bloco do resumo */
+  overflow: visible !important;
   white-space: normal !important;
   text-overflow: unset !important;
   max-width: none !important;
@@ -407,29 +396,31 @@
 
 .resumo-linha {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 6px;
+  width: 100%;
+  gap: 4px;
   padding: 1px 0;
   font-size: 11px;
   line-height: 1.5;
 }
 
 .resumo-label {
-  font-weight: 700;
-  color: #64748b;
-  min-width: 22px;
-  flex-shrink: 0;
+  font-weight: 600;
+  color: var(--erp-text-muted);
+  flex: 0 0 auto;
+  text-align: left;
+  white-space: nowrap;
 }
 
 .resumo-val {
-  font-weight: 600;
+  font-weight: 700;
   text-align: right;
   white-space: nowrap;
-  color: #334155;
+  color: var(--erp-text);
+  flex: 1 1 auto;
 }
 
-.resumo-sal  { border-top: 1px solid #c7d2fe; padding-top: 3px; margin-top: 2px; }
+.resumo-sal  { border-top: 1px solid var(--erp-border-light); padding-top: 3px; margin-top: 2px; }
 .resumo-saldo-final { font-size: 12px; font-weight: 800; }
 
 /* Linhas de previsão */
@@ -442,17 +433,65 @@
 }
 .resumo-label-prev { font-style: italic; font-size: 10px; }
 
-.val-receber  { color: #16a34a; }
-.val-pagar    { color: #dc2626; }
-.val-prev-rec { color: #4ade80; font-style: italic; }
-.val-prev-pag { color: #f87171; font-style: italic; }
-.val-pos      { color: #16a34a; }
-.val-neg      { color: #dc2626; }
+.val-receber  { color: var(--erp-success); }
+.val-pagar    { color: var(--erp-danger); }
+.val-prev-rec { color: var(--erp-success); opacity: 0.7; font-style: italic; }
+.val-prev-pag { color: var(--erp-danger);  opacity: 0.7; font-style: italic; }
+.val-pos      { color: var(--erp-success); }
+.val-neg      { color: var(--erp-danger); }
+
+/* ── Resumo multi-empresa ─────────────────────────────────────── */
+.resumo-multi {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.resumo-empresa-bloco {
+  padding: 4px 0 2px;
+}
+
+.resumo-empresa-titulo {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--erp-info);
+  background: var(--erp-info-bg);
+  border-radius: 3px;
+  padding: 1px 5px;
+  margin-bottom: 3px;
+  display: inline-block;
+}
+
+.resumo-separador {
+  height: 1px;
+  background: var(--erp-border-light);
+  margin: 4px 0;
+}
+
+.resumo-separador--consolidado {
+  height: 2px;
+  background: linear-gradient(to right, var(--erp-accent), color-mix(in sRGB, var(--erp-accent) 50%, transparent));
+  margin: 5px 0;
+}
+
+.resumo-consolidado-bloco {
+  background: color-mix(in sRGB, var(--erp-accent) 4%, transparent);
+  border-radius: 4px;
+  padding: 4px 4px 3px;
+}
+
+.resumo-consolidado-titulo {
+  color: var(--erp-accent) !important;
+  background: color-mix(in sRGB, var(--erp-accent) 10%, var(--erp-surface)) !important;
+  font-size: 10px !important;
+}
 
 .fagrup-vazio {
   text-align: center;
   padding: 30px;
-  color: #94a3b8;
+  color: var(--erp-text-muted);
   font-style: italic;
 }
 
@@ -465,15 +504,16 @@
   font-weight: 600;
   text-transform: capitalize;
 }
-.badge-ok       { background: #dcfce7; color: #15803d; }
-.badge-pend     { background: #fef9c3; color: #92400e; }
-.badge-atrasado { background: #dc2626; color: #fff; font-weight: 700; letter-spacing: 0.03em; }
+.badge-ok        { background: var(--erp-success-bg); color: var(--erp-success-dark); }
+.badge-pend      { background: var(--erp-warning-bg); color: var(--erp-warning-dark); }
+.badge-atrasado  { background: var(--erp-danger); color: #fff; font-weight: 700; letter-spacing: 0.03em; }
+.badge-postergado { background: var(--erp-warning-dark); color: #fff; font-weight: 600; letter-spacing: 0.03em; }
 
 /* ── Linha de "hoje" ─────────────────────────────────────────────── */
 .fagrup-tabela tbody tr.row-hoje td {
-  background: #fefce8 !important;
-  border-top: 2px solid #ca8a04 !important;
-  border-bottom: 2px solid #ca8a04 !important;
+  background: var(--erp-hoje-bg) !important;
+  border-top: 2px solid var(--erp-hoje-border) !important;
+  border-bottom: 2px solid var(--erp-hoje-border) !important;
 }
 
 /* ── Sentinels de scroll infinito ────────────────────────────────── */
@@ -487,14 +527,14 @@
 
 .fagrup-loading-msg {
   font-size: 12px;
-  color: #64748b;
+  color: var(--erp-text-muted);
   font-style: italic;
   animation: fagrup-pulse 1s ease-in-out infinite;
 }
 
 .fagrup-sem-mais {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--erp-text-muted);
   font-style: italic;
 }
 
@@ -510,7 +550,7 @@
   max-width: none !important;
 }
 
-.act-ok, .act-edit, .act-del {
+.act-ok, .act-edit, .act-del, .act-estornar {
   border: none;
   border-radius: 3px;
   padding: 3px 7px;
@@ -519,10 +559,11 @@
   margin-right: 3px;
   transition: opacity 0.15s;
 }
-.act-ok   { background: #16a34a; color: #fff; }
-.act-edit { background: #2563eb; color: #fff; }
-.act-del  { background: #dc2626; color: #fff; }
-.act-ok:hover, .act-edit:hover, .act-del:hover { opacity: 0.8; }
+.act-ok       { background: var(--erp-success); color: #fff; }
+.act-edit     { background: var(--erp-accent); color: #fff; }
+.act-del      { background: var(--erp-danger); color: #fff; }
+.act-estornar { background: var(--erp-warning-dark); color: #fff; }
+.act-ok:hover, .act-edit:hover, .act-del:hover, .act-estornar:hover { opacity: 0.8; }
 
 /* ═══════════════════════════════════════════════════════════════
    MODAL
@@ -539,7 +580,7 @@
 }
 
 .fagrup-modal {
-  background: #fff;
+  background: var(--erp-surface);
   border-radius: 8px;
   padding: 24px;
   width: 420px;
@@ -550,7 +591,7 @@
 .fagrup-modal h3 {
   margin: 0 0 18px;
   font-size: 15px;
-  color: #1e293b;
+  color: var(--erp-text);
 }
 
 .fagrup-form-group {
@@ -563,23 +604,23 @@
 .fagrup-form-group label {
   font-size: 12px;
   font-weight: 600;
-  color: #64748b;
+  color: var(--erp-text-muted);
 }
 
 .fagrup-form-group input,
 .fagrup-form-group select {
   padding: 8px 10px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--erp-border);
   border-radius: 4px;
   font-size: 13px;
-  color: #334155;
-  background: #fff;
+  color: var(--erp-text);
+  background: var(--erp-surface);
 }
 
 .fagrup-form-group input:focus,
 .fagrup-form-group select:focus {
   outline: none;
-  border-color: #2c3e50;
+  border-color: var(--erp-accent);
 }
 
 .fagrup-form-row {
@@ -600,11 +641,11 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  background: #e2e8f0;
-  color: #334155;
+  background: var(--erp-border-light);
+  color: var(--erp-text);
   font-weight: 600;
 }
-.btn-cancel:hover { background: #cbd5e1; }
+.btn-cancel:hover { background: var(--erp-border); }
 
 .btn-save {
   padding: 8px 16px;
@@ -614,7 +655,242 @@
   font-weight: 600;
   color: #fff;
 }
-.receber-save { background: #16a34a; }
-.receber-save:hover { background: #15803d; }
-.pagar-save   { background: #dc2626; }
-.pagar-save:hover { background: #b91c1c; }
+.receber-save { background: var(--erp-success); }
+.receber-save:hover { background: var(--erp-success-dark); }
+.pagar-save   { background: var(--erp-danger); }
+.pagar-save:hover { background: var(--erp-danger-dark); }
+
+/* ── Linha de tipo badge ─────────────────────────────────────── */
+.tipo-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.tipo-receber { background: var(--erp-success-bg); color: var(--erp-success-dark); }
+.tipo-pagar   { background: var(--erp-danger-bg);  color: var(--erp-danger); }
+
+.celula-vazia { color: var(--erp-text-muted); }
+
+/* ── Linha de tabela agrupada por dia — separador ────────────── */
+.fagrup-tabela tbody tr.row-dia-first td { border-top: 2px solid var(--erp-border) !important; }
+.fagrup-tabela tbody tr.row-dia-last  td { border-bottom: 2px solid var(--erp-border) !important; }
+
+/* ── Mês ─────────────────────────────────────────────────────── */
+.row-mes td {
+  background: var(--erp-primary) !important;
+  color: var(--erp-primary-text) !important;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: capitalize;
+  padding: 5px 10px !important;
+  letter-spacing: 0.05em;
+}
+
+/* ── modal-actions reutilizado em janelas flutuantes ─────────── */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LINHA DE RESUMO DO DIA (recolhida / expandida)
+═══════════════════════════════════════════════════════════════ */
+
+.row-day-summary {
+  cursor: pointer;
+  border-top: 2px solid var(--erp-border) !important;
+  transition: background 0.12s;
+}
+.row-day-summary:hover .cell-day-summary {
+  background: color-mix(in sRGB, var(--erp-primary) 8%, var(--erp-bg));
+}
+
+/* Destaque especial para hoje */
+.row-day-summary--hoje .cell-day-summary {
+  background: var(--erp-hoje-bg) !important;
+  border-top: 2px solid var(--erp-hoje-border) !important;
+  border-bottom: 2px solid var(--erp-hoje-border) !important;
+}
+.row-day-summary--hoje:hover .cell-day-summary {
+  background: var(--erp-hoje-hover) !important;
+}
+
+.cell-day-summary {
+  background: var(--erp-bg);
+  padding: 0 !important;
+  overflow: visible !important;
+  max-width: none !important;
+  white-space: normal !important;
+  text-overflow: unset !important;
+}
+
+.day-summary-inner {
+  display: flex;
+  align-items: stretch;   /* todos os blocos esticam até a mesma altura */
+  gap: 0;
+  padding: 6px 12px;
+  min-height: 44px;
+}
+
+/* ── Parte esquerda: seta + data + contador ── */
+.day-summary-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 190px;
+  flex-shrink: 0;
+  padding-right: 12px;
+  border-right: 2px solid var(--erp-border);
+  margin-right: 8px;
+}
+
+.day-summary-arrow {
+  font-size: 10px;
+  color: var(--erp-text-muted);
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+
+.day-summary-date {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--erp-text);
+  white-space: nowrap;
+}
+
+.day-summary-count {
+  font-size: 11px;
+  color: var(--erp-text-muted);
+  white-space: nowrap;
+  padding: 1px 6px;
+  background: var(--erp-border-light);
+  border-radius: 8px;
+}
+
+/* ── Parte direita: blocos de resumo ── */
+.day-summary-resumos {
+  display: flex;
+  align-items: stretch;    /* vsep divs esticam até a altura total da linha */
+  gap: 0;
+  flex-shrink: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.day-summary-resumos::-webkit-scrollbar { display: none; }
+
+/* Bloco de empresa (total) */
+.day-empresa-block {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 14px;
+  width: 220px;
+  flex-shrink: 0;
+}
+
+.day-empresa-block-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--erp-info);
+  background: var(--erp-info-bg);
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-bottom: 5px;
+  display: block;           /* largura total do bloco */
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.day-empresa-block--consolidado .day-empresa-block-label {
+  color: var(--erp-accent);
+  background: color-mix(in sRGB, var(--erp-accent) 10%, var(--erp-surface));
+}
+
+/* Bloco de banco (sub-nível da empresa) */
+.day-banco-block {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 14px;
+  width: 205px;
+  flex-shrink: 0;
+}
+
+.day-banco-block-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--erp-info);
+  background: color-mix(in sRGB, var(--erp-info-bg) 60%, var(--erp-surface));
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-bottom: 5px;
+  display: block;           /* largura total do bloco */
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Separadores verticais entre blocos */
+.day-summary-vsep {
+  width: 1px;
+  background: var(--erp-border-light);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+.day-summary-vsep--empresa {
+  width: 2px;
+  background: var(--erp-border);
+  margin: 0 8px;
+}
+.day-summary-vsep--banco {
+  width: 1px;
+  background: var(--erp-border-light);
+  margin: 0 3px;
+  opacity: 0.7;
+}
+.day-summary-vsep--consolidado {
+  width: 2px;
+  background: var(--erp-border);
+  margin: 0 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DIVISOR ENTRE EMPRESAS (colunas de banco)
+═══════════════════════════════════════════════════════════════ */
+
+/* Cabeçalho da empresa com separador forte à esquerda */
+.th-empresa-group--sep {
+  border-left: 3px solid var(--erp-primary) !important;
+}
+
+/* Sub-cabeçalho do primeiro banco de cada empresa (depois da primeira) */
+.th-banco-sub--sep {
+  border-left: 3px solid var(--erp-primary) !important;
+}
+
+/* Células de valor/vazia do primeiro banco de empresa separadora */
+.col-empresa-sep {
+  border-left: 3px solid var(--erp-border) !important;
+}
+
+/* ── Linha de lançamento expandido ── */
+.row-lancamento td {
+  border-bottom: 1px solid var(--erp-border-light);
+}
+
+.fagrup-tabela tbody .row-lancamento:hover td {
+  background: color-mix(in sRGB, var(--erp-accent) 12%, var(--erp-surface)) !important;
+  outline: none;
+}
+
+.col-data-lancamento {
+  border-right: 2px solid var(--erp-border) !important;
+}

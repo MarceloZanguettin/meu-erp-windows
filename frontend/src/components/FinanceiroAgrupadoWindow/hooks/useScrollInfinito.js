@@ -1,7 +1,7 @@
 import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
-import { fetchLancamentosIntervalo } from '../services/financeiroService';
+import { fetchLancamentosIntervalo, fetchSaldosDiarios } from '../services/financeiroService';
 import { todayStr, addDays } from '../utils/dateUtils';
-import { INIT_DAYS, LOAD_DAYS, SCROLL_THRESHOLD_PX } from '../constants';
+import { INIT_DAYS_PAST, INIT_DAYS_FUTURE, LOAD_DAYS, SCROLL_THRESHOLD_PX } from '../constants';
 
 /**
  * Hook Controller — gerencia o scroll infinito bidirecional do Financeiro Agrupado.
@@ -15,14 +15,14 @@ import { INIT_DAYS, LOAD_DAYS, SCROLL_THRESHOLD_PX } from '../constants';
  *  - today                data de hoje (estável)
  *  - onDadosCarregados    callback a ser chamado pelo componente pai quando os dados chegam
  */
-export function useScrollInfinito({ setContasPagar, setContasReceber }) {
+export function useScrollInfinito({ setContasPagar, setContasReceber, setSaldosDiarios }) {
   const today = useRef(todayStr()).current;
 
-  // Intervalo já carregado — state para re-render, refs para callbacks estáveis
-  const [loadedInicio, setLoadedInicio] = useState(addDays(today, -INIT_DAYS));
-  const [loadedFim,    setLoadedFim]    = useState(addDays(today,  INIT_DAYS));
-  const loadedInicioRef = useRef(addDays(today, -INIT_DAYS));
-  const loadedFimRef    = useRef(addDays(today,  INIT_DAYS));
+  // Intervalo já carregado — cobre todo o histórico para trás e 30 dias para frente
+  const [loadedInicio, setLoadedInicio] = useState(addDays(today, -INIT_DAYS_PAST));
+  const [loadedFim,    setLoadedFim]    = useState(addDays(today,  INIT_DAYS_FUTURE));
+  const loadedInicioRef = useRef(addDays(today, -INIT_DAYS_PAST));
+  const loadedFimRef    = useRef(addDays(today,  INIT_DAYS_FUTURE));
 
   useEffect(() => { loadedInicioRef.current = loadedInicio; }, [loadedInicio]);
   useEffect(() => { loadedFimRef.current    = loadedFim;    }, [loadedFim]);
@@ -51,11 +51,17 @@ export function useScrollInfinito({ setContasPagar, setContasReceber }) {
 
   // ── Carga inicial ────────────────────────────────────────────────────────
   useEffect(() => {
-    fetchLancamentosIntervalo(loadedInicioRef.current, loadedFimRef.current)
-      .then(({ pagar, receber }) => {
-        setContasPagar(pagar);
-        setContasReceber(receber);
-      });
+    const ini = loadedInicioRef.current;
+    const fim = loadedFimRef.current;
+    fetchLancamentosIntervalo(ini, fim).then(({ pagar, receber }) => {
+      setContasPagar(pagar);
+      setContasReceber(receber);
+    });
+    if (setSaldosDiarios) {
+      fetchSaldosDiarios(ini, fim)
+        .then(saldos => setSaldosDiarios(saldos))
+        .catch(() => {});
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Restaura scrollTop após prepend (antes do paint) ────────────────────
@@ -96,6 +102,14 @@ export function useScrollInfinito({ setContasPagar, setContasReceber }) {
         prevScrollHeightRef.current = tableWrapRef.current?.scrollHeight ?? 0;
         setContasPagar(prev   => [...pagar,   ...prev]);
         setContasReceber(prev => [...receber, ...prev]);
+        if (setSaldosDiarios) {
+          fetchSaldosDiarios(novoInicio, novoFim).then(saldos => {
+            setSaldosDiarios(prev => {
+              const ids = new Set(saldos.map(s => `${s.conta_bancaria_id}|${s.data}`));
+              return [...saldos, ...prev.filter(s => !ids.has(`${s.conta_bancaria_id}|${s.data}`))];
+            });
+          }).catch(() => {});
+        }
         loadedInicioRef.current = novoInicio;
         setLoadedInicio(novoInicio);
       }
@@ -103,7 +117,7 @@ export function useScrollInfinito({ setContasPagar, setContasReceber }) {
       guardRef.current.loadingPast = false;
       setLoadingPast(false);
     }
-  }, [setContasPagar, setContasReceber]);
+  }, [setContasPagar, setContasReceber, setSaldosDiarios]);
 
   // ── Carrega dados do futuro ──────────────────────────────────────────────
   const carregarMaisFuturo = useCallback(async () => {
@@ -120,6 +134,14 @@ export function useScrollInfinito({ setContasPagar, setContasReceber }) {
       } else {
         setContasPagar(prev   => [...prev, ...pagar]);
         setContasReceber(prev => [...prev, ...receber]);
+        if (setSaldosDiarios) {
+          fetchSaldosDiarios(novoInicio, novoFim).then(saldos => {
+            setSaldosDiarios(prev => {
+              const ids = new Set(prev.map(s => `${s.conta_bancaria_id}|${s.data}`));
+              return [...prev, ...saldos.filter(s => !ids.has(`${s.conta_bancaria_id}|${s.data}`))];
+            });
+          }).catch(() => {});
+        }
         loadedFimRef.current = novoFim;
         setLoadedFim(novoFim);
       }
@@ -127,7 +149,7 @@ export function useScrollInfinito({ setContasPagar, setContasReceber }) {
       guardRef.current.loadingFuture = false;
       setLoadingFuture(false);
     }
-  }, [setContasPagar, setContasReceber]);
+  }, [setContasPagar, setContasReceber, setSaldosDiarios]);
 
   // ── Listener de scroll ───────────────────────────────────────────────────
   useEffect(() => {

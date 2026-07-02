@@ -3,9 +3,11 @@ import {
   fetchEmpresas,
   fetchContasBancarias,
   fetchLancamentosIntervalo,
+  fetchSaldosDiarios,
   salvarLancamento,
   marcarContaPago,
   marcarContaRecebido,
+  estornarLancamento,
   excluirLancamento,
 } from '../services/financeiroService';
 import { FORM_VAZIO } from '../constants';
@@ -28,6 +30,7 @@ export function useFinanceiroData() {
   const [contasBancarias, setContasBancarias] = useState([]);
   const [contasPagar,     setContasPagar]     = useState([]);
   const [contasReceber,   setContasReceber]   = useState([]);
+  const [saldosDiarios,   setSaldosDiarios]   = useState([]);
 
   // Modal
   const [modalTipo,  setModalTipo]  = useState(null); // 'pagar' | 'receber' | null
@@ -68,12 +71,14 @@ export function useFinanceiroData() {
   // ── Recarrega apenas o intervalo visível (pós-mutações) ──────────────────
   const recarregar = useCallback(async () => {
     if (!loadedInicioRef.current || !loadedFimRef.current) return;
-    const { pagar, receber } = await fetchLancamentosIntervalo(
-      loadedInicioRef.current,
-      loadedFimRef.current,
-    );
+    const inicio = loadedInicioRef.current;
+    const fim    = loadedFimRef.current;
+    const { pagar, receber } = await fetchLancamentosIntervalo(inicio, fim);
     setContasPagar(pagar);
     setContasReceber(receber);
+    fetchSaldosDiarios(inicio, fim)
+      .then(setSaldosDiarios)
+      .catch(() => {});
   }, []);
 
   // ── Ações do modal ────────────────────────────────────────────────────────
@@ -104,7 +109,7 @@ export function useFinanceiroData() {
       conta_bancaria_id: form.conta_bancaria_id ? Number(form.conta_bancaria_id) : null,
       descricao:         form.descricao,
       valor:             parseFloat(form.valor),
-      data_vencimento:   new Date(form.data_vencimento).toISOString(),
+      data_vencimento:   form.data_vencimento + 'T12:00:00',
       observacao:        form.observacao || null,
     };
     await salvarLancamento(modalTipo, body, editandoId);
@@ -120,6 +125,11 @@ export function useFinanceiroData() {
 
   const marcarRecebido = useCallback(async (id) => {
     await marcarContaRecebido(id);
+    recarregar();
+  }, [recarregar]);
+
+  const estornar = useCallback(async (tipo, id) => {
+    await estornarLancamento(tipo, id);
     recarregar();
   }, [recarregar]);
 
@@ -140,8 +150,10 @@ export function useFinanceiroData() {
     contasBancarias,
     contasPagar,
     contasReceber,
+    saldosDiarios,
     setContasPagar,
     setContasReceber,
+    setSaldosDiarios,
     // Conexão com scroll
     bindScrollRefs,
     // Modal
@@ -157,6 +169,7 @@ export function useFinanceiroData() {
     salvar,
     marcarPago,
     marcarRecebido,
+    estornar,
     excluir,
     recarregar,
   };

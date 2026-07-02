@@ -1,11 +1,9 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import BadgeStatus from './BadgeStatus';
 import { agruparPorData, calcularResumoDia, classeLinha, classeValor } from '../utils/lancamentoUtils';
 import { fmtDia, fmt } from '../utils/formatters';
 
-/**
- * Handle de redimensionamento de coluna.
- */
+/** Handle de redimensionamento de coluna */
 function ColHandle({ colIdx, onStart }) {
   return (
     <div
@@ -15,46 +13,45 @@ function ColHandle({ colIdx, onStart }) {
   );
 }
 
-/**
- * Células de resumo do dia (saldo corrido).
- */
-function ResumoDia({ res }) {
+/** Bloco de resumo de um único contexto (empresa ou consolidado) */
+function BlocoResumo({ r }) {
+  if (!r) return null;
   return (
     <>
       <div className="resumo-linha resumo-ant">
-        <span className="resumo-label">Ant</span>
-        <span className="resumo-val">{fmt(res.saldoAnterior)}</span>
+        <span className="resumo-label">Anterior</span>
+        <span className="resumo-val">{fmt(r.saldoAnterior)}</span>
       </div>
       <div className="resumo-linha resumo-rec">
-        <span className="resumo-label">Rec</span>
-        <span className="resumo-val val-receber">{fmt(res.recebido)}</span>
+        <span className="resumo-label">Recebido</span>
+        <span className="resumo-val val-receber">{fmt(r.recebido)}</span>
       </div>
       <div className="resumo-linha resumo-pag">
-        <span className="resumo-label">Pag</span>
-        <span className="resumo-val val-pagar">{fmt(res.pago)}</span>
+        <span className="resumo-label">Pago</span>
+        <span className="resumo-val val-pagar">{fmt(r.pago)}</span>
       </div>
-      {res.prevRec > 0 && (
+      {r.prevRec > 0 && (
         <div className="resumo-linha resumo-prev-rec">
-          <span className="resumo-label resumo-label-prev">Prev ↑</span>
-          <span className="resumo-val val-prev-rec">{fmt(res.prevRec)}</span>
+          <span className="resumo-label resumo-label-prev">Prev. Recebimento</span>
+          <span className="resumo-val val-prev-rec">{fmt(r.prevRec)}</span>
         </div>
       )}
-      {res.prevPag > 0 && (
+      {r.prevPag > 0 && (
         <div className="resumo-linha resumo-prev-pag">
-          <span className="resumo-label resumo-label-prev">Prev ↓</span>
-          <span className="resumo-val val-prev-pag">{fmt(res.prevPag)}</span>
+          <span className="resumo-label resumo-label-prev">Prev. a Pagar</span>
+          <span className="resumo-val val-prev-pag">{fmt(r.prevPag)}</span>
         </div>
       )}
       <div className="resumo-linha resumo-dif">
-        <span className="resumo-label">Dif</span>
-        <span className={`resumo-val ${res.diferenca >= 0 ? 'val-pos' : 'val-neg'}`}>
-          {fmt(res.diferenca)}
+        <span className="resumo-label">Diferença</span>
+        <span className={`resumo-val ${r.diferenca >= 0 ? 'val-pos' : 'val-neg'}`}>
+          {fmt(r.diferenca)}
         </span>
       </div>
       <div className="resumo-linha resumo-sal">
-        <span className="resumo-label">Sal</span>
-        <span className={`resumo-val resumo-saldo-final ${res.saldoFinal >= 0 ? 'val-pos' : 'val-neg'}`}>
-          {fmt(res.saldoFinal)}
+        <span className="resumo-label">Saldo</span>
+        <span className={`resumo-val resumo-saldo-final ${r.saldoFinal >= 0 ? 'val-pos' : 'val-neg'}`}>
+          {fmt(r.saldoFinal)}
         </span>
       </div>
     </>
@@ -62,37 +59,110 @@ function ResumoDia({ res }) {
 }
 
 /**
+ * Linha de resumo do dia — sempre visível, clicável para expandir/recolher.
+ * Mostra data, contagem e resumo por empresa → bancos da empresa → consolidado.
+ */
+function DaySummaryRow({ dk, entradas, res, empresas, empBancos, isExpanded, isToday, onToggle }) {
+  return (
+    <tr
+      className={`row-day-summary ${isToday ? 'row-day-summary--hoje' : ''}`}
+      onClick={onToggle}
+    >
+      <td colSpan={999} className="cell-day-summary">
+        <div className="day-summary-inner">
+
+          {/* ── Esquerda: data + contador ── */}
+          <div className="day-summary-left">
+            <span className="day-summary-arrow">{isExpanded ? '▼' : '▶'}</span>
+            <span className="day-summary-date">{fmtDia(dk)}</span>
+            <span className="day-summary-count">
+              {entradas.length} lançamento{entradas.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+
+          {/* ── Direita: por empresa → bancos → consolidado ── */}
+          <div className="day-summary-resumos">
+            {empresas.map((emp, i) => (
+              <React.Fragment key={emp.id}>
+                {i > 0 && <div className="day-summary-vsep day-summary-vsep--empresa" />}
+
+                {/* Total da empresa */}
+                <div className="day-empresa-block">
+                  <span className="day-empresa-block-label">{emp.nome}</span>
+                  <BlocoResumo r={res.porEmpresa?.[emp.id]} />
+                </div>
+
+                {/* Bancos desta empresa */}
+                {empBancos[i]?.map(cb => (
+                  <React.Fragment key={cb.id}>
+                    <div className="day-summary-vsep day-summary-vsep--banco" />
+                    <div className="day-banco-block">
+                      <span className="day-banco-block-label">{cb.banco}</span>
+                      <BlocoResumo r={res.porBanco?.[cb.id]} />
+                    </div>
+                  </React.Fragment>
+                ))}
+              </React.Fragment>
+            ))}
+
+            {/* Consolidado (só com mais de uma empresa) */}
+            {empresas.length > 1 && res.consolidado && (
+              <>
+                <div className="day-summary-vsep day-summary-vsep--consolidado" />
+                <div className="day-empresa-block day-empresa-block--consolidado">
+                  <span className="day-empresa-block-label">Consolidado</span>
+                  <BlocoResumo r={res.consolidado} />
+                </div>
+              </>
+            )}
+          </div>
+
+        </div>
+      </td>
+    </tr>
+  );
+}
+
+/**
  * Tabela unificada de lançamentos agrupados por mês e dia.
- * Todas as empresas aparecem em colunas de banco lado a lado.
  *
- * @param {{
- *   contasPagar:     object[],
- *   contasReceber:   object[],
- *   empresas:        object[],
- *   contasBancarias: object[],
- *   today:           string,
- *   colWidths:       number[],
- *   onStartColResize: Function,
- *   onMarcarPago:     Function,
- *   onMarcarRecebido: Function,
- *   onEditar:         Function,
- *   onExcluir:        Function,
- * }} props
+ * Cada dia começa recolhido mostrando a linha de resumo.
+ * Clicar na linha do dia expande os lançamentos individuais.
+ * Clicar em um lançamento abre a janela de detalhe.
  */
 export default function TabelaUnificada({
   contasPagar, contasReceber,
   empresas, contasBancarias,
+  saldosDiarios = [],
   today, colWidths, onStartColResize,
-  onMarcarPago, onMarcarRecebido, onEditar, onExcluir,
+  onClickLancamento,
 }) {
-  const grupos    = agruparPorData(contasPagar, contasReceber);
-  const resumoDia = calcularResumoDia(grupos);
+  // Dias expandidos — hoje começa expandido por padrão
+  const [expandedDays, setExpandedDays] = useState(() => new Set([today]));
 
-  const empBancos  = empresas.map(emp => contasBancarias.filter(cb => cb.empresa_id === emp.id));
-  const allBanks   = empBancos.flat();
-  const TOTAL_COLS = 3 + allBanks.length + 3;
-  const nBancos    = allBanks.length;
-  const totalW     = colWidths.reduce((s, w) => s + w, 0);
+  const toggleDay = useCallback((dk) => {
+    setExpandedDays(prev => {
+      const next = new Set(prev);
+      if (next.has(dk)) next.delete(dk);
+      else next.add(dk);
+      return next;
+    });
+  }, []);
+
+  const grupos    = agruparPorData(contasPagar, contasReceber);
+  const resumoDia = calcularResumoDia(grupos, empresas, contasBancarias, saldosDiarios);
+
+  const empBancos = empresas.map(emp => contasBancarias.filter(cb => cb.empresa_id === emp.id));
+  const allBanks  = empBancos.flat();
+  const nBancos   = allBanks.length;
+  const totalW    = colWidths.reduce((s, w) => s + w, 0);
+
+  // Marca o primeiro banco de cada empresa (exceto a primeira) — para divisor visual
+  const isBankSep = allBanks.map((cb, i) =>
+    i > 0 && allBanks[i - 1].empresa_id !== cb.empresa_id,
+  );
+
+  const TOTAL_COLS = 3 + nBancos + 1; // Data | Tipo | Desc | Banks | Status
 
   const hasEntradas = Object.keys(grupos).length > 0;
 
@@ -117,23 +187,26 @@ export default function TabelaUnificada({
             Descrição<ColHandle colIdx={2} onStart={onStartColResize} />
           </th>
           {empresas.map((emp, i) =>
-            empBancos[i]?.length > 0
-              ? <th key={emp.id} colSpan={empBancos[i].length} className="th-empresa-group">{emp.nome}</th>
-              : null
+            empBancos[i]?.length > 0 ? (
+              <th
+                key={emp.id}
+                colSpan={empBancos[i].length}
+                className={`th-empresa-group ${i > 0 ? 'th-empresa-group--sep' : ''}`}
+              >
+                {emp.nome}
+              </th>
+            ) : null
           )}
           <th rowSpan={2} className="th-status">
             Status<ColHandle colIdx={3 + nBancos} onStart={onStartColResize} />
           </th>
-          <th rowSpan={2} className="th-acoes">
-            Ações<ColHandle colIdx={4 + nBancos} onStart={onStartColResize} />
-          </th>
-          <th rowSpan={2} className="th-resumo">
-            Resumo do Dia<ColHandle colIdx={5 + nBancos} onStart={onStartColResize} />
-          </th>
         </tr>
         <tr>
           {allBanks.map((cb, i) => (
-            <th key={cb.id} className="th-banco-sub">
+            <th
+              key={cb.id}
+              className={`th-banco-sub ${isBankSep[i] ? 'th-banco-sub--sep' : ''}`}
+            >
               {cb.banco}<ColHandle colIdx={3 + i} onStart={onStartColResize} />
             </th>
           ))}
@@ -151,39 +224,47 @@ export default function TabelaUnificada({
 
         {Object.entries(grupos).map(([mk, { label: labelMes, dias }]) => (
           <React.Fragment key={mk}>
+            {/* ── Cabeçalho do mês ── */}
             <tr className="row-mes">
               <td colSpan={TOTAL_COLS}>{labelMes}</td>
             </tr>
 
-            {Object.entries(dias).map(([dk, { entradas }], dayIdx) => {
-              const res     = resumoDia[dk] || {};
-              const diaBase = dayIdx % 2 === 1 ? 'dia-alt' : 'dia-base';
-              const isToday = dk === today;
+            {Object.entries(dias).map(([dk, { entradas }]) => {
+              const res        = resumoDia[dk] || {};
+              const isExpanded = expandedDays.has(dk);
+              const isToday    = dk === today;
 
               return (
                 <React.Fragment key={dk}>
-                  {entradas.map((c, idx) => {
-                    const isFirst = idx === 0;
-                    const isLast  = idx === entradas.length - 1;
-                    const rowCls  = [
+                  {/* ── Linha de resumo do dia (sempre visível) ── */}
+                  <DaySummaryRow
+                    dk={dk}
+                    entradas={entradas}
+                    res={res}
+                    empresas={empresas}
+                    empBancos={empBancos}
+                    isExpanded={isExpanded}
+                    isToday={isToday}
+                    onToggle={() => toggleDay(dk)}
+                  />
+
+                  {/* ── Lançamentos individuais (apenas quando expandido) ── */}
+                  {isExpanded && entradas.map((c, idx) => {
+                    const rowCls = [
                       classeLinha(c),
-                      diaBase,
-                      isFirst ? 'row-dia-first' : '',
-                      isLast  ? 'row-dia-last'  : '',
-                      isToday ? 'row-hoje'       : '',
+                      idx % 2 === 0 ? 'dia-base' : 'dia-alt',
+                      isToday ? 'row-hoje' : '',
                     ].filter(Boolean).join(' ');
 
                     return (
                       <tr
                         key={`${c._tipo}-${c.id}`}
-                        className={rowCls}
-                        data-date={isFirst ? dk : undefined}
+                        className={`row-lancamento ${rowCls}`}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => onClickLancamento(c)}
                       >
-                        {isFirst && (
-                          <td rowSpan={entradas.length} className="col-data col-data-grupo">
-                            {fmtDia(c.data_vencimento)}
-                          </td>
-                        )}
+                        {/* Célula de data vazia — data já mostrada na linha de resumo */}
+                        <td className="col-data-lancamento" />
 
                         <td className="col-tipo">
                           <span className={`tipo-badge tipo-${c._tipo === 'R' ? 'receber' : 'pagar'}`}>
@@ -193,30 +274,13 @@ export default function TabelaUnificada({
 
                         <td className="col-desc" title={c.observacao}>{c.descricao}</td>
 
-                        {allBanks.map(cb =>
+                        {allBanks.map((cb, i) =>
                           c.empresa_id === cb.empresa_id && c.conta_bancaria_id === cb.id
-                            ? <td key={cb.id} className={classeValor(c)}>{fmt(c.valor)}</td>
-                            : <td key={cb.id} className="celula-vazia">—</td>
+                            ? <td key={cb.id} className={`${classeValor(c)} ${isBankSep[i] ? 'col-empresa-sep' : ''}`}>{fmt(c.valor)}</td>
+                            : <td key={cb.id} className={`celula-vazia ${isBankSep[i] ? 'col-empresa-sep' : ''}`}>—</td>
                         )}
 
                         <td><BadgeStatus conta={c} /></td>
-
-                        <td className="col-acoes">
-                          {c.status === 'pendente' && c._tipo === 'R' && (
-                            <button className="act-ok" title="Marcar recebido" onClick={() => onMarcarRecebido(c.id)}>✓</button>
-                          )}
-                          {c.status === 'pendente' && c._tipo === 'P' && (
-                            <button className="act-ok" title="Marcar pago" onClick={() => onMarcarPago(c.id)}>✓</button>
-                          )}
-                          <button className="act-edit" title="Editar"  onClick={() => onEditar(c._tipo === 'R' ? 'receber' : 'pagar', c)}>✎</button>
-                          <button className="act-del"  title="Excluir" onClick={() => onExcluir(c._tipo, c.id)}>✕</button>
-                        </td>
-
-                        {isFirst && (
-                          <td rowSpan={entradas.length} className="col-resumo-dia">
-                            <ResumoDia res={res} />
-                          </td>
-                        )}
                       </tr>
                     );
                   })}

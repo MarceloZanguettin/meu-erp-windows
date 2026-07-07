@@ -139,6 +139,11 @@ dist
 **/__pycache__/
 *.pyc
 *.pyo
+venv/
 
 # Claude Code — configurações locais (específicas por máquina)
 .claude/settings.local.json
+
+# Arquivos de trabalho gerados pelos scripts de importação do GENUS (dado bruto, não versionar)
+backend/_export_*.sql
+backend/_export_*.txt

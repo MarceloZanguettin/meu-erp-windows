@@ -1,0 +1,126 @@
+/* CadastroPessoaWindow — estilos específicos */
+/* Estilos globais (.form-grid-2, .form-group, .form-group-full, .form-group-checkbox,
+   .modal-overlay, .modal-content, .modal-body, .modal-actions,
+   .btn-save, .btn-cancel) vêm de styles/global.css */
+
+.cadpes-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  padding: 12px 16px;
+}
+
+.cadpes-loading { padding: 30px; text-align: center; color: #94a3b8; }
+
+.cadpes-modal { width: 860px; max-width: 96vw; }
+.cadpes-modal-body {
+  padding: 16px;
+  overflow-y: auto;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cadpes-secao {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-top: 4px;
+}
+
+.modal-header {
+  background-color: #2c3e50;
+  color: white;
+  padding: 12px 16px;
+  font-size: 14px;
+  border-radius: 6px 6px 0 0;
+}
+
+/* Contatos adicionais (GENUS.CADASTROCONTATO) — lista filha exibida dentro
+   do modal de edição de um cadastro já salvo (ver TabelaContatosCadastro.jsx) */
+.cadpes-contatos-placeholder {
+  padding: 16px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.cadpes-contatos-fieldset {
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 4px;
+}
+
+.cadpes-contatos-fieldset legend {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  padding: 0 5px;
+}
+
+.cadpes-contato-erro {
+  color: #dc2626;
+  font-size: 13px;
+}
+
+.cadpes-contatos-wrap {
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+.cadpes-contatos-tabela {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.cadpes-contatos-tabela thead tr {
+  background-color: #f8fafc;
+}
+
+.cadpes-contatos-tabela th {
+  padding: 8px 10px;
+  text-align: left;
+  font-weight: 600;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.cadpes-contatos-tabela td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.cadpes-contato-status {
+  padding: 16px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.cadpes-contato-edicao {
+  padding: 10px 0;
+}
+
+.cadpes-contato-acoes {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}

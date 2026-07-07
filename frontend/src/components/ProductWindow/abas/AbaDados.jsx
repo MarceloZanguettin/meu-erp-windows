@@ -6,22 +6,29 @@ export default function AbaDados({ form, setField }) {
       <div className="form-row">
         <div className="form-group">
           <label>Cód. Interno:</label>
-          <input type="text" value={form.codigoInterno} onChange={e => setField('codigoInterno', e.target.value)} placeholder="Pesquisa do produto" />
+          <input type="text" value={form.codigo_interno} onChange={e => setField('codigo_interno', e.target.value)} placeholder="Pesquisa do produto" />
         </div>
         <div className="form-group">
           <label>Cód. Fornecedor:</label>
-          <input type="text" value={form.codigoFornecedor} onChange={e => setField('codigoFornecedor', e.target.value)} placeholder="Identificação do fornecedor" />
+          <input type="text" value={form.codigo_fornecedor} onChange={e => setField('codigo_fornecedor', e.target.value)} placeholder="Identificação do fornecedor" />
+        </div>
+        <div className="form-group">
+          <label>Situação:</label>
+          <select value={form.situacao} onChange={e => setField('situacao', e.target.value)}>
+            <option value="A">Ativo</option>
+            <option value="I">Inativo</option>
+          </select>
         </div>
       </div>
 
       <div className="form-row">
         <div className="form-group">
-          <label>Grupo:</label>
-          <input type="text" value={form.grupo} onChange={e => setField('grupo', e.target.value)} />
+          <label>Cód. Grupo (GENUS):</label>
+          <input type="number" value={form.cod_grupo} onChange={e => setField('cod_grupo', e.target.value)} />
         </div>
         <div className="form-group">
-          <label>Subgrupo:</label>
-          <input type="text" value={form.subgrupo} onChange={e => setField('subgrupo', e.target.value)} />
+          <label>Cód. Subgrupo (GENUS):</label>
+          <input type="number" value={form.cod_subgrupo} onChange={e => setField('cod_subgrupo', e.target.value)} />
         </div>
         <div className="form-group">
           <label>Categoria:</label>
@@ -59,11 +66,11 @@ export default function AbaDados({ form, setField }) {
         <div className="form-row">
           <div className="form-group">
             <label>CFOP Dentro do Estado:</label>
-            <input type="text" value={form.cfopDentro} onChange={e => setField('cfopDentro', e.target.value)} />
+            <input type="text" value={form.cfop_dentro_estado} onChange={e => setField('cfop_dentro_estado', e.target.value)} />
           </div>
           <div className="form-group">
             <label>CFOP Fora do Estado:</label>
-            <input type="text" value={form.cfopFora} onChange={e => setField('cfopFora', e.target.value)} />
+            <input type="text" value={form.cfop_fora_estado} onChange={e => setField('cfop_fora_estado', e.target.value)} />
           </div>
         </div>
       </fieldset>
@@ -73,19 +80,19 @@ export default function AbaDados({ form, setField }) {
         <div className="form-row">
           <div className="form-group">
             <label>Und. Compra:</label>
-            <input type="text" value={form.unidadeCompra} onChange={e => setField('unidadeCompra', e.target.value)} placeholder="Ex: CX, PC" />
+            <input type="text" value={form.unidade_compra} onChange={e => setField('unidade_compra', e.target.value)} placeholder="Ex: CX, PC" />
           </div>
           <div className="form-group">
             <label>Und. Venda:</label>
-            <input type="text" value={form.unidadeVenda} onChange={e => setField('unidadeVenda', e.target.value)} placeholder="Ex: UN, KG" />
+            <input type="text" value={form.unidade_venda} onChange={e => setField('unidade_venda', e.target.value)} placeholder="Ex: UN, KG" />
           </div>
           <div className="form-group">
             <label>Peso Bruto:</label>
-            <input type="number" step="0.001" value={form.pesoBruto} onChange={e => setField('pesoBruto', e.target.value)} placeholder="0.000" />
+            <input type="number" step="0.001" value={form.peso_bruto} onChange={e => setField('peso_bruto', e.target.value)} placeholder="0.000" />
           </div>
           <div className="form-group">
             <label>Peso Líquido:</label>
-            <input type="number" step="0.001" value={form.pesoLiquido} onChange={e => setField('pesoLiquido', e.target.value)} placeholder="0.000" />
+            <input type="number" step="0.001" value={form.peso_liquido} onChange={e => setField('peso_liquido', e.target.value)} placeholder="0.000" />
           </div>
         </div>
       </fieldset>

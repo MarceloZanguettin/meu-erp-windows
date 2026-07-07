@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import JanelaBase from '../JanelaBase/JanelaBase.jsx';
+import { useState } from 'react';
+import CadastroFormWindow from '../shared/CadastroFormWindow.jsx';
+import AbaGenusFuncionario from './AbaGenusFuncionario.jsx';
+import { GENUS_FUNCIONARIO_FORM_VAZIO, normalizarFuncionario } from './genusFuncionarioFields.js';
 import './FuncionarioWindow.css';
 
 const API = 'http://localhost:8050';
@@ -8,125 +10,118 @@ const FORM_VAZIO = {
   cargo: '', departamento: '', salario: '', email: '', telefone: '',
   cep: '', logradouro: '', numero: '', bairro: '', cidade: '', uf: '',
   ativo: true,
+  // Campos migrados de GENUS.FUNCIONARIO — ver AbaGenusFuncionario / genusFuncionarioFields.js
+  ...GENUS_FUNCIONARIO_FORM_VAZIO,
 };
 
 export default function NovoFuncionarioWindow({ id, onClose, onMinimize, onSalvar }) {
   const [form, setForm] = useState({ ...FORM_VAZIO });
-  const [salvando, setSalvando] = useState(false);
 
-  const handleSalvar = async () => {
-    setSalvando(true);
-    try {
-      const r = await fetch(`${API}/cadastros/funcionarios`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      if (!r.ok) {
-        const err = await r.json().catch(() => ({ detail: 'Erro desconhecido' }));
-        throw new Error(err.detail || 'Erro ao salvar');
-      }
-      onSalvar?.();
-      onClose();
-    } catch (e) {
-      alert('Erro: ' + e.message);
-    } finally {
-      setSalvando(false);
+  const setField = (campo, valor) => setForm({ ...form, [campo]: valor });
+
+  const salvar = async () => {
+    const r = await fetch(`${API}/cadastros/funcionarios`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(normalizarFuncionario(form)),
+    });
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({ detail: 'Erro desconhecido' }));
+      throw new Error(err.detail || 'Erro ao salvar');
     }
   };
 
   return (
-    <JanelaBase id={id} titulo="Novo Funcionário" onClose={onClose} onMinimize={onMinimize} largura={820} altura={640} minLargura={560} minAltura={460}>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-        <div className="func-modal-body" style={{ flex: 1, maxHeight: 'none', overflowY: 'auto' }}>
-          <div className="func-secao">Dados Pessoais</div>
-          <div className="form-grid-2">
-            <div className="form-group form-group-full">
-              <label>Nome *</label>
-              <input value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label>CPF</label>
-              <input value={form.cpf} onChange={e => setForm({ ...form, cpf: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label>RG</label>
-              <input value={form.rg} onChange={e => setForm({ ...form, rg: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label>Data de Nascimento</label>
-              <input type="date" value={form.data_nascimento} onChange={e => setForm({ ...form, data_nascimento: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label>E-mail</label>
-              <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label>Telefone</label>
-              <input value={form.telefone} onChange={e => setForm({ ...form, telefone: e.target.value })} />
-            </div>
-          </div>
-
-          <div className="func-secao">Dados Profissionais</div>
-          <div className="form-grid-2">
-            <div className="form-group">
-              <label>Cargo</label>
-              <input value={form.cargo} onChange={e => setForm({ ...form, cargo: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label>Departamento</label>
-              <input value={form.departamento} onChange={e => setForm({ ...form, departamento: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label>Salário (R$)</label>
-              <input type="number" step="0.01" min="0" value={form.salario} onChange={e => setForm({ ...form, salario: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label>Data de Admissão</label>
-              <input type="date" value={form.data_admissao} onChange={e => setForm({ ...form, data_admissao: e.target.value })} />
-            </div>
-          </div>
-
-          <div className="func-secao">Endereço</div>
-          <div className="form-grid-2">
-            <div className="form-group">
-              <label>CEP</label>
-              <input value={form.cep} onChange={e => setForm({ ...form, cep: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label>Logradouro</label>
-              <input value={form.logradouro} onChange={e => setForm({ ...form, logradouro: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label>Número</label>
-              <input value={form.numero} onChange={e => setForm({ ...form, numero: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label>Bairro</label>
-              <input value={form.bairro} onChange={e => setForm({ ...form, bairro: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label>Cidade</label>
-              <input value={form.cidade} onChange={e => setForm({ ...form, cidade: e.target.value })} />
-            </div>
-            <div className="form-group">
-              <label>UF</label>
-              <input maxLength={2} value={form.uf} onChange={e => setForm({ ...form, uf: e.target.value.toUpperCase() })} />
-            </div>
-          </div>
-
-          <div className="form-group form-group-checkbox" style={{ marginTop: 8 }}>
-            <label>
-              <input type="checkbox" checked={!!form.ativo} onChange={e => setForm({ ...form, ativo: e.target.checked })} />
-              Ativo
-            </label>
-          </div>
+    <CadastroFormWindow
+      id={id} titulo="Novo Funcionário" onClose={onClose} onMinimize={onMinimize} onSalvar={onSalvar}
+      largura={820} altura={640} minLargura={560} minAltura={460}
+      salvar={salvar}
+    >
+      <div className="func-secao">Dados Pessoais</div>
+      <div className="form-grid-2">
+        <div className="form-group form-group-full">
+          <label>Nome *</label>
+          <input value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} />
         </div>
-        <div className="modal-actions" style={{ flexShrink: 0, borderTop: '1px solid #e2e8f0', padding: '10px 16px' }}>
-          <button className="btn-cancel" onClick={onClose} disabled={salvando}>Cancelar</button>
-          <button className="btn-save" onClick={handleSalvar} disabled={salvando}>{salvando ? 'Salvando...' : 'Salvar'}</button>
+        <div className="form-group">
+          <label>CPF</label>
+          <input value={form.cpf} onChange={e => setForm({ ...form, cpf: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>RG</label>
+          <input value={form.rg} onChange={e => setForm({ ...form, rg: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>Data de Nascimento</label>
+          <input type="date" value={form.data_nascimento} onChange={e => setForm({ ...form, data_nascimento: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>E-mail</label>
+          <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>Telefone</label>
+          <input value={form.telefone} onChange={e => setForm({ ...form, telefone: e.target.value })} />
         </div>
       </div>
-    </JanelaBase>
+
+      <div className="func-secao">Dados Profissionais</div>
+      <div className="form-grid-2">
+        <div className="form-group">
+          <label>Cargo</label>
+          <input value={form.cargo} onChange={e => setForm({ ...form, cargo: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>Departamento</label>
+          <input value={form.departamento} onChange={e => setForm({ ...form, departamento: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>Salário (R$)</label>
+          <input type="number" step="0.01" min="0" value={form.salario} onChange={e => setForm({ ...form, salario: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>Data de Admissão</label>
+          <input type="date" value={form.data_admissao} onChange={e => setForm({ ...form, data_admissao: e.target.value })} />
+        </div>
+      </div>
+
+      <div className="func-secao">Endereço</div>
+      <div className="form-grid-2">
+        <div className="form-group">
+          <label>CEP</label>
+          <input value={form.cep} onChange={e => setForm({ ...form, cep: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>Logradouro</label>
+          <input value={form.logradouro} onChange={e => setForm({ ...form, logradouro: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>Número</label>
+          <input value={form.numero} onChange={e => setForm({ ...form, numero: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>Bairro</label>
+          <input value={form.bairro} onChange={e => setForm({ ...form, bairro: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>Cidade</label>
+          <input value={form.cidade} onChange={e => setForm({ ...form, cidade: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>UF</label>
+          <input maxLength={2} value={form.uf} onChange={e => setForm({ ...form, uf: e.target.value.toUpperCase() })} />
+        </div>
+      </div>
+
+      <div className="form-group form-group-checkbox" style={{ marginTop: 8 }}>
+        <label>
+          <input type="checkbox" checked={!!form.ativo} onChange={e => setForm({ ...form, ativo: e.target.checked })} />
+          Ativo
+        </label>
+      </div>
+
+      <div className="func-secao">GENUS (tabela FUNCIONARIO — legado)</div>
+      <AbaGenusFuncionario form={form} setField={setField} />
+    </CadastroFormWindow>
   );
 }

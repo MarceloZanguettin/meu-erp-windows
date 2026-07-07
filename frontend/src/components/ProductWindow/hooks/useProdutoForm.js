@@ -4,31 +4,30 @@ const FORM_INICIAL = {
   // Identificação
   codigo:            '',
   nome:              '',
-  descricao:         '',
-  // Dados
-  codigoInterno:     '',
-  codigoFornecedor:  '',
-  grupo:             '',
-  subgrupo:          '',
+  codigo_interno:    '',
+  codigo_fornecedor: '',
+  cod_grupo:         '',
+  cod_subgrupo:      '',
   categoria:         '',
+  situacao:          'A',
   // Fiscal
   ncm:               '',
   csosn:             '',
   cst:               '',
-  cfopDentro:        '',
-  cfopFora:          '',
+  cfop_dentro_estado: '',
+  cfop_fora_estado:   '',
   // Pesos
-  unidadeCompra:     '',
-  unidadeVenda:      '',
-  pesoBruto:         '',
-  pesoLiquido:       '',
+  unidade_compra:    '',
+  unidade_venda:     '',
+  peso_bruto:        '',
+  peso_liquido:      '',
   // Preço / Estoque
   estoque:           '',
   preco:             '',
   custo:             '',
-  margemLucro:       '',
-  precoMinimo:       '',
-  precoAtacado:      '',
+  margem_lucro:      '',
+  preco_minimo:      '',
+  preco_atacado:     '',
 };
 
 /**
@@ -39,12 +38,27 @@ const FORM_INICIAL = {
  */
 export function useProdutoForm() {
   const [form, setFormState] = useState(FORM_INICIAL);
+  const [produtoId, setProdutoId] = useState(null);
 
   const setField = useCallback((campo, valor) => {
     setFormState(prev => ({ ...prev, [campo]: valor }));
   }, []);
 
-  const resetForm = useCallback(() => setFormState(FORM_INICIAL), []);
+  const resetForm = useCallback(() => {
+    setFormState(FORM_INICIAL);
+    setProdutoId(null);
+  }, []);
 
-  return { form, setField, resetForm };
+  // Carrega um produto já cadastrado (vindo da busca) no formulário, para edição.
+  const carregarProduto = useCallback((produto) => {
+    const carregado = { ...FORM_INICIAL };
+    for (const campo of Object.keys(FORM_INICIAL)) {
+      const valor = produto[campo];
+      carregado[campo] = valor === null || valor === undefined ? '' : valor;
+    }
+    setFormState(carregado);
+    setProdutoId(produto.id);
+  }, []);
+
+  return { form, setField, resetForm, produtoId, carregarProduto };
 }

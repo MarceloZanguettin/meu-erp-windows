@@ -10,7 +10,7 @@ class PedidoCreate(BaseModel):
     id: Optional[int] = None
     cliente_id: int
     data: datetime = Field(default_factory=datetime.now)
-    itens: list[ItemPedidoCreate]
+    itens: list[ItemPedido]
     total: float
     status: str = "Pendente" # Pendente, Pago, Cancelado
 

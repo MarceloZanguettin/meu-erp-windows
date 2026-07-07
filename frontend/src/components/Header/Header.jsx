@@ -56,6 +56,10 @@ export default function Header({ usuario, setUsuario, abrirJanela }) {
           { label: 'Representantes',     onClick: () => abrirJanela('representante') },
           { label: 'Funcionários',       onClick: () => abrirJanela('funcionario') },
           { separator: true },
+          { label: 'Cadastro (GENUS)',   onClick: () => abrirJanela('cadastroPessoa') },
+          { label: 'Centro de Custo (GENUS)', onClick: () => abrirJanela('centroCusto') },
+          { label: 'Centros de Custo Excluídos (GENUS)', onClick: () => abrirJanela('centroCustoExcluido') },
+          { label: 'Empresas (GENUS)',   onClick: () => abrirJanela('empresa') },
           { label: 'Tabelas Auxiliares', onClick: () => abrirJanela('tabelasAuxiliares') },
         ]} />
 
@@ -65,15 +69,45 @@ export default function Header({ usuario, setUsuario, abrirJanela }) {
 
         <Dropdown title="Compras" items={[
           { label: 'Solicitações / Pedidos de Compra', onClick: () => abrirJanela('compras') },
+          { label: 'Entradas (GENUS)', onClick: () => abrirJanela('entrada') },
+          { label: 'Notas Destinadas (GENUS)', onClick: () => abrirJanela('notaDestinada') },
+          { label: 'Compras (GENUS)', onClick: () => abrirJanela('compraGenus') },
+          { label: 'Cotação de Preço - Cabeçalho (GENUS)', onClick: () => abrirJanela('cotacaoPreco') },
+          { label: 'Itens de Cotação de Preço (GENUS)', onClick: () => abrirJanela('cotacaoItens') },
+          { label: 'Produtos solicitados em Cotação (GENUS)', onClick: () => abrirJanela('cotacaoProduto') },
+          { label: 'Requisição de Material - Cabeçalho (GENUS)', onClick: () => abrirJanela('requisicaoMateria') },
+          { label: 'Requisição de Material - Item (GENUS)', onClick: () => abrirJanela('requisicaoProduto') },
+          { label: 'Etapas de Requisição de Material (GENUS)', onClick: () => abrirJanela('requisicaoMateriaEtapas') },
         ]} />
 
         <Dropdown title="Vendas" items={[
           { label: 'Orçamentos / Pedidos de Venda', onClick: () => abrirJanela('vendas') },
+          { label: 'Saídas (GENUS)',                onClick: () => abrirJanela('saida') },
+          { label: 'Saídas Excluídas (GENUS)',       onClick: () => abrirJanela('saidaExcluida') },
+          { label: 'Saídas Canceladas (GENUS)',      onClick: () => abrirJanela('saidaCancelada') },
+          { label: 'Auditoria de Pré-Pedido (GENUS)', onClick: () => abrirJanela('auditoriaPrePedido') },
         ]} />
 
         <Dropdown title="Financeiro" items={[
           { label: 'Fluxo de Trabalho',   onClick: () => abrirJanela('fluxoTrabalho') },
           { label: 'Financeiro Agrupado', onClick: () => abrirJanela('financeiroAgrupado') },
+          { separator: true },
+          { label: 'Lançamentos Contábeis (GENUS)', onClick: () => abrirJanela('lancamentoContabil') },
+          { label: 'Movimentos Fixos (GENUS)', onClick: () => abrirJanela('movimentoFixo') },
+          { label: 'Fixos a Pagar (GENUS)', onClick: () => abrirJanela('fixoPagar') },
+          { label: 'Contas a Receber Excluídas (GENUS)', onClick: () => abrirJanela('contaReceberExcluida') },
+          { label: 'Contas a Pagar Excluídas (GENUS)', onClick: () => abrirJanela('contaPagarExcluida') },
+          { label: 'Comissões (GENUS)', onClick: () => abrirJanela('comissao') },
+          { label: 'Vínculo Fatura-Nota Fiscal (GENUS)', onClick: () => abrirJanela('faturaNota') },
+          { label: 'Vínculo Fatura-Nota Pagar (GENUS)', onClick: () => abrirJanela('faturaNotaPagar') },
+          { label: 'Faturas (GENUS)', onClick: () => abrirJanela('fatura') },
+          { label: 'Faturas a Pagar (GENUS)', onClick: () => abrirJanela('faturaPagar') },
+          { label: 'Cheques Emitidos (GENUS)', onClick: () => abrirJanela('chequeEmitido') },
+          { label: 'Contas (GENUS)', onClick: () => abrirJanela('contaGenus') },
+          { label: 'Movimentos de Crédito (GENUS)', onClick: () => abrirJanela('movto') },
+          { label: 'Banco Sicred - Retorno/Remessa (GENUS)', onClick: () => abrirJanela('bcoSicred') },
+          { label: 'Créditos de Cliente (GENUS)', onClick: () => abrirJanela('credito') },
+          { label: 'Carteiras de Cobrança (GENUS)', onClick: () => abrirJanela('carteira') },
         ]} />
 
         <Dropdown title="Configurações" items={[

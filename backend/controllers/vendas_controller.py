@@ -60,12 +60,23 @@ def _calcular_total_orcamento(itens_data) -> float:
 @router.get("/orcamentos", response_model=list[vendas.OrcamentoOut])
 def listar_orcamentos(
     status: Optional[str] = Query(None),
+    busca: Optional[str] = Query(None),
     db: Session = Depends(get_db),
 ):
     q = db.query(Orcamento)
     if status:
         q = q.filter(Orcamento.status == status)
+    if busca:
+        q = q.filter(
+            Orcamento.numero.ilike(f"%{busca}%")
+            | Orcamento.nome_cliente.ilike(f"%{busca}%")
+        )
     return q.order_by(Orcamento.data_emissao.desc()).all()
+
+
+@router.get("/orcamentos/{id}", response_model=vendas.OrcamentoOut)
+def buscar_orcamento(id: int, db: Session = Depends(get_db)):
+    return _get_ou_404(db, Orcamento, id)
 
 
 @router.post("/orcamentos", response_model=vendas.OrcamentoOut)

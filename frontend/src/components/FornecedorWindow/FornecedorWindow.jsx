@@ -3,6 +3,9 @@ import JanelaBase from '../JanelaBase/JanelaBase.jsx';
 import TabelaCrud from '../shared/TabelaCrud.jsx';
 import BarraFerramentas from '../shared/BarraFerramentas.jsx';
 import { useCrud } from '../../hooks/useCrud.js';
+import AbaGenusFornecedor from './AbaGenusFornecedor.jsx';
+import BancosFornecedor from './components/BancosFornecedor.jsx';
+import { GENUS_FORNECEDOR_FORM_VAZIO, normalizarFornecedor } from './genusFornecedorFields.js';
 import './FornecedorWindow.css';
 
 const FORM_VAZIO = {
@@ -23,19 +26,23 @@ const FORM_VAZIO = {
   prazo_entrega_dias: '',
   observacao: '',
   ativo: true,
+  // Campos migrados de GENUS.FORNECEDOR — ver AbaGenusFornecedor / genusFornecedorFields.js
+  ...GENUS_FORNECEDOR_FORM_VAZIO,
 };
 
-const ABAS = ['Lista', 'Dados', 'Endereço', 'Comercial'];
+const ABAS = ['Lista', 'Dados', 'Endereço', 'Comercial', 'Bancos', 'GENUS'];
 
-export default function FornecedorWindow({ id, onClose, onMinimize }) {
+export default function FornecedorWindow({ id, onClose, onMinimize, abrirJanela }) {
   const [abaAtiva, setAbaAtiva] = useState('Lista');
   const {
     itens, loading, modal, editandoId, form, setForm,
     busca, setBusca,
-    abrirAdicionar, abrirEditar, salvar, excluir, fecharModal,
-  } = useCrud('/cadastros/fornecedores', FORM_VAZIO);
+    abrirEditar, salvar, excluir, fecharModal, recarregar,
+  } = useCrud('/cadastros/fornecedores', FORM_VAZIO, normalizarFornecedor);
 
-  const handleNovo = () => { abrirAdicionar(); setAbaAtiva('Dados'); };
+  const setField = (campo, valor) => setForm({ ...form, [campo]: valor });
+
+  const handleNovo = () => abrirJanela('novoFornecedor', { onSalvar: recarregar });
   const handleEditar = (item) => { abrirEditar(item); setAbaAtiva('Dados'); };
   const handleSalvar = async () => { await salvar(); setAbaAtiva('Lista'); };
   const handleCancelar = () => { fecharModal(); setAbaAtiva('Lista'); };
@@ -179,6 +186,24 @@ export default function FornecedorWindow({ id, onClose, onMinimize }) {
                 </label>
               </div>
             </div>
+            <div className="form-acoes">
+              <button className="btn-cancel" onClick={handleCancelar}>Cancelar</button>
+              <button className="btn-save" onClick={handleSalvar}>Salvar</button>
+            </div>
+          </div>
+        )}
+
+        {abaAtiva === 'Bancos' && modal && (
+          <div className="fornecedor-form">
+            <div className="form-titulo">Contas Bancárias (para pagamento)</div>
+            <BancosFornecedor fornecedorId={editandoId} />
+          </div>
+        )}
+
+        {abaAtiva === 'GENUS' && modal && (
+          <div className="fornecedor-form">
+            <div className="form-titulo">Campos GENUS (tabela FORNECEDOR — legado)</div>
+            <AbaGenusFornecedor form={form} setField={setField} />
             <div className="form-acoes">
               <button className="btn-cancel" onClick={handleCancelar}>Cancelar</button>
               <button className="btn-save" onClick={handleSalvar}>Salvar</button>

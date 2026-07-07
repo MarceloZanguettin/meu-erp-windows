@@ -195,6 +195,18 @@
   flex-shrink: 0;
 }
 
+/* ─── Cabeçalho de seção dentro de formulários ─── */
+.form-secao {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--erp-text-muted);
+  letter-spacing: 0.05em;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--erp-border-light);
+  margin-top: 4px;
+}
+
 /* ─── BOTÕES GLOBAIS ─── */
 .btn-cancel,
 .btn-save {

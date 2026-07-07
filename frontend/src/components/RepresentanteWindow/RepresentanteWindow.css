@@ -13,8 +13,26 @@
 
 .repr-loading { padding: 30px; text-align: center; color: #94a3b8; }
 
-.repr-modal { width: 560px; max-width: 95vw; }
-.repr-modal-body { padding: 16px; overflow-y: auto; max-height: 60vh; }
+.repr-modal { width: 680px; max-width: 95vw; }
+.repr-modal-body {
+  padding: 16px;
+  overflow-y: auto;
+  max-height: 65vh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.repr-secao {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-top: 4px;
+}
 
 .modal-header {
   background-color: #2c3e50;

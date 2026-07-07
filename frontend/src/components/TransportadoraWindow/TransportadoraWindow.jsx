@@ -4,6 +4,8 @@ import TabelaCrud from '../shared/TabelaCrud.jsx';
 import BarraFerramentas from '../shared/BarraFerramentas.jsx';
 import Portal from '../shared/Portal.jsx';
 import { useCrud } from '../../hooks/useCrud.js';
+import AbaGenusTransportadora from './AbaGenusTransportadora.jsx';
+import { GENUS_TRANSPORTADORA_FORM_VAZIO, normalizarTransportadora } from './genusTransportadoraFields.js';
 import './TransportadoraWindow.css';
 
 const FORM_VAZIO = {
@@ -19,6 +21,8 @@ const FORM_VAZIO = {
   uf: '',
   observacao: '',
   ativo: true,
+  // Campos migrados de GENUS.TRANSPORTADOR — ver AbaGenusTransportadora / genusTransportadoraFields.js
+  ...GENUS_TRANSPORTADORA_FORM_VAZIO,
 };
 
 export default function TransportadoraWindow({ id, onClose, onMinimize, abrirJanela }) {
@@ -26,7 +30,9 @@ export default function TransportadoraWindow({ id, onClose, onMinimize, abrirJan
     itens, loading, modal, editandoId, form, setForm,
     busca, setBusca,
     abrirAdicionar, abrirEditar, salvar, excluir, fecharModal, recarregar,
-  } = useCrud('/cadastros/transportadoras', FORM_VAZIO);
+  } = useCrud('/cadastros/transportadoras', FORM_VAZIO, normalizarTransportadora);
+
+  const setField = (campo, valor) => setForm({ ...form, [campo]: valor });
 
   const itensFiltrados = itens.filter(i =>
     !busca || i.nome?.toLowerCase().includes(busca.toLowerCase()) ||
@@ -110,6 +116,9 @@ export default function TransportadoraWindow({ id, onClose, onMinimize, abrirJan
                     </label>
                   </div>
                 </div>
+
+                <div className="transp-secao">GENUS (tabela TRANSPORTADOR — legado)</div>
+                <AbaGenusTransportadora form={form} setField={setField} />
               </div>
               <div className="modal-actions">
                 <button className="btn-cancel" onClick={fecharModal}>Cancelar</button>

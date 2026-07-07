@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 const API = 'http://localhost:8050';
 
-export function useCrud(endpoint, formVazio) {
+export function useCrud(endpoint, formVazio, normalizar = (f) => f) {
   const [itens, setItens] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
@@ -54,7 +54,7 @@ export function useCrud(endpoint, formVazio) {
       const r = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(normalizar(form)),
       });
       if (!r.ok) {
         const err = await r.json().catch(() => ({ detail: 'Erro desconhecido' }));
@@ -65,7 +65,7 @@ export function useCrud(endpoint, formVazio) {
     } catch (e) {
       alert('Erro: ' + e.message);
     }
-  }, [endpoint, editandoId, form, carregar]);
+  }, [endpoint, editandoId, form, carregar, normalizar]);
 
   const excluir = useCallback(async (id) => {
     if (!window.confirm('Excluir este registro?')) return;

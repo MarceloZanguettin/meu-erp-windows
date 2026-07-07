@@ -55,6 +55,10 @@ The frontend does **not use React Router**. It implements a desktop-style multi-
 
 **To add a new window module:** create the component, add one entry to `janelasConfig.js`. No changes to `App.jsx` or `Header.jsx` needed.
 
+**Title bar convention:** every floating window is built on `<JanelaBase>` (`src/components/JanelaBase/JanelaBase.jsx`) — the single shared scope for the title bar, drag, resize, and the three controls (minimizar yellow, maximizar green, fechar red). `maximizavel` defaults to `true` there; don't hand-roll a window's own header/drag/resize logic, and don't repeat `maximizavel` per window unless deliberately disabling it. A window needing its live size (e.g. for proportional column widths) gets it via `JanelaBase`'s `onResize` callback, not a second resize hook. After creating or editing any window component, invoke the `janela-titlebar-check` subagent to verify compliance.
+
+**"Novo X" form convention:** every single-item creation window (opened via `abrirJanela('novoX', { onSalvar })`, e.g. `NovoRepresentanteWindow`) is built on `<CadastroFormWindow>` (`src/components/shared/CadastroFormWindow.jsx`) — the single shared scope for the Cancelar/Salvar footer, saving state, and error handling. The window component only owns its `form` state, field markup, and a `salvar()` function that does the API call and throws on failure. "+Novo" buttons on cadastro list windows (Clientes, Fornecedores, Representantes, etc.) open a separate `CadastroFormWindow`-based window rather than switching an inline tab. After adding or editing a "+Novo" flow, invoke the `cadastro-novo-window-check` subagent to verify compliance.
+
 ### Component Pattern (complex modules)
 Each feature window follows this internal structure:
 ```

@@ -34,7 +34,7 @@ from database import SessionLocal
 from models.tabelas import Empresa, ContaBancaria, ContaPagar, ContaReceber, SaldoDiarioBancario
 
 # ── Caminhos dos arquivos fonte ───────────────────────────────────────────────
-BASE_DIR = r"D:\Projetos VS Code\Financeiro Empresas Excel"
+BASE_DIR = r"C:\Users\mzang\Documents\VS Code\arquivos empresas"
 CLASSIFICACAO_PATH = os.path.join(BASE_DIR, "classificacao_ml_resultados.json")
 CELULAS_PATH       = os.path.join(BASE_DIR, "celulas_extraidas.json")
 

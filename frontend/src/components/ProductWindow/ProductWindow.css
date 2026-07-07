@@ -46,6 +46,87 @@
   font-style: italic;
 }
 
+/* --- MODAL DE PESQUISA DE PRODUTO --- */
+.produto-busca-modal {
+  width: 640px;
+  max-width: 90vw;
+}
+
+.produto-busca-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.produto-busca-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--erp-border);
+  border-radius: 4px;
+  font-size: 14px;
+  background: var(--erp-surface);
+  color: var(--erp-text);
+}
+
+.produto-busca-input:focus {
+  outline: none;
+  border-color: var(--erp-accent);
+}
+
+.produto-busca-erro {
+  color: var(--erp-danger);
+  font-size: 13px;
+}
+
+.produto-busca-resultados {
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid var(--erp-border-light);
+  border-radius: 4px;
+}
+
+.produto-busca-status {
+  padding: 20px;
+  text-align: center;
+  color: var(--erp-text-muted);
+  font-size: 13px;
+}
+
+.produto-busca-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.produto-busca-tabela thead tr {
+  background-color: var(--erp-bg);
+  position: sticky;
+  top: 0;
+}
+
+.produto-busca-tabela th {
+  padding: 8px 10px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--erp-text-muted);
+  border-bottom: 1px solid var(--erp-border-light);
+  font-size: 12px;
+}
+
+.produto-busca-tabela td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--erp-border-light);
+}
+
+.produto-busca-linha {
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.produto-busca-linha:hover {
+  background-color: var(--erp-border-light);
+}
+
 /* Linha de campos em linha */
 .form-row {
   display: flex;

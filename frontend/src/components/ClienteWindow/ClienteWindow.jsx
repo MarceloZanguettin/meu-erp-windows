@@ -3,6 +3,13 @@ import JanelaBase from '../JanelaBase/JanelaBase.jsx';
 import TabelaCrud from '../shared/TabelaCrud.jsx';
 import BarraFerramentas from '../shared/BarraFerramentas.jsx';
 import { useCrud } from '../../hooks/useCrud.js';
+import AbaGenusCliente from './AbaGenusCliente.jsx';
+import EmpresasCliente from './components/EmpresasCliente.jsx';
+import RegrasCliente from './components/RegrasCliente.jsx';
+import AtendimentosCliente from './components/AtendimentosCliente.jsx';
+import CnaesCliente from './components/CnaesCliente.jsx';
+import AnexosCliente from './components/AnexosCliente.jsx';
+import { GENUS_CLIENTE_FORM_VAZIO, normalizarClienteCompleto } from './genusClienteFields.js';
 import './ClienteWindow.css';
 
 const FORM_VAZIO = {
@@ -25,22 +32,23 @@ const FORM_VAZIO = {
   limite_credito: '',
   observacao: '',
   ativo: true,
+  // Campos migrados de GENUS.CLIENTE — ver AbaGenusCliente / genusClienteFields.js
+  ...GENUS_CLIENTE_FORM_VAZIO,
 };
 
-const ABAS = ['Lista', 'Dados', 'Endereço', 'Comercial'];
+const ABAS = ['Lista', 'Dados', 'Endereço', 'Comercial', 'Empresas', 'Atendimentos', 'CNAEs', 'Anexos', 'Regras Fiscais', 'GENUS'];
 
-export default function ClienteWindow({ id, onClose, onMinimize }) {
+export default function ClienteWindow({ id, onClose, onMinimize, abrirJanela }) {
   const [abaAtiva, setAbaAtiva] = useState('Lista');
   const {
     itens, loading, modal, editandoId, form, setForm,
     busca, setBusca,
-    abrirAdicionar, abrirEditar, salvar, excluir, fecharModal,
-  } = useCrud('/cadastros/clientes', FORM_VAZIO);
+    abrirEditar, salvar, excluir, fecharModal, recarregar,
+  } = useCrud('/cadastros/clientes', FORM_VAZIO, normalizarClienteCompleto);
 
-  const handleNovo = () => {
-    abrirAdicionar();
-    setAbaAtiva('Dados');
-  };
+  const setField = (campo, valor) => setForm({ ...form, [campo]: valor });
+
+  const handleNovo = () => abrirJanela('novoCliente', { onSalvar: recarregar });
 
   const handleEditar = (item) => {
     abrirEditar(item);
@@ -223,7 +231,69 @@ export default function ClienteWindow({ id, onClose, onMinimize }) {
           </div>
         )}
 
-        {!modal && abaAtiva !== 'Lista' && (
+        {(abaAtiva === 'Empresas' && modal) && (
+          <div className="cliente-form">
+            <div className="form-titulo">Empresas / Filiais (GENUS: CLIENTEEMPRESA)</div>
+            <EmpresasCliente clienteId={editandoId} />
+            <div className="form-acoes">
+              <button className="btn-cancel" onClick={handleCancelar}>Cancelar</button>
+              <button className="btn-save" onClick={handleSalvar}>Salvar</button>
+            </div>
+          </div>
+        )}
+
+        {(abaAtiva === 'Atendimentos' && modal) && (
+          <div className="cliente-form">
+            <div className="form-titulo">Histórico de Atendimentos (GENUS: CLIENTEATENDIMENTO)</div>
+            <AtendimentosCliente clienteId={editandoId} />
+            <div className="form-acoes">
+              <button className="btn-cancel" onClick={handleCancelar}>Cancelar</button>
+              <button className="btn-save" onClick={handleSalvar}>Salvar</button>
+            </div>
+          </div>
+        )}
+
+        {(abaAtiva === 'CNAEs' && modal) && (
+          <div className="cliente-form">
+            <div className="form-titulo">CNAEs vinculados (GENUS: CLIENTECNAE)</div>
+            <CnaesCliente clienteId={editandoId} />
+            <div className="form-acoes">
+              <button className="btn-cancel" onClick={handleCancelar}>Cancelar</button>
+              <button className="btn-save" onClick={handleSalvar}>Salvar</button>
+            </div>
+          </div>
+        )}
+
+        {(abaAtiva === 'Anexos' && modal) && (
+          <div className="cliente-form">
+            <div className="form-titulo">Anexos/Documentos (GENUS: CLIENTEANEXO)</div>
+            <AnexosCliente clienteId={editandoId} />
+            <div className="form-acoes">
+              <button className="btn-cancel" onClick={handleCancelar}>Cancelar</button>
+              <button className="btn-save" onClick={handleSalvar}>Salvar</button>
+            </div>
+          </div>
+        )}
+
+        {abaAtiva === 'Regras Fiscais' && (
+          <div className="cliente-form">
+            <div className="form-titulo">Regras Fiscais por Cliente (GENUS: REGRASCLIENTE)</div>
+            <RegrasCliente />
+          </div>
+        )}
+
+        {(abaAtiva === 'GENUS' && modal) && (
+          <div className="cliente-form">
+            <div className="form-titulo">Campos GENUS (tabela CLIENTE — legado)</div>
+            <AbaGenusCliente form={form} setField={setField} />
+            <div className="form-acoes">
+              <button className="btn-cancel" onClick={handleCancelar}>Cancelar</button>
+              <button className="btn-save" onClick={handleSalvar}>Salvar</button>
+            </div>
+          </div>
+        )}
+
+        {!modal && abaAtiva !== 'Lista' && abaAtiva !== 'Regras Fiscais' && (
           <div className="cliente-sem-selecao">
             <p>Clique em "+ Novo" ou edite um cliente para preencher os dados.</p>
           </div>

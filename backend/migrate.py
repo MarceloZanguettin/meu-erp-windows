@@ -4,6 +4,8 @@ Execute com: python migrate.py (dentro da pasta backend, com o venv ativo)
 """
 import sys
 import os
+sys.stdout.reconfigure(encoding="utf-8")
+sys.stderr.reconfigure(encoding="utf-8")
 sys.path.insert(0, os.path.dirname(__file__))
 
 from database import engine, Base

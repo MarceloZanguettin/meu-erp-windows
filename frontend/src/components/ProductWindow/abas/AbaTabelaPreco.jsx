@@ -1,6 +1,7 @@
 import React from 'react';
+import TabelaPrecosProduto from '../components/TabelaPrecosProduto.jsx';
 
-export default function AbaTabelaPreco({ form, setField }) {
+export default function AbaTabelaPreco({ form, setField, produtoId }) {
   return (
     <>
       <div className="form-row">
@@ -10,7 +11,7 @@ export default function AbaTabelaPreco({ form, setField }) {
         </div>
         <div className="form-group">
           <label>Margem de Lucro (%)</label>
-          <input type="number" step="0.01" value={form.margemLucro} onChange={e => setField('margemLucro', e.target.value)} placeholder="0.00" />
+          <input type="number" step="0.01" value={form.margem_lucro} onChange={e => setField('margem_lucro', e.target.value)} placeholder="0.00" />
         </div>
         <div className="form-group">
           <label>Preço de Venda (R$) *</label>
@@ -21,13 +22,15 @@ export default function AbaTabelaPreco({ form, setField }) {
       <div className="form-row">
         <div className="form-group">
           <label>Preço Mínimo Permitido (R$)</label>
-          <input type="number" step="0.01" value={form.precoMinimo} onChange={e => setField('precoMinimo', e.target.value)} placeholder="0.00" />
+          <input type="number" step="0.01" value={form.preco_minimo} onChange={e => setField('preco_minimo', e.target.value)} placeholder="0.00" />
         </div>
         <div className="form-group">
           <label>Preço para Atacado (R$)</label>
-          <input type="number" step="0.01" value={form.precoAtacado} onChange={e => setField('precoAtacado', e.target.value)} placeholder="0.00" />
+          <input type="number" step="0.01" value={form.preco_atacado} onChange={e => setField('preco_atacado', e.target.value)} placeholder="0.00" />
         </div>
       </div>
+
+      <TabelaPrecosProduto produtoId={produtoId} />
     </>
   );
 }

@@ -4,6 +4,8 @@ import TabelaCrud from '../shared/TabelaCrud.jsx';
 import BarraFerramentas from '../shared/BarraFerramentas.jsx';
 import Portal from '../shared/Portal.jsx';
 import { useCrud } from '../../hooks/useCrud.js';
+import AbaGenusFuncionario from './AbaGenusFuncionario.jsx';
+import { GENUS_FUNCIONARIO_FORM_VAZIO, normalizarFuncionario } from './genusFuncionarioFields.js';
 import './FuncionarioWindow.css';
 
 const FORM_VAZIO = {
@@ -24,6 +26,8 @@ const FORM_VAZIO = {
   cidade: '',
   uf: '',
   ativo: true,
+  // Campos migrados de GENUS.FUNCIONARIO — ver AbaGenusFuncionario / genusFuncionarioFields.js
+  ...GENUS_FUNCIONARIO_FORM_VAZIO,
 };
 
 const fmtMoeda = (v) => v !== '' && v !== null && v !== undefined
@@ -35,7 +39,9 @@ export default function FuncionarioWindow({ id, onClose, onMinimize, abrirJanela
     itens, loading, modal, editandoId, form, setForm,
     busca, setBusca,
     abrirAdicionar, abrirEditar, salvar, excluir, fecharModal, recarregar,
-  } = useCrud('/cadastros/funcionarios', FORM_VAZIO);
+  } = useCrud('/cadastros/funcionarios', FORM_VAZIO, normalizarFuncionario);
+
+  const setField = (campo, valor) => setForm({ ...form, [campo]: valor });
 
   const itensFiltrados = itens.filter(i =>
     !busca || i.nome?.toLowerCase().includes(busca.toLowerCase()) ||
@@ -155,6 +161,9 @@ export default function FuncionarioWindow({ id, onClose, onMinimize, abrirJanela
                   Ativo
                 </label>
               </div>
+
+              <div className="func-secao">GENUS (tabela FUNCIONARIO — legado)</div>
+              <AbaGenusFuncionario form={form} setField={setField} />
             </div>
             <div className="modal-actions">
               <button className="btn-cancel" onClick={fecharModal}>Cancelar</button>

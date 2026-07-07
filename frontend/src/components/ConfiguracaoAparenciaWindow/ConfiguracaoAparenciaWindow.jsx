@@ -308,7 +308,6 @@ export default function ConfiguracaoAparenciaWindow({ id, onClose, onMinimize })
       altura={640}
       minLargura={820}
       minAltura={520}
-      maximizavel
     >
       <div className="aparencia-wrapper">
 

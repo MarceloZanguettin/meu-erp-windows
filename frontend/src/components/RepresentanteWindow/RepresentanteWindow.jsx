@@ -4,6 +4,8 @@ import TabelaCrud from '../shared/TabelaCrud.jsx';
 import BarraFerramentas from '../shared/BarraFerramentas.jsx';
 import Portal from '../shared/Portal.jsx';
 import { useCrud } from '../../hooks/useCrud.js';
+import AbaGenusRepresentante from './AbaGenusRepresentante.jsx';
+import { GENUS_REPRESENTANTE_FORM_VAZIO, normalizarRepresentante } from './genusRepresentanteFields.js';
 import './RepresentanteWindow.css';
 
 const FORM_VAZIO = {
@@ -15,6 +17,8 @@ const FORM_VAZIO = {
   comissao_percentual: '',
   meta_mensal: '',
   ativo: true,
+  // Campos migrados de GENUS.REPRESENTANTE — ver AbaGenusRepresentante / genusRepresentanteFields.js
+  ...GENUS_REPRESENTANTE_FORM_VAZIO,
 };
 
 const fmtMoeda = (v) => v !== '' && v !== null && v !== undefined
@@ -25,8 +29,10 @@ export default function RepresentanteWindow({ id, onClose, onMinimize, abrirJane
   const {
     itens, loading, modal, editandoId, form, setForm,
     busca, setBusca,
-    abrirAdicionar, abrirEditar, salvar, excluir, fecharModal, recarregar,
-  } = useCrud('/cadastros/representantes', FORM_VAZIO);
+    abrirEditar, salvar, excluir, fecharModal, recarregar,
+  } = useCrud('/cadastros/representantes', FORM_VAZIO, normalizarRepresentante);
+
+  const setField = (campo, valor) => setForm({ ...form, [campo]: valor });
 
   const itensFiltrados = itens.filter(i =>
     !busca || i.nome?.toLowerCase().includes(busca.toLowerCase()) ||
@@ -101,6 +107,9 @@ export default function RepresentanteWindow({ id, onClose, onMinimize, abrirJane
                   </label>
                 </div>
               </div>
+
+              <div className="repr-secao">GENUS (tabela REPRESENTANTE — legado)</div>
+              <AbaGenusRepresentante form={form} setField={setField} />
             </div>
             <div className="modal-actions">
               <button className="btn-cancel" onClick={fecharModal}>Cancelar</button>

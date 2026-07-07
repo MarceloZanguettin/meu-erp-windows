@@ -1,0 +1,35 @@
+/* CreditoWindow — estilos específicos */
+/* Estilos globais (.form-grid-2, .form-group, .form-group-full, .form-group-checkbox,
+   .modal-overlay, .modal-content, .modal-body, .modal-actions,
+   .btn-save, .btn-cancel) vêm de styles/global.css */
+
+.cr-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  padding: 12px 16px;
+}
+
+.cr-loading { padding: 30px; text-align: center; color: #94a3b8; }
+
+.cr-modal { width: 680px; max-width: 96vw; }
+.cr-modal-body {
+  padding: 16px;
+  overflow-y: auto;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cr-secao {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-top: 4px;
+}

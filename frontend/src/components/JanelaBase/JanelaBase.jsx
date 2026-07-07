@@ -1,14 +1,15 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { useWindowResize } from '../../hooks/useWindowResize.jsx';
 
 function calcMaxSize() {
   const headerEl = document.querySelector('.app-header');
   const headerH  = headerEl ? headerEl.offsetHeight : 60;
-  const taskbarH = 45;
+  // Taskbar é um dock flutuante (position: fixed) que não reserva espaço no
+  // layout — não subtrair altura por ela, senão sobra uma faixa vazia embaixo.
   return {
     pos:  { x: 0, y: headerH },
-    size: { width: window.innerWidth, height: window.innerHeight - headerH - taskbarH },
+    size: { width: window.innerWidth, height: window.innerHeight - headerH },
   };
 }
 
@@ -21,8 +22,9 @@ export default function JanelaBase({
   altura = 680,
   minLargura = 750,
   minAltura = 450,
-  maximizavel = false,
+  maximizavel = true,
   iniciarMaximizado = false,
+  onResize,
   children,
 }) {
   const nodeRef      = useRef(null);
@@ -43,6 +45,14 @@ export default function JanelaBase({
   });
 
   const [maximizada, setMaximizada] = useState(iniciarMaximizado);
+
+  // Notifica o consumidor sempre que o tamanho real da janela mudar
+  // (drag-resize, maximizar, restaurar) — só necessário para janelas cujo
+  // conteúdo precisa recalcular algo com base na largura/altura disponível
+  // (ex.: colunas de tabela proporcionais).
+  useEffect(() => {
+    onResize?.(winSize);
+  }, [winSize]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggleMaximizar = () => {
     if (maximizada) {

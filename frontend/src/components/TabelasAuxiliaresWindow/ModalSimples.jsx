@@ -43,6 +43,12 @@ export default function ModalSimples({ titulo, campos, form, setForm, onSalvar, 
                   />
                   {campo.label}
                 </label>
+              ) : campo.type === 'textarea' ? (
+                <textarea
+                  rows={3}
+                  value={form[campo.key] ?? ''}
+                  onChange={e => setForm({ ...form, [campo.key]: e.target.value })}
+                />
               ) : (
                 <input
                   type={campo.type || 'text'}

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import Portal from '../../shared/Portal.jsx';
+import TabelaItemOrcamentoGenus from './TabelaItemOrcamentoGenus.jsx';
 
 const fmtMoeda = (v) => Number(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
@@ -108,6 +109,130 @@ export default function ModalOrcamento({ editandoId, form, setForm, itens, setIt
               </tfoot>
             </table>
           </div>
+
+          <details className="vendas-genus-detalhes">
+            <summary>Dados adicionais (GENUS)</summary>
+            <div className="form-grid-3">
+              <div className="form-group">
+                <label>Cód. Empresa</label>
+                <input type="number" value={form.cod_empresa} onChange={e => setForm({ ...form, cod_empresa: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Código (GENUS)</label>
+                <input type="number" value={form.codigo_genus} onChange={e => setForm({ ...form, codigo_genus: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Cód. Cliente (GENUS)</label>
+                <input type="number" value={form.cod_cliente} onChange={e => setForm({ ...form, cod_cliente: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Cond. Pagamento (cód.)</label>
+                <input maxLength={5} value={form.cod_cond_pagto} onChange={e => setForm({ ...form, cod_cond_pagto: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Cód. Funcionário</label>
+                <input type="number" value={form.cod_funcionario} onChange={e => setForm({ ...form, cod_funcionario: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>À vista / A prazo</label>
+                <select value={form.avista_prazo} onChange={e => setForm({ ...form, avista_prazo: e.target.value })}>
+                  <option value="">-</option>
+                  <option value="A">À vista</option>
+                  <option value="P">A prazo</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Data do Pedido</label>
+                <input type="date" value={form.dt_pedido} onChange={e => setForm({ ...form, dt_pedido: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Liberado</label>
+                <select value={form.liberado} onChange={e => setForm({ ...form, liberado: e.target.value })}>
+                  <option value="">-</option>
+                  <option value="S">Sim</option>
+                  <option value="N">Não</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Data Liberação</label>
+                <input type="date" value={form.dt_liberado} onChange={e => setForm({ ...form, dt_liberado: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Cód. Adm.</label>
+                <input type="number" value={form.cod_adm} onChange={e => setForm({ ...form, cod_adm: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Endereço do Cliente</label>
+                <input value={form.cli_endereco} onChange={e => setForm({ ...form, cli_endereco: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Número</label>
+                <input maxLength={6} value={form.cli_numero} onChange={e => setForm({ ...form, cli_numero: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Cód. Cidade</label>
+                <input type="number" value={form.cli_cod_cidade} onChange={e => setForm({ ...form, cli_cod_cidade: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>CEP</label>
+                <input maxLength={10} value={form.cli_cep} onChange={e => setForm({ ...form, cli_cep: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Fone do Cliente</label>
+                <input maxLength={15} value={form.cli_fone} onChange={e => setForm({ ...form, cli_fone: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Contato</label>
+                <input maxLength={20} value={form.cli_contato} onChange={e => setForm({ ...form, cli_contato: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Bairro</label>
+                <input maxLength={35} value={form.cli_bairro} onChange={e => setForm({ ...form, cli_bairro: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>CPF/CNPJ Cliente</label>
+                <input maxLength={14} value={form.cli_cpf_cnpj} onChange={e => setForm({ ...form, cli_cpf_cnpj: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Frete (R$)</label>
+                <input type="number" step="0.01" min="0" value={form.frete} onChange={e => setForm({ ...form, frete: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Cód. Transportador</label>
+                <input type="number" value={form.cod_transportador} onChange={e => setForm({ ...form, cod_transportador: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Tipo de Frete</label>
+                <input maxLength={3} value={form.tipo_frete} onChange={e => setForm({ ...form, tipo_frete: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Cód. Tabela de Preço</label>
+                <input type="number" value={form.cod_tabela_preco} onChange={e => setForm({ ...form, cod_tabela_preco: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Status (GENUS)</label>
+                <input maxLength={2} value={form.status_genus} onChange={e => setForm({ ...form, status_genus: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Motivo</label>
+                <input maxLength={2} value={form.motivo} onChange={e => setForm({ ...form, motivo: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Prazo de Entrega</label>
+                <input type="date" value={form.prazo_entrega} onChange={e => setForm({ ...form, prazo_entrega: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Cód. Agregado</label>
+                <input type="number" value={form.cod_agregado} onChange={e => setForm({ ...form, cod_agregado: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Espécie</label>
+                <input maxLength={15} value={form.especie} onChange={e => setForm({ ...form, especie: e.target.value })} />
+              </div>
+            </div>
+          </details>
+
+          {editandoId && <TabelaItemOrcamentoGenus orcamentoId={editandoId} />}
         </div>
         <div className="modal-actions">
           <button className="btn-cancel" onClick={onFechar}>Cancelar</button>

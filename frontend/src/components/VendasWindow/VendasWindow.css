@@ -53,6 +53,22 @@
 /* Grid de 3 colunas específico de Vendas */
 .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px 14px; }
 
+/* Painel colapsável com os campos migrados de GENUS.ORCAMENTO */
+.vendas-genus-detalhes {
+  border-top: 1px solid var(--erp-border-light);
+  padding-top: 10px;
+}
+.vendas-genus-detalhes summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--erp-text-muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+.vendas-genus-detalhes[open] summary { margin-bottom: 10px; }
+
 /* Itens */
 .vendas-itens-header {
   display: flex;

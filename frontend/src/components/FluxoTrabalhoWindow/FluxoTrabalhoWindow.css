@@ -2,11 +2,6 @@
 /* Estilos globais (.tabs-header, .tab-btn, .modal-overlay, .modal-content,
    .btn-save, .btn-cancel) vêm de styles/global.css */
 
-/* Tamanho da janela Fluxo de Trabalho — controlado via JS */
-.fluxo-window {
-  /* width/height vêm do style inline do componente */
-}
-
 /* Área de conteúdo da aba — ocupa o espaço restante */
 .fluxo-tab-content {
   flex: 1 !important;

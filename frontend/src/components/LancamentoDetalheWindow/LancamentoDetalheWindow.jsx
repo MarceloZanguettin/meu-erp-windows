@@ -9,11 +9,15 @@ import {
   marcarContaRecebido,
   estornarLancamento,
 } from '../FinanceiroAgrupadoWindow/services/financeiroService';
+import AbaGenusReceber from './abas/AbaGenusReceber.jsx';
+import { buildGenusFormFromConta, serializeGenusForm } from './abas/genusReceberFields.js';
+import AbaGenusPagar from './abas/AbaGenusPagar.jsx';
+import { buildGenusPagarFormFromConta, serializeGenusPagarForm } from './abas/genusPagarFields.js';
 import '../FinanceiroAgrupadoWindow/FinanceiroAgrupadoWindow.css';
 import './LancamentoDetalheWindow.css';
 
-function buildFormFromConta(conta) {
-  return {
+function buildFormFromConta(conta, tipo) {
+  const base = {
     empresa_id:        String(conta.empresa_id),
     conta_bancaria_id: conta.conta_bancaria_id ? String(conta.conta_bancaria_id) : '',
     descricao:         conta.descricao ?? '',
@@ -21,6 +25,11 @@ function buildFormFromConta(conta) {
     data_vencimento:   conta.data_vencimento ? conta.data_vencimento.slice(0, 10) : '',
     observacao:        conta.observacao ?? '',
   };
+  // Campos migrados de GENUS.RECEBER/GENUS.PAGAR só existem/fazem sentido
+  // para o respectivo tipo de lançamento
+  if (tipo === 'receber') return { ...base, ...buildGenusFormFromConta(conta) };
+  if (tipo === 'pagar')   return { ...base, ...buildGenusPagarFormFromConta(conta) };
+  return base;
 }
 
 /** Formata ISO datetime como "dd/mm/aaaa HH:MM" ou "—" se nulo */
@@ -41,8 +50,9 @@ function fmtDT(isoStr) {
  *   onSalvar — callback chamado após qualquer mutação (recarrega a tabela principal)
  */
 export default function LancamentoDetalheWindow({ id, onClose, onMinimize, conta, tipo, onSalvar }) {
-  const [form, setForm]             = useState(() => buildFormFromConta(conta));
-  const [formOriginal]              = useState(() => buildFormFromConta(conta));
+  const [form, setForm]             = useState(() => buildFormFromConta(conta, tipo));
+  const [formOriginal]              = useState(() => buildFormFromConta(conta, tipo));
+  const [aba, setAba]               = useState('Dados');
   const [empresas, setEmpresas]     = useState([]);
   const [contas, setContas]         = useState([]);
   const [status, setStatus]         = useState(conta.status);
@@ -63,6 +73,8 @@ export default function LancamentoDetalheWindow({ id, onClose, onMinimize, conta
     cb => !form.empresa_id || cb.empresa_id === Number(form.empresa_id),
   );
 
+  const setField = (campo, valor) => setForm(f => ({ ...f, [campo]: valor }));
+
   const dirty = JSON.stringify(form) !== JSON.stringify(formOriginal);
 
   const handleClose = () => {
@@ -80,6 +92,10 @@ export default function LancamentoDetalheWindow({ id, onClose, onMinimize, conta
         valor:             parseFloat(form.valor),
         data_vencimento:   form.data_vencimento + 'T12:00:00',
         observacao:        form.observacao || null,
+        // Campos migrados de GENUS.RECEBER/GENUS.PAGAR — só enviados para o
+        // respectivo tipo de lançamento
+        ...(tipo === 'receber' ? serializeGenusForm(form) : {}),
+        ...(tipo === 'pagar' ? serializeGenusPagarForm(form) : {}),
       };
       await salvarLancamento(tipo, body, conta.id);
       onSalvar?.();
@@ -157,8 +173,8 @@ export default function LancamentoDetalheWindow({ id, onClose, onMinimize, conta
       titulo={titulo}
       onClose={handleClose}
       onMinimize={onMinimize}
-      largura={540}
-      altura={560}
+      largura={tipo === 'receber' || tipo === 'pagar' ? 640 : 540}
+      altura={tipo === 'receber' || tipo === 'pagar' ? 620 : 560}
       minLargura={420}
       minAltura={460}
     >
@@ -198,66 +214,94 @@ export default function LancamentoDetalheWindow({ id, onClose, onMinimize, conta
           </div>
         </div>
 
+        {/* ── Abas (GENUS existe para contas a receber e a pagar) ── */}
+        {(tipo === 'receber' || tipo === 'pagar') && (
+          <div className="tabs-header">
+            {['Dados', 'GENUS'].map(nomeAba => (
+              <button
+                key={nomeAba}
+                type="button"
+                className={`tab-btn ${aba === nomeAba ? 'active' : ''}`}
+                onClick={() => setAba(nomeAba)}
+              >
+                {nomeAba}
+              </button>
+            ))}
+          </div>
+        )}
+
         {/* ── Formulário editável ── */}
         <div className="detalhe-form">
-          <div className="fagrup-form-group">
-            <label>Empresa</label>
-            <select
-              value={form.empresa_id}
-              onChange={e => setForm({ ...form, empresa_id: e.target.value, conta_bancaria_id: '' })}
-            >
-              <option value="">Selecione</option>
-              {empresas.map(e => <option key={e.id} value={e.id}>{e.nome}</option>)}
-            </select>
-          </div>
+          {aba === 'Dados' && (
+            <>
+              <div className="fagrup-form-group">
+                <label>Empresa</label>
+                <select
+                  value={form.empresa_id}
+                  onChange={e => setForm({ ...form, empresa_id: e.target.value, conta_bancaria_id: '' })}
+                >
+                  <option value="">Selecione</option>
+                  {empresas.map(e => <option key={e.id} value={e.id}>{e.nome}</option>)}
+                </select>
+              </div>
 
-          <div className="fagrup-form-group">
-            <label>Conta Bancária</label>
-            <select
-              value={form.conta_bancaria_id}
-              onChange={e => setForm({ ...form, conta_bancaria_id: e.target.value })}
-            >
-              <option value="">Selecione</option>
-              {bancosDoForm.map(cb => <option key={cb.id} value={cb.id}>{cb.banco}</option>)}
-            </select>
-          </div>
+              <div className="fagrup-form-group">
+                <label>Conta Bancária</label>
+                <select
+                  value={form.conta_bancaria_id}
+                  onChange={e => setForm({ ...form, conta_bancaria_id: e.target.value })}
+                >
+                  <option value="">Selecione</option>
+                  {bancosDoForm.map(cb => <option key={cb.id} value={cb.id}>{cb.banco}</option>)}
+                </select>
+              </div>
 
-          <div className="fagrup-form-group">
-            <label>Descrição</label>
-            <input
-              value={form.descricao}
-              onChange={e => setForm({ ...form, descricao: e.target.value })}
-            />
-          </div>
+              <div className="fagrup-form-group">
+                <label>Descrição</label>
+                <input
+                  value={form.descricao}
+                  onChange={e => setForm({ ...form, descricao: e.target.value })}
+                />
+              </div>
 
-          <div className="fagrup-form-row">
-            <div className="fagrup-form-group">
-              <label>Valor (R$)</label>
-              <input
-                type="number"
-                step="0.01"
-                value={form.valor}
-                onChange={e => setForm({ ...form, valor: e.target.value })}
-              />
-            </div>
-            <div className="fagrup-form-group">
-              <label>Vencimento</label>
-              <input
-                type="date"
-                value={form.data_vencimento}
-                onChange={e => setForm({ ...form, data_vencimento: e.target.value })}
-              />
-            </div>
-          </div>
+              <div className="fagrup-form-row">
+                <div className="fagrup-form-group">
+                  <label>Valor (R$)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={form.valor}
+                    onChange={e => setForm({ ...form, valor: e.target.value })}
+                  />
+                </div>
+                <div className="fagrup-form-group">
+                  <label>Vencimento</label>
+                  <input
+                    type="date"
+                    value={form.data_vencimento}
+                    onChange={e => setForm({ ...form, data_vencimento: e.target.value })}
+                  />
+                </div>
+              </div>
 
-          <div className="fagrup-form-group">
-            <label>Observação</label>
-            <input
-              value={form.observacao}
-              onChange={e => setForm({ ...form, observacao: e.target.value })}
-              placeholder="Opcional"
-            />
-          </div>
+              <div className="fagrup-form-group">
+                <label>Observação</label>
+                <input
+                  value={form.observacao}
+                  onChange={e => setForm({ ...form, observacao: e.target.value })}
+                  placeholder="Opcional"
+                />
+              </div>
+            </>
+          )}
+
+          {aba === 'GENUS' && tipo === 'receber' && (
+            <AbaGenusReceber form={form} setField={setField} />
+          )}
+
+          {aba === 'GENUS' && tipo === 'pagar' && (
+            <AbaGenusPagar form={form} setField={setField} />
+          )}
         </div>
 
         {/* ── Rodapé ── */}

@@ -32,8 +32,43 @@ def _aplicar_filtros_data(query, model, data_inicio: Optional[str], data_fim: Op
 # ── Empresas ──────────────────────────────────────────────────────────────────
 
 @router.get("/empresas", response_model=list[financeiro.EmpresaOut])
-def listar_empresas(db: Session = Depends(get_db)):
-    return db.query(Empresa).all()
+def listar_empresas(busca: Optional[str] = Query(None), db: Session = Depends(get_db)):
+    q = db.query(Empresa)
+    if busca:
+        q = q.filter(Empresa.nome.ilike(f"%{busca}%"))
+    return q.order_by(Empresa.nome).all()
+
+
+@router.get("/empresas/{id}", response_model=financeiro.EmpresaOut)
+def obter_empresa(id: int, db: Session = Depends(get_db)):
+    return _get_ou_404(db, Empresa, id)
+
+
+@router.post("/empresas", response_model=financeiro.EmpresaOut)
+def criar_empresa(dados: financeiro.EmpresaCreate, db: Session = Depends(get_db)):
+    obj = Empresa(**dados.dict())
+    db.add(obj)
+    db.commit()
+    db.refresh(obj)
+    return obj
+
+
+@router.put("/empresas/{id}", response_model=financeiro.EmpresaOut)
+def atualizar_empresa(id: int, dados: financeiro.EmpresaUpdate, db: Session = Depends(get_db)):
+    obj = _get_ou_404(db, Empresa, id)
+    for campo, valor in dados.dict(exclude_none=True).items():
+        setattr(obj, campo, valor)
+    db.commit()
+    db.refresh(obj)
+    return obj
+
+
+@router.delete("/empresas/{id}")
+def deletar_empresa(id: int, db: Session = Depends(get_db)):
+    obj = _get_ou_404(db, Empresa, id)
+    db.delete(obj)
+    db.commit()
+    return {"detail": "Registro deletado com sucesso"}
 
 
 # ── Contas Bancárias ──────────────────────────────────────────────────────────
